@@ -1,6 +1,9 @@
-package _karlo_dragan.coffeemachine;
+package t3_dinko.coffeemachine;
 
 
+
+import _karlo_dragan.coffeemachine.CoffeeMachine;
+import _karlo_dragan.coffeemachine.CoffeeType;
 
 import java.util.Scanner;
 

@@ -1,4 +1,4 @@
-package _karlo_dragan.coffeemachine;
+package t3_bojan.coffeemachine;
 
 public class CoffeeType {
 
