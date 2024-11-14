@@ -7,8 +7,6 @@ public class Admin {
 
     private String name;
     private String lastName;
-    private String username = "admin";
-    private String password = "admin";
     private int age;
 
     List<Terminal> terminals = new ArrayList<>();
