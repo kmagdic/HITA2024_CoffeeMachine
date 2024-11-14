@@ -5,7 +5,10 @@ import java.util.List;
 
 public class Admin {
 
-    private String name;
+    private static final String NO_BICYCLES_FOUND = "No bicycles found.";
+    private static final String NO_TERMINALS_FOUND = "No terminals found.";
+    private static final String ADDED_TO_BICYCLES = " added to bicycles.";
+    private final String name;
     private String lastName;
     private int age;
 
@@ -30,7 +33,7 @@ public class Admin {
 
     public void addBicycleToTerminal(int terminalId, Bicycle bicycle) {
         if (terminals.isEmpty()) {
-            System.out.println("No terminals found.");
+            System.out.println(NO_TERMINALS_FOUND);
             return;
         }
 
@@ -43,17 +46,17 @@ public class Admin {
 
     public void addBicycle(Bicycle bicycle) {
         bicycles.add(bicycle);
-        System.out.println(bicycle + " added to bicycles.");
+        System.out.println(bicycle + ADDED_TO_BICYCLES);
     }
 
     public void addBicycleByTypeToTerminal(int terminalId, String type) {
 
         if (terminals.isEmpty()) {
-            System.out.println("No terminals found.");
+            System.out.println(NO_TERMINALS_FOUND);
             return;
         }
         if (bicycles.isEmpty()) {
-            System.out.println("No bicycles found.");
+            System.out.println(NO_BICYCLES_FOUND);
             return;
         }
 
@@ -71,11 +74,11 @@ public class Admin {
     public void addBicycleByIdToTerminal(int terminalId, int bicycleId) {
 
         if (terminals.isEmpty()) {
-            System.out.println("No terminals found.");
+            System.out.println(NO_TERMINALS_FOUND);
             return;
         }
         if (bicycles.isEmpty()) {
-            System.out.println("No bicycles found.");
+            System.out.println(NO_BICYCLES_FOUND);
             return;
         }
 
@@ -92,7 +95,7 @@ public class Admin {
 
     public void addAddress(int id, String address) {
         if (terminals.isEmpty()) {
-            System.out.println("No terminals found.");
+            System.out.println(NO_TERMINALS_FOUND);
             return;
         }
 
@@ -106,7 +109,7 @@ public class Admin {
     public void removeBicycleByType(String typeToRemove) {
 
         if (bicycles.isEmpty()) {
-            System.out.println("No bicycles found.");
+            System.out.println(NO_BICYCLES_FOUND);
             return;
         }
 
@@ -121,7 +124,7 @@ public class Admin {
     public void  removeBicycleById(int idToRemove) {
 
         if (bicycles.isEmpty()) {
-            System.out.println("No bicycles found.");
+            System.out.println(NO_BICYCLES_FOUND);
             return;
         }
 
@@ -152,7 +155,7 @@ public class Admin {
     public void removeTerminalById(int idToRemove) {
 
         if (terminals.isEmpty()) {
-            System.out.println("No terminals found.");
+            System.out.println(NO_TERMINALS_FOUND);
             return;
         }
 
