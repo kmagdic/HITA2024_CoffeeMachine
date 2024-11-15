@@ -1,4 +1,4 @@
-package cofeemachinesvi.src.t1_darko.coffeemachine;
+package t1_darko.coffeemachine;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
