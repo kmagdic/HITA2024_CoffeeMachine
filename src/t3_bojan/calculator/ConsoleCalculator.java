@@ -23,7 +23,7 @@ public class ConsoleCalculator {
                 return;
             }
             else if (choice.equals("1")){
-                calculator = new Calculator()
+                calculator = new Calculator();
                 enterNumbersAndOperation(calculator);
             }
         }
