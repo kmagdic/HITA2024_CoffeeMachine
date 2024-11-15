@@ -1,4 +1,4 @@
-package zadatak2.bicycleTerminal.calculator;
+package t3_bojan.calculator;
 
 import java.util.List;
 

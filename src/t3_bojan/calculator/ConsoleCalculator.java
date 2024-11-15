@@ -1,4 +1,4 @@
-package zadatak2.bicycleTerminal.calculator;
+package t3_bojan.calculator;
 
 import java.util.Scanner;
 
@@ -23,6 +23,7 @@ public class ConsoleCalculator {
                 return;
             }
             else if (choice.equals("1")){
+                calculator = new Calculator()
                 enterNumbersAndOperation(calculator);
             }
         }
