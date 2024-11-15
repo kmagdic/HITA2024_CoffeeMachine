@@ -1,4 +1,5 @@
 package zadatak2.bicycleTerminal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,14 @@ public class Terminal {
             System.out.println("Bicycle not found at Terminal " + id);
             return false;
         }
+    }
+
+    public List<Bicycle> getBicycles() {
+        return bicycles;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

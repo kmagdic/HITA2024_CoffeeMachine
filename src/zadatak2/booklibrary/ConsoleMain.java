@@ -32,7 +32,7 @@ public class ConsoleMain {
                     break;
                 }
                 case ("2"):
-                    ArrayList<Book> books = library.getInventory();
+                    ArrayList<Book> books = library.getBookList();
                     for (Book b : books) {
                         System.out.println(b.toString());
                     }
