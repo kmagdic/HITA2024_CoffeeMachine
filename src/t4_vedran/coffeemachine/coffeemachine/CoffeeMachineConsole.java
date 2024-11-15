@@ -1,9 +1,4 @@
-package t4_vedran.coffeemachine;
-
-
-
-import _karlo_dragan.coffeemachine.CoffeeMachine;
-import _karlo_dragan.coffeemachine.CoffeeType;
+package t4_vedran.coffeemachine.coffeemachine;
 
 import java.util.Scanner;
 
@@ -92,7 +87,7 @@ public class CoffeeMachineConsole {
                     int milk = sc.nextInt();
                     System.out.println("Write how many grams of coffee beans you want to add:");
                     int coffeeBeans = sc.nextInt();
-                    System.out.println("\"Write how many disposable cups you want to add: ");
+                    System.out.println("Write how many disposable cups you want to add: ");
                     int cup = sc.nextInt();
                     machine.fill(water, milk, coffeeBeans, cup);
                     break;
