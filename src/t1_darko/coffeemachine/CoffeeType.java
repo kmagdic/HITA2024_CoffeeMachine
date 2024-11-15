@@ -1,4 +1,4 @@
-package t1_darko.coffeemachine;
+package cofeemachinesvi.src.t1_darko.coffeemachine;
 
 public class CoffeeType {
 
