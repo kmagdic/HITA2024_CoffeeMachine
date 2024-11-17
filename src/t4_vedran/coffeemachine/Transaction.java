@@ -1,9 +1,9 @@
 package t4_vedran.coffeemachine;
 
 class Transaction  {
-    private final String dateTime;
-    private final String coffeeType;
-    private final String action;
+    private String dateTime;
+    private String coffeeType;
+    private String action;
 
     public Transaction(String dateTime, String coffeeType, String action) {
         this.dateTime = dateTime;

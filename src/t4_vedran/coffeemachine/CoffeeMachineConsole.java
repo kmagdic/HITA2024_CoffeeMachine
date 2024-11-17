@@ -1,11 +1,12 @@
-package t4_vedran.coffeemachine.coffeemachine;
+package t4_vedran.coffeemachine;
 
 import java.util.Scanner;
 
+import static t4_vedran.coffeemachine.CoffeeMachine.changePassword;
+
 public class CoffeeMachineConsole {
 
-    Scanner sc = new Scanner(System.in);
-
+    static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args)  {
         CoffeeMachineConsole console = new CoffeeMachineConsole();
@@ -14,7 +15,7 @@ public class CoffeeMachineConsole {
 
     void run() {
         CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
+        System.out.println("Welcome to Coffee Machine 2.0 version by Vedran");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {
@@ -48,7 +49,6 @@ public class CoffeeMachineConsole {
                     machine.stop();
                     System.out.println("Shutting down the machine. Bye!");
                     break;
-
                 default:
                     System.out.println("No such option");
             }
@@ -71,14 +71,12 @@ public class CoffeeMachineConsole {
             System.out.println("Wrong enter\n");
         }
     }
-
     private void adminMenu(CoffeeMachine machine) {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, exit):");
+            System.out.println("Write action (fill, remaining, take, password, log, exit):");
             ch = sc.next();
-
             switch (ch) {
                 case "fill":
                     System.out.println("Write how many ml of water you want to add:");
@@ -91,28 +89,30 @@ public class CoffeeMachineConsole {
                     int cup = sc.nextInt();
                     machine.fill(water, milk, coffeeBeans, cup);
                     break;
-
                 case "take":
                     float amount = machine.takeMoney();
                     System.out.println("I gave you $" + amount + "\n");
                     break;
-
+                case "password":
+                    changePassword();
+                    break;
+                case "log":
+                    machine.printTransactionLog();
+                    break;
                 case "remaining":
                     System.out.println("The coffee machine has:");
                     System.out.println(machine.getWater() + " ml of water");
                     System.out.println(machine.getMilk() + " ml of milk");
-                    System.out.println(machine.getCoffeeBeans() + " g of water");
+                    System.out.println(machine.getCoffeeBeans() + " g of coffee beans");
                     System.out.println(machine.getCups() + " cups");
                     System.out.println("$" + machine.getMoney() + " of money");
                     break;
-
                 case "exit":
                     break;
+                default:
+                    System.out.println("Unknown action. Please try again.");
 
             }
         }
     }
-
-
-
 }
