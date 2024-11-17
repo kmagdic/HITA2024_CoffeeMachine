@@ -4,10 +4,6 @@ import java.util.Scanner;
 
 public class BasicCalculator extends Calculator {
 
-    public BasicCalculator() {
-        super();  // Pozivanje konstruktora iz roditeljske klase
-    }
-
     @Override
     public double calculate() {
         double result = 0;

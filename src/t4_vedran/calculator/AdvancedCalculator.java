@@ -8,7 +8,6 @@ public class AdvancedCalculator extends Calculator {
     private final List<HistoryLog> history;
 
     public AdvancedCalculator() {
-        super();  // Pozivanje konstruktora iz osnovne klase (Calculator)
         operationsList.add("pow");
         operationsList.add("%");
         history = new ArrayList<>();  // Inicijalizacija liste povijesti
@@ -29,7 +28,12 @@ public class AdvancedCalculator extends Calculator {
                 result = a * b;
                 break;
             case "/":
-                result = a / b;
+                if (b != 0) {
+                    result = a / b;
+                } else {
+                    System.out.println("Error: Division by zero!");
+                    result = Double.NaN;
+                }
                 record = a + " " + operation + " " + b + " = " + result;
                 break;
             case "pow":
@@ -70,7 +74,7 @@ public class AdvancedCalculator extends Calculator {
 
     // Metoda za ispis povijesti operacija
     public void printHistory() {
-        System.out.println("History:");
+        System.out.print("History:\n");
         for (HistoryLog log : history) {
             System.out.println(log);
         }
