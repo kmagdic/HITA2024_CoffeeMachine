@@ -1,7 +1,6 @@
-package t4_vedran.coffeemachine.calculator;
+package t3_bojan.calculator;
 
 import java.util.List;
-import java.util.Arrays;
 
 public class Calculator {
     private double a;
@@ -11,10 +10,8 @@ public class Calculator {
     private List<String> operationsList;
 
     public Calculator() {
-        operationsList = Arrays.asList("+", "-", "*", "/");
     }
 
-    // Setteri za postavljanje brojeva i operatora
     public void setA(double a) {
         this.a = a;
     }
@@ -24,15 +21,10 @@ public class Calculator {
     }
 
     public void setOperation(String operation) {
-        if (operationsList.contains(operation)) {
-            this.operation = operation;
-        } else {
-            System.out.println("Invalid operation.");
-        }
+        this.operation = operation;
     }
 
-
-    public double calculate() {
+    public double calculate(){
         double result = 0;
         switch (operation) {
             case "+":
@@ -45,25 +37,18 @@ public class Calculator {
                 result = a * b;
                 break;
             case "/":
-                if (b != 0) {
-                    result = a / b;
-                } else {
-                    System.out.println("Error: Division by zero!");
-                    result = Double.NaN; // Nevalidan rezultat
+                if (b == 0) {
+                    System.out.println("Cannot divide by zero");
+                    return 0;
                 }
+                result = a / b;
                 break;
             default:
                 System.out.println("Wrong operation");
         }
         return result;
     }
+    public void printOperations(){
 
-
-    public void printOperations() {
-        System.out.println("Dostupne operacije:");
-        for (String op : operationsList) {
-            System.out.print(op + " ");
-        }
-        System.out.println();
     }
 }
