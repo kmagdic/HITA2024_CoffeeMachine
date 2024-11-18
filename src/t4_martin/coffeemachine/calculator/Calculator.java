@@ -1,13 +1,13 @@
-package t1_mateo.coffeemachine.calculator;
+package t4_martin.coffeemachine.calculator;
 
 import java.util.List;
 
 public class Calculator {
-    protected double a;
-    protected double b;
-    protected String operation;
+    private double a;
+    private double b;
+    private String operation;
 
-    protected List<String> operationsList;
+    private List<String> operationsList;
 
     public Calculator() {
     }
@@ -20,6 +20,7 @@ public class Calculator {
         this.b = b;
     }
 
+
     public void setOperation(String operation) {
         this.operation = operation;
     }
@@ -28,28 +29,19 @@ public class Calculator {
         double result = 0;
         switch (operation) {
             case "+":
-                result = a + b;
-                break;
+                return a + b;
             case "-":
-                result = a - b;
-                break;
+                return a - b;
             case "*":
-                result = a * b;
-                break;
+                return a * b;
             case "/":
-                result = a / b;
-                break;
+                return a / b;
             default:
                 System.out.println("Wrong operation");
         }
         return result;
     }
     public void printOperations(){
-        operationsList.add("+");
-        operationsList.add("-");
-        operationsList.add("/");
-        operationsList.add("*");
-        System.out.println("+ - / *");
-        System.out.println();
+        System.out.println("+ - * /");
     }
 }

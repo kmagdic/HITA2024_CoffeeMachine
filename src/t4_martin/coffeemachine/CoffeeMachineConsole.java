@@ -2,8 +2,7 @@ package t4_martin.coffeemachine;
 
 
 
-import _karlo_dragan.coffeemachine.CoffeeMachine;
-import _karlo_dragan.coffeemachine.CoffeeType;
+
 
 import java.util.Scanner;
 
@@ -62,7 +61,8 @@ public class CoffeeMachineConsole {
 
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
-        CoffeeType[] coffeeTypes = machine.getCoffeeTypes();
+        CoffeeType[] coffeeTypes;
+        coffeeTypes = machine.getCoffeeTypes();
         for (int i = 0; i < machine.getCoffeeTypes().length; i++) {
             System.out.println((i + 1) + " - " + coffeeTypes[i].getName());
         }
