@@ -3,11 +3,11 @@ package t1_mateo.coffeemachine.calculator;
 import java.util.List;
 
 public class Calculator {
-    private double a;
-    private double b;
-    private String operation;
+    protected double a;
+    protected double b;
+    protected String operation;
 
-    private List<String> operationsList;
+    protected List<String> operationsList;
 
     public Calculator() {
     }
@@ -45,6 +45,11 @@ public class Calculator {
         return result;
     }
     public void printOperations(){
-
+        operationsList.add("+");
+        operationsList.add("-");
+        operationsList.add("/");
+        operationsList.add("*");
+        System.out.println("+ - / *");
+        System.out.println();
     }
 }

@@ -8,22 +8,31 @@ public class ConsoleCalculator {
     public static void main(String[] args) {
 
         Calculator calculator = new Calculator();
+        AdvancedCalculator advancedCalculator = new AdvancedCalculator();
 
         System.out.println("Operacije osnovnog kalkultora:");
 
         while (true) {
             String choice;
-            System.out.println("1- Calculate");
-            System.out.println("2 - Exit");
+            System.out.println("1 - Basic");
+            System.out.println("2 - Advanced");
+            System.out.println("3 - Exit");
             System.out.print("Enter:");
             choice = scanner.next();
 
             if (choice.equals("1")) {
+                System.out.println(calculator.operationsList);
                 enterNumbersAndOperation(calculator);
                 System.out.println(calculator.calculate());
             }
+            if (choice.equals("2")) {
+                System.out.println(advancedCalculator.operationsList);
+                enterNumbersAndOperation(calculator);
+                advancedCalculator.calculate();
+            }
 
-            if (choice.equals("2")) return;
+
+            if (choice.equals("3")) return;
         }
     }
 
