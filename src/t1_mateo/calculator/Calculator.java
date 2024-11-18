@@ -1,5 +1,6 @@
-package t1_mateo.coffeemachine.calculator;
+package t1_mateo.calculator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Calculator {
@@ -7,9 +8,13 @@ public class Calculator {
     protected double b;
     protected String operation;
 
-    protected List<String> operationsList;
+    protected List<String> operationsList = new ArrayList<>();
 
     public Calculator() {
+        operationsList.add("+");
+        operationsList.add("-");
+        operationsList.add("/");
+        operationsList.add("*");
     }
 
     public void setA(double a) {
@@ -45,11 +50,9 @@ public class Calculator {
         return result;
     }
     public void printOperations(){
-        operationsList.add("+");
-        operationsList.add("-");
-        operationsList.add("/");
-        operationsList.add("*");
-        System.out.println("+ - / *");
+        for (String s: operationsList) {
+            System.out.print(s + " ");
+        }
         System.out.println();
     }
 }
