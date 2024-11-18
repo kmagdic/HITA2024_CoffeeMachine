@@ -1,26 +1,15 @@
-package cofeemachinesvi.src._karlo_dragan.calculator;
+package t1_mateo.coffeemachine.calculator;
 
-
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Calculator {
     protected double a;
     protected double b;
     protected String operation;
-    protected List<String> operationsList = new ArrayList<>();
 
-    private List<CalculationLog> calculationLogList = new ArrayList<>();
+    protected List<String> operationsList;
 
-    public List<CalculationLog> getHistoryLogList() {
-        return calculationLogList;
-    }
     public Calculator() {
-        operationsList.add("+");
-        operationsList.add("-");
-        operationsList.add("/");
-        operationsList.add("*");
     }
 
     public void setA(double a) {
@@ -48,11 +37,7 @@ public class Calculator {
                 result = a * b;
                 break;
             case "/":
-                try {
-                    result = a / b;
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
+                result = a / b;
                 break;
             default:
                 System.out.println("Wrong operation");
@@ -60,10 +45,11 @@ public class Calculator {
         return result;
     }
     public void printOperations(){
-        for (String s: operationsList) {
-            System.out.print(s + " ");
-        }
-        System.out.println();
+        operationsList.add("+");
+        operationsList.add("-");
+        operationsList.add("/");
+        operationsList.add("*");
+        System.out.println("+ - / *");
         System.out.println();
     }
 }

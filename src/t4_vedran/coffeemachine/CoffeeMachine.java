@@ -1,12 +1,16 @@
 package t4_vedran.coffeemachine;
 
-import _karlo_dragan.coffeemachine.CoffeeType;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
+
+import static t4_vedran.coffeemachine.CoffeeMachineConsole.sc;
 
 public class CoffeeMachine {
 
@@ -15,11 +19,14 @@ public class CoffeeMachine {
     private int coffeeBeans;
     private int cups;
     private float money;
-    private _karlo_dragan.coffeemachine.CoffeeType[] coffeeTypes = new _karlo_dragan.coffeemachine.CoffeeType[3];
+    private final CoffeeType[] coffeeTypes = new CoffeeType[3];
 
     private String adminUsername = "admin";
-    private String adminPassword = "admin12345";
-    private String statusFileName = "docs/coffee_machine_status.txt";
+    private static String adminPassword = "admin12345";
+    private final String statusFileName = "docs/coffee_machine_status.txt";
+
+    // Lista za transakcije
+    private final List<Transaction> transactionLog = new ArrayList<>();
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
@@ -28,12 +35,12 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes[0] = new _karlo_dragan.coffeemachine.CoffeeType("Espresso", 350, 0,16,4);
-        coffeeTypes[1] = new _karlo_dragan.coffeemachine.CoffeeType("Latte",350, 75,20,7);
-        coffeeTypes[2] = new _karlo_dragan.coffeemachine.CoffeeType("Capuccino",200, 100,12,6);
+        coffeeTypes[0] = new CoffeeType("Espresso", 350, 0, 16, 4);
+        coffeeTypes[1] = new CoffeeType("Latte", 350, 75, 20, 7);
+        coffeeTypes[2] = new CoffeeType("Capuccino", 200, 100, 12, 6);
     }
 
-    public _karlo_dragan.coffeemachine.CoffeeType[] getCoffeeTypes() {
+    public CoffeeType[] getCoffeeTypes() {
         return coffeeTypes;
     }
 
@@ -57,55 +64,59 @@ public class CoffeeMachine {
         return money;
     }
 
-    public boolean hasEnoughResources(_karlo_dragan.coffeemachine.CoffeeType coffeeType){
-        if (water >= coffeeType.getWaterNeeded() &&
+    public boolean hasEnoughResources(CoffeeType coffeeType) {
+        return water >= coffeeType.getWaterNeeded() &&
                 milk >= coffeeType.getMilkNeeded() &&
                 coffeeBeans >= coffeeType.getCoffeeBeansNeeded() &&
-                cups >= 1) {
-            return true;
-        } else
-            return false;
+                cups >= 1;
     }
 
-    public String buyCoffee(_karlo_dragan.coffeemachine.CoffeeType coffeeType){
+    public String buyCoffee(CoffeeType coffeeType) {
+        String message;
         if (hasEnoughResources(coffeeType)) {
+            // Oduzmi resurse
             this.water -= coffeeType.getWaterNeeded();
             this.milk -= coffeeType.getMilkNeeded();
             this.coffeeBeans -= coffeeType.getCoffeeBeansNeeded();
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
-            return "I have enough resources, making you " + coffeeType.getName() + "\n";
+            // Spremi transakciju
+            recordTransaction(coffeeType, "Bought");
+
+            message = "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
-            return "Sorry, not enough " + missing + "\n";
+
+            // Spremi transakciju kao neuspješnu
+            recordTransaction(coffeeType, "Not bought, no enough ingredients: " + missing);
+
+            message = "Sorry, not enough " + missing + "\n";
         }
+        return message;
     }
 
-    public float takeMoney(){
+    public float takeMoney() {
         float moneyReturn = money;
         money = 0;
         return moneyReturn;
     }
 
-    public String calculateWhichIngredientIsMissing(CoffeeType coffeeType){
+    public String calculateWhichIngredientIsMissing(CoffeeType coffeeType) {
         String ingredientMissing = null;
         if (water < coffeeType.getWaterNeeded()) {
             ingredientMissing = "water";
-        }
-        else if (milk < coffeeType.getMilkNeeded()) {
-            ingredientMissing = "milk" ;
-        }
-        else if (coffeeBeans < coffeeType.getCoffeeBeansNeeded()) {
-            ingredientMissing = "coffee beans" ;
-        }
-        else if (cups < 1) {
-            ingredientMissing = "cups" ;
+        } else if (milk < coffeeType.getMilkNeeded()) {
+            ingredientMissing = "milk";
+        } else if (coffeeBeans < coffeeType.getCoffeeBeansNeeded()) {
+            ingredientMissing = "coffee beans";
+        } else if (cups < 1) {
+            ingredientMissing = "cups";
         }
         return ingredientMissing;
     }
 
-    public void fill(int water, int milk, int coffeeBeans, int cups){
+    public void fill(int water, int milk, int coffeeBeans, int cups) {
         this.water += water;
         this.milk += milk;
         this.coffeeBeans += coffeeBeans;
@@ -113,15 +124,11 @@ public class CoffeeMachine {
     }
 
     public boolean login(String username, String password) {
-        if (adminUsername.equals(username) && adminPassword.equals(password)) {
-            return true;
-        } else
-            return false;
+        return adminUsername.equals(username) && adminPassword.equals(password);
     }
 
-
-    public boolean loadFromFile(String fileName)  {
-        FileReader reader = null;
+    public boolean loadFromFile(String fileName) {
+        FileReader reader;
 
         try {
             reader = new FileReader(fileName);
@@ -147,15 +154,13 @@ public class CoffeeMachine {
         adminPassword = (fileScanner.next()).trim();
 
         return true;
-
-
     }
 
-    public void saveToFile(String fileName){
+    public void saveToFile(String fileName) {
         try {
             FileWriter writer = new FileWriter(fileName);
 
-            writer.write(water + "; " +  milk + "; " + coffeeBeans + "; " + cups + "; " + money);
+            writer.write(water + "; " + milk + "; " + coffeeBeans + "; " + cups + "; " + money);
             writer.write("\n");
             writer.write(adminUsername + "; " + adminPassword);
             writer.write("\n");
@@ -166,7 +171,6 @@ public class CoffeeMachine {
             throw new RuntimeException(e);
         }
     }
-
 
     public boolean start() {
         return loadFromFile(statusFileName);
@@ -187,5 +191,49 @@ public class CoffeeMachine {
                 '}';
     }
 
+    // Funkcija za promjenu lozinke
+    static void changePassword() {
+        sc.nextLine();
+        System.out.println("Enter new admin password: ");
+        String newPassword = sc.nextLine();
 
+        while (!isValidPassword(newPassword)) {
+            System.out.println("Please enter stronger password! It has to be at least 7 characters and it needs to have at least one number.");
+            System.out.print("Enter new admin password:\n");
+            newPassword = sc.nextLine();
+        }
+
+        adminPassword = newPassword;
+        System.out.println("Password is changed.");
+    }
+
+    private static boolean isValidPassword(String password) {
+        if (password.length() <= 7) {
+            return false;
+        }
+
+        boolean hasNumber = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) {
+                hasNumber = true;
+                break;
+            }
+        }
+
+        return hasNumber;
+    }
+
+    // Funkcija za spremanje transakcija u log
+    private void recordTransaction(CoffeeType coffeeType, String action) {
+        String currentDateTime = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
+        transactionLog.add(new Transaction(currentDateTime, coffeeType.getName(), action));
+    }
+
+    // Funkcija za ispis transakcija
+    public void printTransactionLog() {
+        System.out.println("Transaction log:");
+        for (Transaction transaction : transactionLog) {
+            System.out.println(transaction);
+        }
+    }
 }
