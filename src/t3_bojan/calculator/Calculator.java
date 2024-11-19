@@ -1,15 +1,23 @@
 package t3_bojan.calculator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Calculator {
-    private double a;
-    private double b;
-    private String operation;
+    protected double a;
+    protected double b;
+    protected String operation;
 
-    private List<String> operationsList;
+    protected List<String> operationsList = new ArrayList<>();
 
     public Calculator() {
+
+        System.out.println("Operacije osnovnog kalkulatora: \n+ - / *\n");
+
+        operationsList.add("+");
+        operationsList.add("-");
+        operationsList.add("/");
+        operationsList.add("*");
     }
 
     public void setA(double a) {
@@ -25,29 +33,20 @@ public class Calculator {
     }
 
     public double calculate(){
-        double result = 0;
-        switch (operation) {
-            case "+":
-                result = a + b;
-                break;
-            case "-":
-                result = a - b;
-                break;
-            case "*":
-                result = a * b;
-                break;
-            case "/":
-                if (b == 0) {
-                    System.out.println("Cannot divide by zero");
-                    return 0;
-                }
-                result = a / b;
-                break;
-            default:
-                System.out.println("Wrong operation");
-        }
-        return result;
+        return switch (operation) {
+            case "+" -> a + b;
+            case "-" -> a - b;
+            case "*" -> a * b;
+            case "/" -> b == 0 ? Double.NaN : a / b;
+            default -> getZeroAndWrongOperation();
+        };
     }
+
+    private double getZeroAndWrongOperation() {
+        System.out.println("Wrong operation!");
+        return Double.NaN;
+    }
+
     public void printOperations(){
 
     }
