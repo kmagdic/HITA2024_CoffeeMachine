@@ -1,15 +1,21 @@
 package t4_martin.coffeemachine.calculator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Calculator {
-    private double a;
-    private double b;
-    private String operation;
+    protected double a;
+    protected double b;
+    protected String operation;
 
-    private List<String> operationsList;
+    protected List<String> operationsList = new ArrayList<>();
 
     public Calculator() {
+        operationsList.add("-");
+        operationsList.add("*");
+        operationsList.add("/");
+        operationsList.add("+");
+
     }
 
     public void setA(double a) {
@@ -42,6 +48,6 @@ public class Calculator {
         return result;
     }
     public void printOperations(){
-        System.out.println("+ - * /");
+        System.out.println(operationsList);
     }
 }

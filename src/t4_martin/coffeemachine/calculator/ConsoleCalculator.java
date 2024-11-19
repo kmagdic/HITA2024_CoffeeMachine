@@ -11,22 +11,28 @@ public class ConsoleCalculator {
     static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
 
-        Calculator calculator = new Calculator();
+        Calculator calculator;
 
 
         System.out.println("Operacije osnovnog kalkultora:");
 
         while (true) {
             String choice;
-            System.out.println("1- Calculate");
-            System.out.println("2 - Exit");
+            System.out.println("1- Basic calculator");
+            System.out.println("2 - Advanced calculator");
+            System.out.println("3 - Exit");
             System.out.print("Enter:");
             choice = scanner.next();
 
             if (choice.equals("1")){
+                calculator = new Calculator();
                 enterNumbersAndOperation(calculator);
                 System.out.println(calculator.calculate());
 
+            }else if (choice.equals("2")) {
+                calculator = new AdvancedCalculator();
+                enterNumbersAndOperation(calculator);
+                System.out.println(calculator.calculate());
             }else break;
         }
     }
