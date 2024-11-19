@@ -7,26 +7,31 @@ public class ConsoleCalculator {
     static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
 
-        Calculator calculator = new Calculator();
-
-        System.out.println("Operacije osnovnog kalkultora:");
-        System.out.println("+ - / *\n");
+        Calculator calculator;
 
         while (true) {
             String choice;
-            System.out.println("1- Calculate");
-            System.out.println("2 - Exit");
+            System.out.println("1 - Simple Calculator");
+            System.out.println("2 - Advanced Calculator");
+            System.out.println("3 - Exit");
             System.out.print("Enter:");
             choice = scanner.next();
 
-            if (choice.equals("2")) {
-                return;
+            if (choice.equals("3")) {
+                break;
             }
-            else if (choice.equals("1")){
+            else if (choice.equals("1")) {
                 calculator = new Calculator();
                 enterNumbersAndOperation(calculator);
             }
+            else if (choice.equals("2")) {
+                calculator = new AdvancedCalculator();
+                enterNumbersAndOperation(calculator);
+                calculator.printOperations();
+            }
         }
+
+
     }
 
     public static void enterNumbersAndOperation (Calculator calculator){
