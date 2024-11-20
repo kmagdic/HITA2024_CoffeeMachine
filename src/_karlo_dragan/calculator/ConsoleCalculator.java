@@ -1,4 +1,4 @@
-package _karlo_dragan.calculator;
+package cofeemachinesvi.src._karlo_dragan.calculator;
 
 
 import java.util.InputMismatchException;
@@ -13,44 +13,49 @@ public class ConsoleCalculator {
 
         Calculator calculator = null;
 
-        System.out.print("1 - Basic\n" +
-                         "2 - Advanced\n" +
-                         "Enter: ");
+        while (true) {
 
-        // choose which calculator
-        int ch = scanner.nextInt();
-        if (ch == 1) {
-            calculator = new Calculator();
-        } else if (ch == 2) {
-            calculator = new AdvancedCalculator();
-        }
-        System.out.println("Supported operations:");
-        calculator.printOperations();
+            System.out.print("1 - Basic\n" +
+                             "2 - Advanced\n" +
+                             "3 - Exit\n" +
+                             "Enter: ");
 
-        boolean doExit = false;
-        do {
-            // enter values until they are correct
-            boolean valuesEntered = false;
-            do {
-                enterNumbersAndOperation(calculator);
-                valuesEntered = true;
-            } while (valuesEntered == false);
+            // choose which calculator
+            int ch = scanner.nextInt();
+            if (ch == 1) {
+                calculator = new Calculator();
+            } else if (ch == 2) {
+                calculator = new AdvancedCalculator();
+            } else if (ch == 3) return;
 
-            // display result
-            System.out.println("Result:" + calculator.calculate());
+            System.out.println("Supported operations:");
+            calculator.printOperations();
 
-            // display calculation log
-            for (CalculationLog h : calculator.getHistoryLogList()) {
-                System.out.println("History: " + h.getRecord());
+            boolean doExit = false;
+
+                do {
+                    // enter values until they are correct
+                    boolean valuesEntered = false;
+                    do {
+                        enterNumbersAndOperation(calculator);
+                        valuesEntered = true;
+                    } while (valuesEntered == false);
+
+                    // display result
+                    System.out.println("Result:" + calculator.calculate());
+
+                    // display calculation log
+                    for (CalculationLog h : calculator.getHistoryLogList()) {
+                        System.out.println("History: " + h.getRecord());
+                    }
+
+                    System.out.println("Another calculation with this calculator  (Y/N) ?");
+                    String anotherOp = scanner.next();
+                    if (anotherOp.equalsIgnoreCase("N"))
+                        doExit = true;
+
+                } while(doExit == false);
             }
-
-            System.out.println("Another calculation (Y/N) ?");
-            String anotherOp = scanner.next();
-            if (anotherOp.equalsIgnoreCase("N"))
-                doExit = true;
-
-        } while(doExit == false);
-
 
     }
     public static void enterNumbersAndOperation (Calculator c)  {
