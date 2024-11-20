@@ -37,16 +37,7 @@ public class CoffeeMachineConsole {
                     break;
 
                 case "login":
-                    System.out.println("Enter username: ");
-                    String username = sc.next();
-                    System.out.println("Enter password: ");
-                    String password = sc.next();
-
-                    if (machine.login(username, password)) {
-                        adminMenu(machine);
-                    } else {
-                        System.out.println("Wrong username or password\n");
-                    }
+                    login(machine);
                     break;
 
                 case "exit":
@@ -57,6 +48,19 @@ public class CoffeeMachineConsole {
                 default:
                     System.out.println("No such option");
             }
+        }
+    }
+
+    private void login(CoffeeMachine machine) {
+        System.out.println("Enter username: ");
+        String username = sc.next();
+        System.out.println("Enter password: ");
+        String password = sc.next();
+
+        if (machine.login(username, password)) {
+            adminMenu(machine);
+        } else {
+            System.out.println("Wrong username or password\n");
         }
     }
 
@@ -87,29 +91,15 @@ public class CoffeeMachineConsole {
 
             switch (ch) {
                 case "fill":
-                    System.out.println("Write how many ml of water you want to add:");
-                    int water = sc.nextInt();
-                    System.out.println("Write how many ml of milk you want to add:");
-                    int milk = sc.nextInt();
-                    System.out.println("Write how many grams of coffee beans you want to add:");
-                    int coffeeBeans = sc.nextInt();
-                    System.out.println("Write how many disposable cups you want to add:");
-                    int cups = sc.nextInt();
-                    machine.fill(water, milk, coffeeBeans, cups);
+                    fill(machine);
                     break;
 
                 case "take":
-                    float amount = machine.takeMoney();
-                    System.out.println("I gave you $" + amount + "\n");
+                    take(machine);
                     break;
 
                 case "remaining":
-                    System.out.println("The coffee machine has:");
-                    System.out.println(machine.getWater() + " ml of water");
-                    System.out.println(machine.getMilk() + " ml of milk");
-                    System.out.println(machine.getCoffeeBeans() + " g of coffee beans");
-                    System.out.println(machine.getCups() + " cups");
-                    System.out.println("$" + machine.getMoney() + " of money");
+                    remaining(machine);
                     break;
 
                 case "password":
@@ -126,6 +116,32 @@ public class CoffeeMachineConsole {
         }
     }
 
+    private void fill(CoffeeMachine machine) {
+        System.out.println("Write how many ml of water you want to add:");
+        int water = sc.nextInt();
+        System.out.println("Write how many ml of milk you want to add:");
+        int milk = sc.nextInt();
+        System.out.println("Write how many grams of coffee beans you want to add:");
+        int coffeeBeans = sc.nextInt();
+        System.out.println("Write how many disposable cups you want to add:");
+        int cups = sc.nextInt();
+        machine.fill(water, milk, coffeeBeans, cups);
+    }
+
+    private static void take(CoffeeMachine machine) {
+        float amount = machine.takeMoney();
+        System.out.println("I gave you $" + amount + "\n");
+    }
+
+    private static void remaining(CoffeeMachine machine) {
+        System.out.println("The coffee machine has:");
+        System.out.println(machine.getWater() + " ml of water");
+        System.out.println(machine.getMilk() + " ml of milk");
+        System.out.println(machine.getCoffeeBeans() + " g of coffee beans");
+        System.out.println(machine.getCups() + " cups");
+        System.out.println("$" + machine.getMoney() + " of money");
+    }
+
     private void changeAdminPassword(CoffeeMachine machine) {
         System.out.println("Enter new admin password:");
         String newPassword = sc.next();
@@ -135,6 +151,5 @@ public class CoffeeMachineConsole {
         }
         System.out.println("Password is changed\n");
     }
-
 
 }
