@@ -1,4 +1,4 @@
-package t2_patricija.coffeemachine.calculator;
+package t2_patricija.calculator;
 
 import java.util.ArrayList;
 import java.util.List;

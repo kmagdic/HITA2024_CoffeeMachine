@@ -1,4 +1,4 @@
-package t2_patricija.coffeemachine.calculator;
+package t2_patricija.calculator;
 
 public class AdvancedCalculator extends Calculator {
 
