@@ -1,7 +1,5 @@
 package t3_bojan.coffeemachine;
 
-import _karlo_dragan.coffeemachine.CoffeeType;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -57,7 +55,7 @@ public class CoffeeMachine {
         return money;
     }
 
-    public boolean hasEnoughResources(_karlo_dragan.coffeemachine.CoffeeType coffeeType){
+    public boolean hasEnoughResources(CoffeeType coffeeType){
         if (water >= coffeeType.getWaterNeeded() &&
                 milk >= coffeeType.getMilkNeeded() &&
                 coffeeBeans >= coffeeType.getCoffeeBeansNeeded() &&
@@ -188,4 +186,7 @@ public class CoffeeMachine {
     }
 
 
+    public void changePassword(String newPassword) {
+        adminPassword = newPassword;
+    }
 }
