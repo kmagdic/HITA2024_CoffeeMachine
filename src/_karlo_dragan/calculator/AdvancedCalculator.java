@@ -6,12 +6,6 @@ import java.util.List;
 
 public class AdvancedCalculator extends Calculator {
 
-    private List<CalculationLog> calculationLogList = new ArrayList<>();
-
-    public List<CalculationLog> getHistoryLogList() {
-        return calculationLogList;
-    }
-
     public AdvancedCalculator() {
         operationsList.add("pow");
         operationsList.add("%");
@@ -30,10 +24,10 @@ public class AdvancedCalculator extends Calculator {
                 System.out.println(e.getMessage());
             }
         } else {
-            res = super.calculate();
+            return super.calculate();
         }
 
-        addRecordToHiystoryList(a + " " + operation + " " + b + " = " + res);
+        addRecordToHistoryList(a + " " + operation + " " + b + " = " + res);
 
         return res;
     }
@@ -45,9 +39,6 @@ public class AdvancedCalculator extends Calculator {
         System.out.println();
     }
 
-    public void addRecordToHiystoryList(String res){
-        CalculationLog calculationLog = new CalculationLog(res);
-        calculationLogList.add(calculationLog);
-    }
+
 }
 

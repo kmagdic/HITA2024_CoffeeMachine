@@ -12,10 +12,10 @@ public class Calculator {
     protected List<String> operationsList = new ArrayList<>();
 
     private List<CalculationLog> calculationLogList = new ArrayList<>();
-
     public List<CalculationLog> getHistoryLogList() {
         return calculationLogList;
     }
+
     public Calculator() {
         operationsList.add("+");
         operationsList.add("-");
@@ -60,6 +60,8 @@ public class Calculator {
             else
                 System.out.println("Calculator error: " + e.getMessage());
         }
+
+        addRecordToHistoryList(a  + " " + operation + " " + b + " = " + result);
         return result;
     }
     public void printOperations(){
@@ -68,5 +70,10 @@ public class Calculator {
         }
         System.out.println();
         System.out.println();
+    }
+
+    public void addRecordToHistoryList(String res){
+        CalculationLog calculationLog = new CalculationLog(res);
+        calculationLogList.add(calculationLog);
     }
 }
