@@ -1,22 +1,28 @@
 package t3_bojan.calculator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AdvancedCalculator extends Calculator {
 
-    double result = 0;
+    private final List<CalculationLog> operationLogList = new ArrayList<>();
+    private boolean isAdvancedUsed = false;
+
 
     public AdvancedCalculator() {
-
-        System.out.println("Operacije osnovnog kalkulatora: \npow, %\n");
-
         operationsList.add("pow");
         operationsList.add("%");
     }
 
+    @Override
     public double calculate() {
+        double result = 0;
 
         switch (operation) {
             case "pow" : {
                 result = Math.pow(a, b);
+                addRecordToHistoryList(a + " pow " + b + " = " + result);
+                isAdvancedUsed = true;
                 break;
             }
             case "%" : {
@@ -24,7 +30,9 @@ public class AdvancedCalculator extends Calculator {
                     System.out.println("Error: Division by zero!");
                     return Double.NaN;
                 }
+                isAdvancedUsed = true;
                 result = (int) a % (int) b;
+                addRecordToHistoryList((int) a + " % " + (int) b + " = " + result);
                 break;
             }
             default : {
@@ -34,7 +42,20 @@ public class AdvancedCalculator extends Calculator {
         return result;
     }
 
-    public void printOperations() {
-        System.out.println(a + " " + operation + " " + b + " = " + result);
+    private void addRecordToHistoryList(String inputLog) {
+        CalculationLog calculationLog = new CalculationLog(inputLog);
+        operationLogList.add(calculationLog);
+    }
+
+    public List<CalculationLog> getCalculationLog(){
+        return operationLogList;
+    }
+
+    public boolean isAdvancedUsed() {
+        return isAdvancedUsed;
+    }
+
+    public void setIsAdvancedFalse() {
+        isAdvancedUsed = false;
     }
 }
