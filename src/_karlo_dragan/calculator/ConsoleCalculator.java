@@ -1,4 +1,4 @@
-package cofeemachinesvi.src._karlo_dragan.calculator;
+package _karlo_dragan.calculator;
 
 
 import java.util.InputMismatchException;
@@ -66,6 +66,7 @@ public class ConsoleCalculator {
         c.setOperation(scanner.next());
         System.out.print("B: ");
         c.setB(scanner.nextDouble());
+
 
     }
 }
