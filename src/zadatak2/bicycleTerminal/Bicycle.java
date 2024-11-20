@@ -46,18 +46,17 @@ public class Bicycle {
         System.out.println("Bicycle " + id + " type set to " + newType);
     }
 
-    public void removeBicycleType(String typeToRemove) {
-        if (this.type.equals(typeToRemove)) {
-            this.type = "undefined";
-            System.out.println("Bicycle " + id + " type removed");
-        } else {
-            System.out.println("Type does not match, cannot remove.");
-        }
-    }
-
     public void serviced(int times) {
         this.servicedTimes += times;
         System.out.println("Bicycle " + id + " serviced " + times + " time(s). Total services: " + servicedTimes);
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

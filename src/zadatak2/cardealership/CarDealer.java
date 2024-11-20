@@ -30,4 +30,19 @@ public class CarDealer {
             System.out.println(" ");
         }
     }
+
+    public void deleteCar(String carToDelete){
+        boolean carDeleted = false;
+        for(Car c: cars){
+            if (c.getCarName().equals(carToDelete)) {
+                cars.remove(c);
+                System.out.println("Removed: " + c.getCarName());
+                carDeleted = true;
+                break;
+            }
+        }
+        if(!carDeleted){
+            System.out.println("Auto nije nađen");
+        }
+    }
 }

@@ -13,7 +13,7 @@ public class CarMain {
 
 
         while(true) {
-            System.out.println("1 - Dodaj auto\n2 - Ispiši aute");
+            System.out.println("1 - Dodaj auto\n2 - Izbriši auto\n3 - Ispiši aute\n4 - Izlaz");
             int choice = scanner.nextInt();
             if (choice == 1) {
                 System.out.println("Unesi ime auta:");
@@ -24,9 +24,14 @@ public class CarMain {
                 int yearOfProduction = scanner.nextInt();
                 tomic.addCar(carName, carType, yearOfProduction);
             } else if (choice == 2) {
-                tomic.printCars();
+                System.out.println("Koji auto želiš izbrisati");
+                String carToDelete = scanner.next();
+                tomic.deleteCar(carToDelete);
 
             } else if (choice == 3) {
+                tomic.printCars();
+
+            } else if (choice == 4) {
                 break;
             }
         }

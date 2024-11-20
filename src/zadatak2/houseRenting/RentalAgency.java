@@ -1,7 +1,6 @@
 package zadatak2.houseRenting;
 
 
-
 import java.util.ArrayList;
 
 public class RentalAgency {
@@ -10,27 +9,24 @@ public class RentalAgency {
     public String owner;
     public ArrayList<RentingObjects> rentingObjectsList;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public void setRentingObjectsList(ArrayList<RentingObjects> rentingObjectsList) {
-        this.rentingObjectsList = rentingObjectsList;
-    }
-
     public RentalAgency(String name, String address, String owner) {
         this.name = name;
         this.address = address;
         this.owner = owner;
         this.rentingObjectsList = new ArrayList<>();
+    }
+
+    // Getter metode za name, address i owner
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public void addRentingObject(RentingObjects obj) {
@@ -43,14 +39,10 @@ public class RentalAgency {
                 rentingObjectsList.size() + "}";
     }
 
-    // Optionally, print all objects managed by this agency
+    // Prikaz svih objekata za iznajmljivanje unutar agencije
     public void printRentingObjects() {
         for (RentingObjects obj : rentingObjectsList) {
             System.out.println(obj);
         }
-    }
-
-    public String getName() {
-        return name;
     }
 }

@@ -1,4 +1,4 @@
-package TicketMachine;
+package zadatak2.ticketmachine;
 
 public class Ticket {
     String type;
@@ -10,3 +10,4 @@ public class Ticket {
         return "Ticket{type='" + type + "', price=" + price + ", terminalName=" + terminal.name + "}";
     }
 }
+

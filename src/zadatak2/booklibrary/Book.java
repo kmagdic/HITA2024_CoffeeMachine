@@ -1,28 +1,42 @@
 package zadatak2.booklibrary;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Book {
-
-    private int bookId;
-    private String bookTitle;
+    private String title;
     private int yearOfPublication;
+    private List<Author> authors;
 
-    private ArrayList<Author> authors;
-
-    public Book (int bookId, String bookTitle, int yearOfPublication) {
-        this.bookId = bookId;
-        this.bookTitle = bookTitle;
-        this.yearOfPublication = yearOfPublication;
+    public Book(String title) {
+        this.title = title;
+        this.authors = new ArrayList<>();
     }
 
-    public int getBookId() {
-        return bookId;
+    public Book(String title, int yearOfPublication){
+        this.title = title;
+        this.yearOfPublication = yearOfPublication;
+        this.authors = new ArrayList<>();
+    }
+
+    public void addAuthor(Author author) {
+        authors.add(author);
+    }
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getYearOfPublication() {
+        return yearOfPublication;
     }
 
     @Override
     public String toString() {
-        return "Book Id: " + bookId + ", Book title: " + bookTitle + ", Year of publication: " + yearOfPublication;
-
+        return this.title + " " + this.yearOfPublication + " " + authors;
     }
 }
