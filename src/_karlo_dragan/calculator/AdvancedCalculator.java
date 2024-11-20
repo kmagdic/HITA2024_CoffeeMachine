@@ -1,4 +1,4 @@
-package cofeemachinesvi.src._karlo_dragan.calculator;
+package _karlo_dragan.calculator;
 
 
 import java.util.ArrayList;
@@ -19,22 +19,23 @@ public class AdvancedCalculator extends Calculator {
 
     public double calculate() {
         double res = 0;
+
         if (operation.equals("pow")) {
             res = Math.pow(a, b);
-            addRecordToHiystoryList(a + " pow " + b + " = " + res);
-            return res;
         } else if (operation.equals("%")) {
             // program se dalje izvršava ako se dijeli s 0
-           try{
+            try {
                 res = (int) a % (int) b;
-           }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-            addRecordToHiystoryList(a + " % " + b + " = " + res);
-            return res;
         } else {
-            return super.calculate();
+            res = super.calculate();
         }
+
+        addRecordToHiystoryList(a + " " + operation + " " + b + " = " + res);
+
+        return res;
     }
 
     public void printOperations() {

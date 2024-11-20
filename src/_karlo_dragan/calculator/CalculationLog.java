@@ -1,4 +1,4 @@
-package cofeemachinesvi.src._karlo_dragan.calculator;
+package _karlo_dragan.calculator;
 
 public class CalculationLog {
     private String record;
