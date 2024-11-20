@@ -11,9 +11,6 @@ public class Calculator {
     protected List<String> operationsList = new ArrayList<>();
 
     public Calculator() {
-
-        System.out.println("Operacije osnovnog kalkulatora: \n+ - / *\n");
-
         operationsList.add("+");
         operationsList.add("-");
         operationsList.add("/");
@@ -47,7 +44,11 @@ public class Calculator {
         return Double.NaN;
     }
 
-    public void printOperations(){
-
+    public void printOperations(String calculatorText){
+        String operations = "";
+        for (String operation : operationsList) {
+            operations += operation + " ";
+        }
+        System.out.println(calculatorText + operations + "\n");
     }
 }
