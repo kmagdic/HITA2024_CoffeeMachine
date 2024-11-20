@@ -10,3 +10,4 @@ public class Ticket {
         return "Ticket{type='" + type + "', price=" + price + ", terminalName=" + terminal.name + "}";
     }
 }
+
