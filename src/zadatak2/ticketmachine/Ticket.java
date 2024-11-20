@@ -1,4 +1,4 @@
-package TicketMachine;
+package zadatak2.ticketmachine;
 
 public class Ticket {
     String type;
