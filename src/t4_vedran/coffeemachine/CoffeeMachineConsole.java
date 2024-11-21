@@ -1,5 +1,6 @@
 package t4_vedran.coffeemachine;
 
+import java.util.List;
 import java.util.Scanner;
 
 import static t4_vedran.coffeemachine.CoffeeMachine.changePassword;
@@ -57,15 +58,15 @@ public class CoffeeMachineConsole {
 
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
-        CoffeeType[] coffeeTypes = machine.getCoffeeTypes();
-        for (int i = 0; i < machine.getCoffeeTypes().length; i++) {
-            System.out.println((i + 1) + " - " + coffeeTypes[i].getName());
+        List<CoffeeType> coffeeTypes = machine.getCoffeeTypes();
+        for (int i = 0; i < machine.getCoffeeTypes().size(); i++) {
+            System.out.println((i + 1) + " - " + coffeeTypes.get(i).getName());
         }
         System.out.println("Enter your choice: ");
 
         int typeOfCoffeeChoice = sc.nextInt();
-        if (typeOfCoffeeChoice <= coffeeTypes.length) {
-            String msg = machine.buyCoffee(coffeeTypes[typeOfCoffeeChoice - 1]);
+        if (typeOfCoffeeChoice <= coffeeTypes.size()) {
+            String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
             System.out.println(msg);
         } else {
             System.out.println("Wrong enter\n");
