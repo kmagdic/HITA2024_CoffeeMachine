@@ -1,4 +1,6 @@
-package t1_mateo.calculator;
+package t4_martin.calculator2;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +12,7 @@ public class Calculator {
     protected List<String> operationsList = new ArrayList<>();
 
     private List<CalculationLog> calculationLogList = new ArrayList<>();
-
-    public List<CalculationLog> getCalculationLogList() {
+    public List<CalculationLog> getHistoryLogList() {
         return calculationLogList;
     }
 
@@ -30,11 +31,19 @@ public class Calculator {
         this.b = b;
     }
 
+    public double getA() {
+        return a;
+    }
+
+    public double getB() {
+        return b;
+    }
+
     public void setOperation(String operation) {
         this.operation = operation;
     }
 
-    public double calculate(){
+    public double calculate() {
         double result = 0;
         try {
             switch (operation) {
@@ -59,19 +68,20 @@ public class Calculator {
             else
                 System.out.println("Calculator error: " + e.getMessage());
         }
+
         addRecordToHistoryList(a  + " " + operation + " " + b + " = " + result);
         return result;
     }
-
     public void printOperations(){
         for (String s: operationsList) {
             System.out.print(s + " ");
         }
         System.out.println();
+        System.out.println();
     }
 
-    public void addRecordToHistoryList (String result) {
-        CalculationLog calculationLog = new CalculationLog(result);
+    public void addRecordToHistoryList(String res){
+        CalculationLog calculationLog = new CalculationLog(res);
         calculationLogList.add(calculationLog);
     }
 }
