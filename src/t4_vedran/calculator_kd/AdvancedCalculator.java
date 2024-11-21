@@ -1,8 +1,5 @@
-package _karlo_dragan.calculator;
+package t4_vedran.calculator_kd;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AdvancedCalculator extends Calculator {
 

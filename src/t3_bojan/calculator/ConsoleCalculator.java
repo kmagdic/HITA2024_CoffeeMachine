@@ -1,30 +1,47 @@
 package t3_bojan.calculator;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleCalculator {
 
-    static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
 
         Calculator calculator = new Calculator();
-
-        System.out.println("Operacije osnovnog kalkultora:");
-        System.out.println("+ - / *\n");
+        AdvancedCalculator advancedCalculator = new AdvancedCalculator();
 
         while (true) {
             String choice;
-            System.out.println("1- Calculate");
-            System.out.println("2 - Exit");
+            System.out.println("1 - Simple Calculator");
+            System.out.println("2 - Advanced Calculator");
+            System.out.println("3 - Exit");
             System.out.print("Enter:");
             choice = scanner.next();
 
-            if (choice.equals("2")) {
-                return;
-            }
-            else if (choice.equals("1")){
-                calculator = new Calculator();
+            if (choice.equals("3")) {
+                break;
+            } else if (choice.equals("1")) {
+                calculator.printOperations("Simple calculator operations:\n");
                 enterNumbersAndOperation(calculator);
+                System.out.println(calculator.calculate());
+            } else if (choice.equals("2")) {
+                advancedCalculator.printOperations("Advanced calculator operations:\n");
+                enterNumbersAndOperation(advancedCalculator);
+                System.out.println(advancedCalculator.calculate());
+
+
+                if (advancedCalculator.isAdvancedUsed()) {
+                    System.out.println("History | Yes/No");
+                    if (scanner.next().equals("Yes")) {
+                        advancedCalculator.setIsAdvancedFalse();
+                        List<CalculationLog> logList = advancedCalculator.getCalculationLog();
+                        for (CalculationLog log : logList) {
+                            System.out.println(log.toString());
+                        }
+                    }
+                }
             }
         }
     }
@@ -37,6 +54,5 @@ public class ConsoleCalculator {
         calculator.setOperation(scanner.next());
         System.out.print("B: ");
         calculator.setB(scanner.nextInt());
-        System.out.println(calculator.calculate());
     }
 }

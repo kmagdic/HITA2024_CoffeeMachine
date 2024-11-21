@@ -1,11 +1,11 @@
 package t3_bojan.coffeemachine;
 
-import _karlo_dragan.coffeemachine.CoffeeType;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class CoffeeMachine {
@@ -15,7 +15,7 @@ public class CoffeeMachine {
     private int coffeeBeans;
     private int cups;
     private float money;
-    private CoffeeType[] coffeeTypes = new CoffeeType[3];
+    private List<CoffeeType> coffeeTypes = new ArrayList<>();
 
     private String adminUsername = "admin";
     private String adminPassword = "admin12345";
@@ -28,12 +28,12 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes[0] = new CoffeeType("Espresso", 350, 0,16,4);
-        coffeeTypes[1] = new CoffeeType("Latte",350, 75,20,7);
-        coffeeTypes[2] = new CoffeeType("Capuccino",200, 100,12,6);
+        coffeeTypes.add(new CoffeeType("Espresso", 350, 0,16,4));
+        coffeeTypes.add(new CoffeeType("Latte",350, 75,20,7));
+        coffeeTypes.add(new CoffeeType("Capuccino",200, 100,12,6));
     }
 
-    public CoffeeType[] getCoffeeTypes() {
+    public List<CoffeeType> getCoffeeTypes() {
         return coffeeTypes;
     }
 
@@ -57,7 +57,7 @@ public class CoffeeMachine {
         return money;
     }
 
-    public boolean hasEnoughResources(_karlo_dragan.coffeemachine.CoffeeType coffeeType){
+    public boolean hasEnoughResources(CoffeeType coffeeType){
         if (water >= coffeeType.getWaterNeeded() &&
                 milk >= coffeeType.getMilkNeeded() &&
                 coffeeBeans >= coffeeType.getCoffeeBeansNeeded() &&
@@ -188,4 +188,7 @@ public class CoffeeMachine {
     }
 
 
+    public void changePassword(String newPassword) {
+        adminPassword = newPassword;
+    }
 }

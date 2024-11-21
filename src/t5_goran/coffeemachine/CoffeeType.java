@@ -57,12 +57,3 @@ public class CoffeeType {
         this.coffeeBeansNeeded = coffeeBeansNeeded;
     }
 }
-
-
-
-
-
-
-
-
-
