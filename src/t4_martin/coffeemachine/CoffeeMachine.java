@@ -18,7 +18,8 @@ public class CoffeeMachine {
 
     private String adminUsername = "admin";
     private String adminPassword = "admin12345";
-    private String statusFileName = "docs/coffee_machine_status.txt";
+    private String statusFileName = "src/t4_martin/docs/coffee_machine_status.txt";
+
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
@@ -186,5 +187,21 @@ public class CoffeeMachine {
                 '}';
     }
 
+    public void changePassword(String password) {
+        if (isGoodPassword(password)) {
+            adminPassword = password;
+            System.out.println("Password is changed");
+
+        } else
+            System.out.println("Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.");
+
+    }
+
+
+    private boolean isGoodPassword(String password){
+        if (password.length() > 7 && password.matches(".*\\d.*")){
+            return true;
+        }else return false;
+    }
 
 }
