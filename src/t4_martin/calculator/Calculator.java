@@ -1,4 +1,4 @@
-package t4_martin.coffeemachine.calculator;
+package t4_martin.calculator;
 
 import java.util.ArrayList;
 import java.util.List;
