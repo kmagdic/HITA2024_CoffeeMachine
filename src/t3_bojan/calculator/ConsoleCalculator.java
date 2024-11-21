@@ -9,7 +9,7 @@ public class ConsoleCalculator {
 
     public static void main(String[] args) {
 
-        Calculator activeCalculator = new Calculator();
+        Calculator activeCalculator = null;
         Calculator basecalculator = new Calculator();
         Calculator advancedcalculator = new AdvancedCalculator();
 
