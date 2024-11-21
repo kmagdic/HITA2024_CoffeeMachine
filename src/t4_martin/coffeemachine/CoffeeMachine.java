@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class CoffeeMachine {
@@ -19,6 +21,8 @@ public class CoffeeMachine {
     private String adminUsername = "admin";
     private String adminPassword = "admin12345";
     private String statusFileName = "src/t4_martin/docs/coffee_machine_status.txt";
+
+    public CoffeeMachine(){}
 
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
@@ -74,10 +78,11 @@ public class CoffeeMachine {
             this.coffeeBeans -= coffeeType.getCoffeeBeansNeeded();
             this.cups -= 1;
             this.money += coffeeType.getPrice();
-
+            log(coffeeType.getName(), "Bought");
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
+            log(coffeeType.getName(), "Not bought, not enough ingredients: " + missing);
             return "Sorry, not enough " + missing + "\n";
         }
     }
@@ -203,5 +208,21 @@ public class CoffeeMachine {
             return true;
         }else return false;
     }
+
+    private LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    String formattedNow = now.format(formatter);
+    private String log = "";
+    public void log(String coffeeType, String action){
+        log = log + formattedNow + " Coffee type: " +  coffeeType + " action: " + action;
+    }
+
+    public void printLog(){
+        System.out.println(log);
+    }
+
+
+
+
 
 }
