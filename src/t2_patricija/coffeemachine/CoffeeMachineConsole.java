@@ -119,6 +119,7 @@ public class CoffeeMachineConsole {
                         machine.setAdminPassword(password);
                         System.out.println("Password is changed");
                     }
+                    break;
 
                 case "exit":
                     break;
