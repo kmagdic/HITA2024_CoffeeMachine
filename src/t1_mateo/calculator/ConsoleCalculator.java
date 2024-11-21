@@ -54,14 +54,36 @@ public class ConsoleCalculator {
     }
 
     public static void enterNumbersAndOperation (Calculator calculator){
-        System.out.print("Num1: ");
-        double a = scanner.nextDouble();
-        calculator.setA(a);
-        System.out.print("Enter operation: ");
-        String operation = scanner.next();
-        calculator.setOperation(operation);
-        System.out.print("Num2: ");
-        double b = scanner.nextDouble();
-        calculator.setB(b);
+        boolean validInput = false;
+
+        while (!validInput) {
+            try {
+                System.out.print("Num1: ");
+                double a = scanner.nextDouble();
+                int intA = (int) a;
+                if (String.valueOf(intA).length() > 7) {
+                    throw new InputTooLongException("Number is too long.");
+                }
+                calculator.setA(a);
+                System.out.print("Enter operation: ");
+                String operation = scanner.next();
+                calculator.setOperation(operation);
+                System.out.print("Num2: ");
+                double b = scanner.nextDouble();
+                int intB = (int) b;
+                if (String.valueOf(intB).length() > 7) {
+                    throw new InputTooLongException("Number is too long.");
+                }
+                calculator.setB(b);
+                validInput = true;
+            } catch (Exception e) {
+                System.out.println("Došlo je do greške: " + e);
+                scanner.nextLine();
+                validInput = false;
+            }
+        }
+
+
+
     }
 }

@@ -1,9 +1,6 @@
 package t4_martin.coffeemachine;
 
 
-
-
-
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
@@ -18,7 +15,7 @@ public class CoffeeMachineConsole {
 
     void run() {
         CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
+        System.out.println("Welcome to Coffee Machine 2.0o");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {
@@ -81,7 +78,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, exit):");
+            System.out.println("Write action (fill, remaining, take, password, log, exit):");
             ch = sc.next();
 
             switch (ch) {
@@ -110,6 +107,14 @@ public class CoffeeMachineConsole {
                     System.out.println(machine.getCups() + " cups");
                     System.out.println("$" + machine.getMoney() + " of money");
                     break;
+
+                case "password":
+                    System.out.println("Enter new password");
+                    String password = sc.next();
+                    machine.changePassword(password);
+
+                case "log":
+                    machine.printLog();
 
                 case "exit":
                     break;

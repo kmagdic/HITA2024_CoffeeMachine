@@ -1,4 +1,4 @@
-package t4_martin.coffeemachine.calculator;
+package t4_martin.calculator;
 
 
 public class AdvancedCalculator extends Calculator {

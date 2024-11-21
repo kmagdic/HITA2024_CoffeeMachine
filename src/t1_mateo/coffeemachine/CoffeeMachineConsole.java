@@ -1,10 +1,5 @@
 package t1_mateo.coffeemachine;
 
-
-
-import _karlo_dragan.coffeemachine.CoffeeMachine;
-import _karlo_dragan.coffeemachine.CoffeeType;
-
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
@@ -19,7 +14,7 @@ public class CoffeeMachineConsole {
 
     void run() {
         CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
+        System.out.println("Welcome to Coffee Machine 1.0 version by Mateo");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {
@@ -81,7 +76,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, exit):");
+            System.out.println("Write action (fill, remaining, take, password, log, exit):");
             ch = sc.next();
 
             switch (ch) {
@@ -110,6 +105,21 @@ public class CoffeeMachineConsole {
                     System.out.println(machine.getCups() + " cups");
                     System.out.println("$" + machine.getMoney() + " of money");
                     break;
+
+                case "password":
+                    while (true) {
+                        System.out.println("Enter new admin password: ");
+                        String password = sc.next();
+                        if (machine.checkPassword(password)) {
+                            machine.changePassword(password);
+                            System.out.println("Password is changed!");
+                            break;
+                        } else {
+                            System.out.println("Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.");
+                        }
+                    }
+
+
 
                 case "exit":
                     break;
