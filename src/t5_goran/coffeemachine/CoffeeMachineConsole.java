@@ -1,15 +1,11 @@
 package t5_goran.coffeemachine;
 
-
-//import _karlo_dragan.coffeemachine.CoffeeMachine;
-//import _karlo_dragan.coffeemachine.CoffeeType;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
 
-    Scanner sc = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
 
     public static void main(String[] args) {
@@ -30,7 +26,7 @@ public class CoffeeMachineConsole {
 
         while (!action.equals("exit")) {
             System.out.println("Write action (buy, login, exit): ");
-            action = sc.next();
+            action = scanner.next();
             switch (action) {
                 case "buy":
                     buyAction(machine);
@@ -53,9 +49,9 @@ public class CoffeeMachineConsole {
 
     private void login(CoffeeMachine machine) {
         System.out.println("Enter username: ");
-        String username = sc.next();
+        String username = scanner.next();
         System.out.println("Enter password: ");
-        String password = sc.next();
+        String password = scanner.next();
 
         if (machine.login(username, password)) {
             adminMenu(machine);
@@ -72,7 +68,7 @@ public class CoffeeMachineConsole {
         }
         System.out.println("Enter your choice: ");
 
-        int typeOfCoffeeChoice = sc.nextInt();
+        int typeOfCoffeeChoice = scanner.nextInt();
         if (typeOfCoffeeChoice > 0 && typeOfCoffeeChoice <= coffeeTypes.size()) {
             String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
             System.out.println(msg);
@@ -87,7 +83,7 @@ public class CoffeeMachineConsole {
         while (!ch.equals("exit")) {
             System.out.println(" ");
             System.out.println("Write action (fill, remaining, take, password, exit):");
-            ch = sc.next();
+            ch = scanner.next();
 
             switch (ch) {
                 case "fill":
@@ -118,13 +114,13 @@ public class CoffeeMachineConsole {
 
     private void fill(CoffeeMachine machine) {
         System.out.println("Write how many ml of water you want to add:");
-        int water = sc.nextInt();
+        int water = scanner.nextInt();
         System.out.println("Write how many ml of milk you want to add:");
-        int milk = sc.nextInt();
+        int milk = scanner.nextInt();
         System.out.println("Write how many grams of coffee beans you want to add:");
-        int coffeeBeans = sc.nextInt();
+        int coffeeBeans = scanner.nextInt();
         System.out.println("Write how many disposable cups you want to add:");
-        int cups = sc.nextInt();
+        int cups = scanner.nextInt();
         machine.fill(water, milk, coffeeBeans, cups);
     }
 
@@ -144,10 +140,10 @@ public class CoffeeMachineConsole {
 
     private void changeAdminPassword(CoffeeMachine machine) {
         System.out.println("Enter new admin password:");
-        String newPassword = sc.next();
+        String newPassword = scanner.next();
         while (!machine.changePassword(newPassword)) {
             System.out.println("Please enter stronger password! It has to be at least 7 characters and it needs to have at least one number.");
-            newPassword = sc.next();
+            newPassword = scanner.next();
         }
         System.out.println("Password is changed\n");
     }
