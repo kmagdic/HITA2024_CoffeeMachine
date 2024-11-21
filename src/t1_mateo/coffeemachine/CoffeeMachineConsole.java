@@ -1,5 +1,6 @@
 package t1_mateo.coffeemachine;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
@@ -13,7 +14,7 @@ public class CoffeeMachineConsole {
     }
 
     void run() {
-        CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
+        CoffeeMachineWithStatusInFile machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
         System.out.println("Welcome to Coffee Machine 1.0 version by Mateo");
         boolean startedSuccessfully = machine.start();
 
@@ -57,15 +58,15 @@ public class CoffeeMachineConsole {
 
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
-        CoffeeType[] coffeeTypes = machine.getCoffeeTypes();
-        for (int i = 0; i < machine.getCoffeeTypes().length; i++) {
-            System.out.println((i + 1) + " - " + coffeeTypes[i].getName());
+        List<CoffeeType> coffeeTypes = machine.getCoffeeTypes();
+        for (int i = 0; i < coffeeTypes.size(); i++) {
+            System.out.println((i + 1) + " - " + coffeeTypes.get(i).getName());
         }
         System.out.println("Enter your choice: ");
 
         int typeOfCoffeeChoice = sc.nextInt();
-        if (typeOfCoffeeChoice <= coffeeTypes.length) {
-            String msg = machine.buyCoffee(coffeeTypes[typeOfCoffeeChoice - 1]);
+        if (typeOfCoffeeChoice <= coffeeTypes.size()) {
+            String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
             System.out.println(msg);
         } else {
             System.out.println("Wrong enter\n");
@@ -87,7 +88,7 @@ public class CoffeeMachineConsole {
                     int milk = sc.nextInt();
                     System.out.println("Write how many grams of coffee beans you want to add:");
                     int coffeeBeans = sc.nextInt();
-                    System.out.println("\"Write how many disposable cups you want to add: ");
+                    System.out.println("Write how many disposable cups you want to add: ");
                     int cup = sc.nextInt();
                     machine.fill(water, milk, coffeeBeans, cup);
                     break;
@@ -118,6 +119,15 @@ public class CoffeeMachineConsole {
                             System.out.println("Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.");
                         }
                     }
+
+                case "log":
+                    System.out.println("Transaction log:");
+                    for (TransactionLog log: machine.getTransactionLogList()) {
+                        System.out.println(log.getRecord());
+                    }
+
+
+                    break;
 
 
 

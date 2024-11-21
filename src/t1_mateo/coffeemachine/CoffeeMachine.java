@@ -1,12 +1,7 @@
 package t1_mateo.coffeemachine;
 
-
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CoffeeMachine {
 
@@ -15,7 +10,13 @@ public class CoffeeMachine {
     private int coffeeBeans;
     private int cups;
     private float money;
-    private t1_mateo.coffeemachine.CoffeeType[] coffeeTypes = new t1_mateo.coffeemachine.CoffeeType[3];
+
+    private List<t1_mateo.coffeemachine.CoffeeType> coffeeTypes = new ArrayList<>();
+    private List<TransactionLog> transactionLogList = new ArrayList<>();
+
+    public List<TransactionLog> getTransactionLogList() {
+        return transactionLogList;
+    }
 
     private String adminUsername = "";
     private String adminPassword = "";
@@ -28,12 +29,12 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes[0] = new t1_mateo.coffeemachine.CoffeeType("Espresso", 350, 0,16,4);
-        coffeeTypes[1] = new t1_mateo.coffeemachine.CoffeeType("Latte",350, 75,20,7);
-        coffeeTypes[2] = new t1_mateo.coffeemachine.CoffeeType("Cappuccino",200, 100,12,6);
+        coffeeTypes.add(new CoffeeType("Espresso", 350, 0,16,4));
+        coffeeTypes.add(new CoffeeType("Latte",350, 75,20,7));
+        coffeeTypes.add(new CoffeeType("Cappuccino",200, 100,12,6));
     }
 
-    public t1_mateo.coffeemachine.CoffeeType[] getCoffeeTypes() {
+    public List<CoffeeType> getCoffeeTypes() {
         return coffeeTypes;
     }
 
@@ -57,7 +58,47 @@ public class CoffeeMachine {
         return money;
     }
 
-    public boolean hasEnoughResources(t1_mateo.coffeemachine.CoffeeType coffeeType){
+    public void setWater(int water) {
+        this.water = water;
+    }
+
+    public void setMilk(int milk) {
+        this.milk = milk;
+    }
+
+    public void setCoffeeBeans(int coffeeBeans) {
+        this.coffeeBeans = coffeeBeans;
+    }
+
+    public void setCups(int cups) {
+        this.cups = cups;
+    }
+
+    public void setMoney(float money) {
+        this.money = money;
+    }
+
+    public String getAdminUsername() {
+        return adminUsername;
+    }
+
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    public void setAdminUsername(String adminUsername) {
+        this.adminUsername = adminUsername;
+    }
+
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
+
+    public String getStatusFileName() {
+        return statusFileName;
+    }
+
+    public boolean hasEnoughResources(CoffeeType coffeeType){
         if (water >= coffeeType.getWaterNeeded() &&
                 milk >= coffeeType.getMilkNeeded() &&
                 coffeeBeans >= coffeeType.getCoffeeBeansNeeded() &&
@@ -67,7 +108,7 @@ public class CoffeeMachine {
             return false;
     }
 
-    public String buyCoffee(t1_mateo.coffeemachine.CoffeeType coffeeType){
+    public String buyCoffee(CoffeeType coffeeType){
         if (hasEnoughResources(coffeeType)) {
             this.water -= coffeeType.getWaterNeeded();
             this.milk -= coffeeType.getMilkNeeded();
@@ -75,9 +116,13 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
+            addTransactionToTransactionLog("coffee type: " + coffeeType.getName() + ", action: Bought");
+
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
+            addTransactionToTransactionLog("coffee type: " + coffeeType.getName() + ", action: Not bought, not enough ingredients: " + missing);
+
             return "Sorry, not enough " + missing + "\n";
         }
     }
@@ -119,7 +164,7 @@ public class CoffeeMachine {
             return false;
     }
 
-
+/*
     public boolean loadFromFile(String fileName)  {
         FileReader reader = null;
 
@@ -167,14 +212,13 @@ public class CoffeeMachine {
         }
     }
 
-
     public boolean start() {
         return loadFromFile(statusFileName);
     }
 
     public void stop() {
         saveToFile(statusFileName);
-    }
+    }*/
 
     public boolean checkPassword (String password) {
         if (password.length() < 7) {
@@ -193,6 +237,11 @@ public class CoffeeMachine {
 
     public void changePassword (String password) {
         adminPassword = password;
+    }
+
+    public void addTransactionToTransactionLog(String log) {
+        TransactionLog transactionLog = new TransactionLog(log);
+        transactionLogList.add(transactionLog);
     }
 
     @Override
