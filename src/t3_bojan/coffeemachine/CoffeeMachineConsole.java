@@ -17,8 +17,8 @@ public class CoffeeMachineConsole {
     }
 
     void run() {
-        CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
+        CoffeeMachineWithStatusInFile machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
+        System.out.println("Welcome to Coffee Machine 1.0 version by Bojan");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {
@@ -83,7 +83,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, password, exit):");
+            System.out.println("Write action (fill, remaining, take, password, log, exit):");
             ch = scanner.next();
 
             switch (ch) {
@@ -126,6 +126,10 @@ public class CoffeeMachineConsole {
                             }
                         } while (true);
                         break;
+
+                        case "log":
+                            machine.showLog();
+                            break;
 
                 case "exit":
                     break;
