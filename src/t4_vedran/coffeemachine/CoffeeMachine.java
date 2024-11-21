@@ -19,7 +19,7 @@ public class CoffeeMachine {
     private int coffeeBeans;
     private int cups;
     private float money;
-    private final CoffeeType[] coffeeTypes = new CoffeeType[3];
+    private final List<CoffeeType> coffeeTypes = new ArrayList<>();
 
     private String adminUsername = "admin";
     private static String adminPassword = "admin12345";
@@ -35,12 +35,12 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes[0] = new CoffeeType("Espresso", 350, 0, 16, 4);
-        coffeeTypes[1] = new CoffeeType("Latte", 350, 75, 20, 7);
-        coffeeTypes[2] = new CoffeeType("Capuccino", 200, 100, 12, 6);
+        coffeeTypes.add(new CoffeeType("Espresso", 350, 0,16,4));
+        coffeeTypes.add(new CoffeeType("Latte",350, 75,20,7));
+        coffeeTypes.add(new CoffeeType("Capuccino",200, 100,12,6));
     }
 
-    public CoffeeType[] getCoffeeTypes() {
+    public List<CoffeeType> getCoffeeTypes() {
         return coffeeTypes;
     }
 

@@ -9,6 +9,7 @@ public class Calculator {
     protected String operation;
 
     protected List<String> operationsList = new ArrayList<>();
+    protected final List<CalculationLog> operationLogList = new ArrayList<>();
 
     public Calculator() {
         operationsList.add("+");
@@ -29,26 +30,48 @@ public class Calculator {
         this.operation = operation;
     }
 
-    public double calculate(){
-        return switch (operation) {
-            case "+" -> a + b;
-            case "-" -> a - b;
-            case "*" -> a * b;
-            case "/" -> b == 0 ? Double.NaN : a / b;
-            default -> getZeroAndWrongOperation();
-        };
+    public double calculate() throws ArithmeticException {
+        double result = 0;
+
+        switch (operation) {
+            case "+":
+                result = a + b;
+                addRecordToHistoryList(a + " + " + b + " = " + result);
+                break;
+            case "-":
+                result = a - b;
+                addRecordToHistoryList(a + " - " + b + " = " + result);
+                break;
+            case "*":
+                result = a * b;
+                addRecordToHistoryList(a + " * " + b + " = " + result);
+                break;
+            case "/":
+                if (b != 0) {
+                    result = a / b;
+                    addRecordToHistoryList(a + " / " + b + " = " + result);
+                } else {
+                    throw new ArithmeticException();
+                }
+                break;
+        }
+        return result;
     }
 
-    private double getZeroAndWrongOperation() {
-        System.out.println("Wrong operation!");
-        return Double.NaN;
-    }
-
-    public void printOperations(String calculatorText){
+    public void printOperations(){
         String operations = "";
         for (String operation : operationsList) {
             operations += operation + " ";
         }
-        System.out.println(calculatorText + operations + "\n");
+        System.out.println(operations + "\n");
+    }
+
+    protected void addRecordToHistoryList(String inputLog) {
+        CalculationLog calculationLog = new CalculationLog(inputLog);
+        operationLogList.add(calculationLog);
+    }
+
+    public List<CalculationLog> getCalculationLog(){
+        return operationLogList;
     }
 }
