@@ -1,7 +1,5 @@
 package t2_patricija.coffeemachine;
 
-import _karlo_dragan.coffeemachine.CoffeeType;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,7 +13,7 @@ public class CoffeeMachine {
     private int coffeeBeans;
     private int cups;
     private float money;
-    private _karlo_dragan.coffeemachine.CoffeeType[] coffeeTypes = new _karlo_dragan.coffeemachine.CoffeeType[3];
+    private CoffeeType[] coffeeTypes = new CoffeeType[3];
 
     private String adminUsername = "admin";
     private String adminPassword = "admin12345";
@@ -28,12 +26,12 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes[0] = new _karlo_dragan.coffeemachine.CoffeeType("Espresso", 350, 0,16,4);
-        coffeeTypes[1] = new _karlo_dragan.coffeemachine.CoffeeType("Latte",350, 75,20,7);
-        coffeeTypes[2] = new _karlo_dragan.coffeemachine.CoffeeType("Capuccino",200, 100,12,6);
+        coffeeTypes[0] = new CoffeeType("Espresso", 350, 0,16,4);
+        coffeeTypes[1] = new CoffeeType("Latte",350, 75,20,7);
+        coffeeTypes[2] = new CoffeeType("Capuccino",200, 100,12,6);
     }
 
-    public _karlo_dragan.coffeemachine.CoffeeType[] getCoffeeTypes() {
+    public CoffeeType[] getCoffeeTypes() {
         return coffeeTypes;
     }
 
@@ -57,7 +55,7 @@ public class CoffeeMachine {
         return money;
     }
 
-    public boolean hasEnoughResources(_karlo_dragan.coffeemachine.CoffeeType coffeeType){
+    public boolean hasEnoughResources(CoffeeType coffeeType){
         if (water >= coffeeType.getWaterNeeded() &&
                 milk >= coffeeType.getMilkNeeded() &&
                 coffeeBeans >= coffeeType.getCoffeeBeansNeeded() &&
@@ -67,7 +65,7 @@ public class CoffeeMachine {
             return false;
     }
 
-    public String buyCoffee(_karlo_dragan.coffeemachine.CoffeeType coffeeType){
+    public String buyCoffee(CoffeeType coffeeType){
         if (hasEnoughResources(coffeeType)) {
             this.water -= coffeeType.getWaterNeeded();
             this.milk -= coffeeType.getMilkNeeded();
@@ -78,7 +76,7 @@ public class CoffeeMachine {
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
-            return "Sorry, not enough " + missing + "\n";
+            return "Sorry, not enough " + missing + "\n"; // ovo pokaže samo prvi resurs koji nedostaje, ne i oba ili više njih koji nedostaju
         }
     }
 
@@ -119,6 +117,13 @@ public class CoffeeMachine {
             return false;
     }
 
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
 
     public boolean loadFromFile(String fileName)  {
         FileReader reader = null;
@@ -186,6 +191,4 @@ public class CoffeeMachine {
                 ", money=" + money +
                 '}';
     }
-
-
 }

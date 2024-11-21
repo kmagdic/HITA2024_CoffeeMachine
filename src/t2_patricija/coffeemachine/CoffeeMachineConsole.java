@@ -1,9 +1,7 @@
 package t2_patricija.coffeemachine;
 
-
-
-import _karlo_dragan.coffeemachine.CoffeeMachine;
-import _karlo_dragan.coffeemachine.CoffeeType;
+//import _karlo_dragan.coffeemachine.CoffeeMachine;
+//import _karlo_dragan.coffeemachine.CoffeeType;
 
 import java.util.Scanner;
 
@@ -12,7 +10,7 @@ public class CoffeeMachineConsole {
     Scanner sc = new Scanner(System.in);
 
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         CoffeeMachineConsole console = new CoffeeMachineConsole();
         console.run();
     }
@@ -22,7 +20,7 @@ public class CoffeeMachineConsole {
         System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
         boolean startedSuccessfully = machine.start();
 
-        if(!startedSuccessfully) {
+        if (!startedSuccessfully) {
             System.out.println("Coffee machine started but without file. Using default values.");
         }
 
@@ -81,7 +79,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, exit):");
+            System.out.println("Write action (fill, remaining, take, password, exit):");
             ch = sc.next();
 
             switch (ch) {
@@ -106,10 +104,21 @@ public class CoffeeMachineConsole {
                     System.out.println("The coffee machine has:");
                     System.out.println(machine.getWater() + " ml of water");
                     System.out.println(machine.getMilk() + " ml of milk");
-                    System.out.println(machine.getCoffeeBeans() + " g of water");
+                    System.out.println(machine.getCoffeeBeans() + " g of coffee beans");
                     System.out.println(machine.getCups() + " cups");
                     System.out.println("$" + machine.getMoney() + " of money");
                     break;
+
+                case "password":
+                    System.out.println("Enter new admin password:");
+                    String password = sc.next();
+                    boolean containsNumber = password.matches(".*\\d.*");
+                    if (password.length() < 7 && !(containsNumber)) {
+                        System.out.println("Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.");
+                    } else {
+                        machine.setAdminPassword(password);
+                        System.out.println("Password is changed");
+                    }
 
                 case "exit":
                     break;
@@ -117,7 +126,4 @@ public class CoffeeMachineConsole {
             }
         }
     }
-
-
-
 }
