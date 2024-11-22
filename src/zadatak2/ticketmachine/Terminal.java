@@ -1,4 +1,4 @@
-package TicketMachine;
+package zadatak2.ticketmachine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,14 +6,14 @@ import java.util.List;
 public class Terminal {
     String name;
     String address;
-    private final List<TicketMachine.Ticket> tickets;
+    private final List<Ticket> tickets;
 
     public Terminal() {
         this.tickets = new ArrayList<>();
     }
 
-    public TicketMachine.Ticket issueTicket(String type, double price) {
-        TicketMachine.Ticket ticket = new TicketMachine.Ticket();
+    public Ticket issueTicket(String type, double price) {
+        Ticket ticket = new Ticket();
         ticket.type = type;
         ticket.price = price;
         ticket.terminal = this;
@@ -21,7 +21,7 @@ public class Terminal {
         return ticket;
     }
 
-    public List<TicketMachine.Ticket> getTickets() {
+    public List<Ticket> getTickets() {
         return tickets;
     }
 

@@ -1,4 +1,4 @@
-package TicketMachine;
+package zadatak2.ticketmachine;
 
 import java.util.List;
 import java.util.Scanner;

@@ -1,16 +1,10 @@
-package cofeemachinesvi.src._karlo_dragan.calculator;
+package _karlo_dragan.calculator;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdvancedCalculator extends Calculator {
-
-    private List<CalculationLog> calculationLogList = new ArrayList<>();
-
-    public List<CalculationLog> getHistoryLogList() {
-        return calculationLogList;
-    }
 
     public AdvancedCalculator() {
         operationsList.add("pow");
@@ -19,22 +13,23 @@ public class AdvancedCalculator extends Calculator {
 
     public double calculate() {
         double res = 0;
+
         if (operation.equals("pow")) {
             res = Math.pow(a, b);
-            addRecordToHiystoryList(a + " pow " + b + " = " + res);
-            return res;
         } else if (operation.equals("%")) {
             // program se dalje izvršava ako se dijeli s 0
-           try{
+            try {
                 res = (int) a % (int) b;
-           }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-            addRecordToHiystoryList(a + " % " + b + " = " + res);
-            return res;
         } else {
             return super.calculate();
         }
+
+        addRecordToHistoryList(a + " " + operation + " " + b + " = " + res);
+
+        return res;
     }
 
     public void printOperations() {
@@ -44,9 +39,6 @@ public class AdvancedCalculator extends Calculator {
         System.out.println();
     }
 
-    public void addRecordToHiystoryList(String res){
-        CalculationLog calculationLog = new CalculationLog(res);
-        calculationLogList.add(calculationLog);
-    }
+
 }
 

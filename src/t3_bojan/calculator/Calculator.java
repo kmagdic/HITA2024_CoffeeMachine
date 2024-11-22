@@ -1,15 +1,21 @@
 package t3_bojan.calculator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Calculator {
-    private double a;
-    private double b;
-    private String operation;
+    protected double a;
+    protected double b;
+    protected String operation;
 
-    private List<String> operationsList;
+    protected List<String> operationsList = new ArrayList<>();
+    protected final List<CalculationLog> operationLogList = new ArrayList<>();
 
     public Calculator() {
+        operationsList.add("+");
+        operationsList.add("-");
+        operationsList.add("/");
+        operationsList.add("*");
     }
 
     public void setA(double a) {
@@ -24,31 +30,48 @@ public class Calculator {
         this.operation = operation;
     }
 
-    public double calculate(){
+    public double calculate() throws ArithmeticException {
         double result = 0;
+
         switch (operation) {
             case "+":
                 result = a + b;
+                addRecordToHistoryList(a + " + " + b + " = " + result);
                 break;
             case "-":
                 result = a - b;
+                addRecordToHistoryList(a + " - " + b + " = " + result);
                 break;
             case "*":
                 result = a * b;
+                addRecordToHistoryList(a + " * " + b + " = " + result);
                 break;
             case "/":
-                if (b == 0) {
-                    System.out.println("Cannot divide by zero");
-                    return 0;
+                if (b != 0) {
+                    result = a / b;
+                    addRecordToHistoryList(a + " / " + b + " = " + result);
+                } else {
+                    throw new ArithmeticException();
                 }
-                result = a / b;
                 break;
-            default:
-                System.out.println("Wrong operation");
         }
         return result;
     }
-    public void printOperations(){
 
+    public void printOperations(){
+        String operations = "";
+        for (String operation : operationsList) {
+            operations += operation + " ";
+        }
+        System.out.println(operations + "\n");
+    }
+
+    protected void addRecordToHistoryList(String inputLog) {
+        CalculationLog calculationLog = new CalculationLog(inputLog);
+        operationLogList.add(calculationLog);
+    }
+
+    public List<CalculationLog> getCalculationLog(){
+        return operationLogList;
     }
 }
