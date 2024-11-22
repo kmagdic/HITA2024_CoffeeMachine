@@ -32,10 +32,6 @@ public class CoffeeMachineConsole {
             switch (action) {
                 case "buy":
                     buyAction(machine);
-
-                    for (TransactionLog h : machine.getHistoryLogList()) {
-                        System.out.println("Date/time: " + h.getRecord());
-                    }
                     break;
 
                 case "login":
@@ -83,7 +79,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, password, exit):");
+            System.out.println("Write action (fill, remaining, take, password, log, exit):");
             ch = sc.next();
 
             switch (ch) {
@@ -123,6 +119,12 @@ public class CoffeeMachineConsole {
                         machine.setAdminPassword(password);
                         System.out.println("Password is changed");
                     }
+
+                case "log":
+                    for (TransactionLog h : machine.getHistoryLogList()) {
+                        System.out.println("Date/time: " + h.getRecord());
+                    }
+                    break;
 
                 case "exit":
                     break;
