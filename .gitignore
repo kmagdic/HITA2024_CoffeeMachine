@@ -31,3 +31,12 @@ bin/
 ### Mac OS ###
 .DS_Store
 /.gradle/
+/build/
+
+
+/docs/**
+/.dbeaver
+/gradlew
+/gradlew.bat
+/gradle/wrapper/gradle-wrapper.jar
+/gradle/wrapper/gradle-wrapper.properties
