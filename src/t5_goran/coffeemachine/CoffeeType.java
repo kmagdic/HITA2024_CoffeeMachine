@@ -8,7 +8,6 @@ public class CoffeeType {
     private int price;
     private String name;
 
-
     public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
         this.milkNeeded = milkNeeded;
         this.waterNeeded = waterNeeded;
