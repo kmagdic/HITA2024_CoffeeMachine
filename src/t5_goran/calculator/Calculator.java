@@ -1,4 +1,4 @@
-package t5_goran.coffeemachine.calculator;
+package t5_goran.calculator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +8,7 @@ public class Calculator {
     protected double b;
     protected String operation;
     protected List<String> operationsList = new ArrayList<>();
-
     private List<CalculationLog> calculationLogList = new ArrayList<>();
-
-    public List<CalculationLog> getHistoryLogList() {
-        return calculationLogList;
-    }
 
     public Calculator() {
         operationsList.add("+");
@@ -35,7 +30,7 @@ public class Calculator {
     }
 
     public double calculate() {
-        double result = 0;
+        double result;
         switch (operation) {
             case "+":
                 result = a + b;
@@ -47,15 +42,15 @@ public class Calculator {
                 result = a * b;
                 break;
             case "/":
-                try {
-                    result = a / b;
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                if (b == 0) {
+                    throw new ArithmeticException("Division by zero is not allowed!");
                 }
+                result = a / b;
                 break;
             default:
-                System.out.println("Wrong operation");
+                throw new UnsupportedOperationException("Operation not supported: " + operation);
         }
+        addRecordToHistoryList(a + " " + operation + " " + b + " = " + result);
         return result;
     }
 
@@ -64,5 +59,16 @@ public class Calculator {
             System.out.print(operation + " ");
         }
         System.out.println();
+    }
+
+
+    public void addRecordToHistoryList(String res) {
+        CalculationLog calculationLog = new CalculationLog(res);
+        calculationLogList.add(calculationLog);
+    }
+
+
+    public List<CalculationLog> getHistoryLogList() {
+        return calculationLogList;
     }
 }

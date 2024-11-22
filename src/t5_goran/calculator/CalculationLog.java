@@ -1,4 +1,4 @@
-package t5_goran.coffeemachine.calculator;
+package t5_goran.calculator;
 
 public class CalculationLog {
     private String record;
@@ -6,9 +6,11 @@ public class CalculationLog {
     public String getRecord() {
         return record;
     }
+
     public CalculationLog(String record) {
         this.record = record;
     }
+
     public String toString() {
         return "History: " + record;
     }

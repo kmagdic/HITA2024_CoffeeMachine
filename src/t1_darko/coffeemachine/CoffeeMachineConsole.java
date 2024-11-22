@@ -1,11 +1,9 @@
 package t1_darko.coffeemachine;
 
-
-
+import java.util.List;
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
-
     Scanner sc = new Scanner(System.in);
 
 
@@ -15,8 +13,8 @@ public class CoffeeMachineConsole {
     }
 
     void run() {
-        CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
+        CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
+        System.out.println("Welcome to Coffee Machine 1.0 with status ins file");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {
@@ -59,15 +57,15 @@ public class CoffeeMachineConsole {
 
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
-        CoffeeType[] coffeeTypes = machine.getCoffeeTypes();
-        for (int i = 0; i < machine.getCoffeeTypes().length; i++) {
-            System.out.println((i + 1) + " - " + coffeeTypes[i].getName());
+        List<CoffeeType> coffeeTypes = machine.getCoffeeTypes();
+        for (int i = 0; i < machine.getCoffeeTypes().size(); i++) {
+            System.out.println((i + 1) + " - " + coffeeTypes.get(i).getName());
         }
         System.out.println("Enter your choice: ");
 
         int typeOfCoffeeChoice = sc.nextInt();
-        if (typeOfCoffeeChoice <= coffeeTypes.length) {
-            String msg = machine.buyCoffee(coffeeTypes[typeOfCoffeeChoice - 1]);
+        if (typeOfCoffeeChoice <= coffeeTypes.size()) {
+            String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
             System.out.println(msg);
         } else {
             System.out.println("Wrong enter\n");
@@ -78,7 +76,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, exit):");
+            System.out.println("Write action (fill, remaining, take, password, log, exit):");
             ch = sc.next();
 
             switch (ch) {
@@ -108,13 +106,30 @@ public class CoffeeMachineConsole {
                     System.out.println("$" + machine.getMoney() + " of money");
                     break;
 
+                case "password":
+                    while (true) {
+                        System.out.println("Enter new admin password:");
+                        String newPassword = sc.next();
+                        if (machine.validateNewAdminPassword(newPassword)) {
+                            System.out.println(machine.changePassword(newPassword));
+                            break;
+                        } else {
+                            System.out.println("Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.");
+                        }
+                    }
+                    break;
+
+                case "log":
+                    System.out.println("Transaction log:");
+                    for (Transaction t: machine.getTransactionLog()){
+                        System.out.println(t.toFormattedString());
+                    }
+                    break;
+
                 case "exit":
                     break;
 
             }
         }
     }
-
-
-
 }
