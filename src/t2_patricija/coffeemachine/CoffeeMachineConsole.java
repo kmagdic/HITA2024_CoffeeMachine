@@ -32,6 +32,10 @@ public class CoffeeMachineConsole {
             switch (action) {
                 case "buy":
                     buyAction(machine);
+
+                    for (TransactionLog h : machine.getHistoryLogList()) {
+                        System.out.println("Date/time: " + h.getRecord());
+                    }
                     break;
 
                 case "login":
@@ -119,7 +123,6 @@ public class CoffeeMachineConsole {
                         machine.setAdminPassword(password);
                         System.out.println("Password is changed");
                     }
-                    break;
 
                 case "exit":
                     break;
