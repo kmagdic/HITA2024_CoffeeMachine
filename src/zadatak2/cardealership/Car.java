@@ -4,6 +4,30 @@ public class Car {
     String carName;
     String carType;
     int yearOfProduction;
+    int ID;
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
+    }
+
+    public void setCarType(String carType) {
+        this.carType = carType;
+    }
+
+    public void setYearOfProduction(int yearOfProduction) {
+        this.yearOfProduction = yearOfProduction;
+    }
+
+    public Car() {
+    }
 
     public Car(String carName, String carType, int yearOfProduction) {
         this.carName = carName;
