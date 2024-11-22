@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
 
+    private String statusFileName = "docs/coffee_machine_status_mateo.txt";
 
     public CoffeeMachineWithStatusInFile(int water, int milk, int coffeeBeans, int cups, float money) {
         super(water, milk, coffeeBeans, cups, money);
@@ -59,11 +60,11 @@ public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
     }
 
     public boolean start() {
-        return loadFromFile(getStatusFileName());
+        return loadFromFile(statusFileName);
     }
 
     public void stop() {
-        saveToFile(getStatusFileName());
+        saveToFile(statusFileName);
     }
 
 }
