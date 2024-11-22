@@ -10,6 +10,7 @@ public class Calculator {
     private String operation;
     protected List<String> operationList = new ArrayList<>();
 
+
     public Calculator() {
         operationList.add("+");
         operationList.add("-");
@@ -67,4 +68,5 @@ public class Calculator {
         System.out.println();
         System.out.println();
     }
+
 }
