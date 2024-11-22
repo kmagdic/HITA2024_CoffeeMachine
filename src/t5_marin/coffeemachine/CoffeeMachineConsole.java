@@ -1,8 +1,5 @@
 package t5_marin.coffeemachine;
 
-import t5_marin.coffeemachine.CoffeeMachine;
-import t5_marin.coffeemachine.CoffeeType;
-
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
@@ -77,7 +74,7 @@ public class CoffeeMachineConsole {
     private void adminMenu(CoffeeMachine machine) {
         String ch = "";
         while (!ch.equals("exit")) {
-            System.out.println("\nWrite action (fill, remaining, take, password, exit):");
+            System.out.println("\nWrite action (fill, remaining, take, password, log, exit):");
             ch = sc.next();
 
             switch (ch) {
@@ -120,6 +117,13 @@ public class CoffeeMachineConsole {
                         } else {
                             System.out.println("Please enter stronger password! It has to be at least 7 characters and it needs to have at least one number.");
                         }
+                    }
+                    break;
+
+                case "log":
+                    System.out.println("Transaction log:");
+                    for (String logEntry : machine.getTransactionLog()) {
+                        System.out.println(logEntry);
                     }
                     break;
 

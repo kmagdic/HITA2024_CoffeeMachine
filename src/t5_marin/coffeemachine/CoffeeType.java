@@ -1,38 +1,37 @@
 package t5_marin.coffeemachine;
 
 public class CoffeeType {
+    private final String name;
+    private final int waterNeeded;
+    private final int milkNeeded;
+    private final int coffeeBeansNeeded;
+    private final float price;
 
-    private int milkNeeded;
-    private int waterNeeded;
-    private int coffeeBeansNeeded;
-    private int price;
-    private String name;
-
-    public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
-        this.milkNeeded = milkNeeded;
+    public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, float price) {
+        this.name = name;
         this.waterNeeded = waterNeeded;
+        this.milkNeeded = milkNeeded;
         this.coffeeBeansNeeded = coffeeBeansNeeded;
         this.price = price;
-        this.name = name;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getPrice() {
-        return price;
+    public int getWaterNeeded() {
+        return waterNeeded;
     }
 
     public int getMilkNeeded() {
         return milkNeeded;
     }
 
-    public int getWaterNeeded() {
-        return waterNeeded;
-    }
-
     public int getCoffeeBeansNeeded() {
         return coffeeBeansNeeded;
+    }
+
+    public float getPrice() {
+        return price;
     }
 }

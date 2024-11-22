@@ -1,10 +1,8 @@
 package t5_marin.coffeemachine;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CoffeeMachine {
 
@@ -14,10 +12,10 @@ public class CoffeeMachine {
     private int cups;
     private float money;
     private CoffeeType[] coffeeTypes = new CoffeeType[3];
-
     private String adminUsername = "admin";
     private String adminPassword = "admin12345";
     private String statusFileName = "docs/coffee_machine_status.txt";
+    private List<String> transactionLog = new ArrayList<>();  // Transaction log to store all actions
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
@@ -25,7 +23,6 @@ public class CoffeeMachine {
         this.coffeeBeans = coffeeBeans;
         this.cups = cups;
         this.money = money;
-
         coffeeTypes[0] = new CoffeeType("Espresso", 350, 0, 16, 4);
         coffeeTypes[1] = new CoffeeType("Latte", 350, 75, 20, 7);
         coffeeTypes[2] = new CoffeeType("Cappuccino", 200, 100, 12, 6);
@@ -63,6 +60,7 @@ public class CoffeeMachine {
     }
 
     public String buyCoffee(CoffeeType coffeeType) {
+        String resultMessage;
         if (hasEnoughResources(coffeeType)) {
             this.water -= coffeeType.getWaterNeeded();
             this.milk -= coffeeType.getMilkNeeded();
@@ -70,10 +68,23 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
-            return "I have enough resources, making you " + coffeeType.getName() + "\n";
+            resultMessage = "I have enough resources, making you " + coffeeType.getName() + "\n";
+            logTransaction(coffeeType.getName(), "Bought");
         } else {
-            return "Sorry, not enough " + calculateWhichIngredientIsMissing(coffeeType) + "\n";
+            resultMessage = "Sorry, not enough " + calculateWhichIngredientIsMissing(coffeeType) + "\n";
+            logTransaction(coffeeType.getName(), "Not bought, no enough ingredients: " + calculateWhichIngredientIsMissing(coffeeType));
         }
+        return resultMessage;
+    }
+
+    private void logTransaction(String coffeeName, String action) {
+        String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
+        String logEntry = "Date/time: " + timeStamp + ", coffee type: " + coffeeName + ", action: " + action;
+        transactionLog.add(logEntry);
+    }
+
+    public List<String> getTransactionLog() {
+        return transactionLog;
     }
 
     public float takeMoney() {
@@ -133,7 +144,6 @@ public class CoffeeMachine {
         }
     }
 
-
     public void saveToFile(String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
             writer.write(water + "; " + milk + "; " + coffeeBeans + "; " + cups + "; " + money);
@@ -150,6 +160,17 @@ public class CoffeeMachine {
 
     public void stop() {
         saveToFile(statusFileName);
+        saveTransactionLogToFile("docs/transaction_log.txt"); // Save transaction log to file
+    }
+
+    private void saveTransactionLogToFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (String logEntry : transactionLog) {
+                writer.write(logEntry + "\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving transaction log: " + e.getMessage());
+        }
     }
 
     @Override
