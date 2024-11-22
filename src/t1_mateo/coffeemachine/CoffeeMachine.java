@@ -20,7 +20,7 @@ public class CoffeeMachine {
 
     private String adminUsername = "";
     private String adminPassword = "";
-    private String statusFileName = "docs/coffee_machine_status.txt";
+
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
@@ -94,9 +94,6 @@ public class CoffeeMachine {
         this.adminPassword = adminPassword;
     }
 
-    public String getStatusFileName() {
-        return statusFileName;
-    }
 
     public boolean hasEnoughResources(CoffeeType coffeeType){
         if (water >= coffeeType.getWaterNeeded() &&
@@ -211,14 +208,13 @@ public class CoffeeMachine {
             throw new RuntimeException(e);
         }
     }
-
+*/
     public boolean start() {
-        return loadFromFile(statusFileName);
+        return false;
     }
 
     public void stop() {
-        saveToFile(statusFileName);
-    }*/
+    }
 
     public boolean checkPassword (String password) {
         if (password.length() < 7) {

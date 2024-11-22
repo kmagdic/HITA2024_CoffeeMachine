@@ -1,4 +1,4 @@
-package t1_mateo.coffeemachine;
+package t4_vedran.coffeemachine;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -6,15 +6,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
-
-    private String statusFileName = "docs/coffee_machine_status_mateo.txt";
-
+public class CoffeeMachineWithStatusInFile extends CoffeeMachine {
     public CoffeeMachineWithStatusInFile(int water, int milk, int coffeeBeans, int cups, float money) {
         super(water, milk, coffeeBeans, cups, money);
     }
 
-    public boolean loadFromFile(String fileName)  {
+    public boolean start() {
+        return loadFromFile(statusFileName);
+    }
+
+    public void stop() {
+        saveToFile(statusFileName);
+    }
+
+    private boolean loadFromFile(String fileName)  {
         FileReader reader = null;
 
         try {
@@ -31,25 +36,25 @@ public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
 
         fileScanner.useDelimiter("; |\n"); // delimiter is "; " or "\n" (for the last value)
 
-        super.setWater(fileScanner.nextInt());
-        super.setMilk(fileScanner.nextInt());
-        super.setCoffeeBeans(fileScanner.nextInt());
-        super.setCups(fileScanner.nextInt());
-        super.setMoney(Float.parseFloat(fileScanner.next()));
+        water = fileScanner.nextInt();
+        milk = fileScanner.nextInt();
+        coffeeBeans = fileScanner.nextInt();
+        cups = fileScanner.nextInt();
+        money = Float.parseFloat(fileScanner.next());
 
-        super.setAdminUsername(fileScanner.next());
-        super.setAdminPassword((fileScanner.next().trim()));
+        adminUsername = fileScanner.next();
+        adminPassword = (fileScanner.next()).trim();
 
         return true;
     }
 
-    public void saveToFile(String fileName){
+    private void saveToFile(String fileName){
         try {
             FileWriter writer = new FileWriter(fileName);
 
-            writer.write(super.getWater() + "; " +  super.getMilk() + "; " + super.getCoffeeBeans() + "; " + super.getCups() + "; " + super.getMoney());
+            writer.write(water + "; " +  milk + "; " + coffeeBeans + "; " + cups + "; " + money);
             writer.write("\n");
-            writer.write(super.getAdminUsername() + "; " + super.getAdminPassword());
+            writer.write(adminUsername + "; " + adminPassword);
             writer.write("\n");
 
             writer.close();
@@ -58,13 +63,4 @@ public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
             throw new RuntimeException(e);
         }
     }
-
-    public boolean start() {
-        return loadFromFile(statusFileName);
-    }
-
-    public void stop() {
-        saveToFile(statusFileName);
-    }
-
 }
