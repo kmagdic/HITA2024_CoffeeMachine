@@ -15,11 +15,13 @@ public class StudentManagerSimpleMain {
         connection = makeDBConnection("docs/testkarlo");
         createTable();
 
-        insertStudent(student);
+        connection = null;
+        // insertStudent(student);
 
-       /* List<Student> students = getList();
+        List<Student> students = getList();
+        student = null;
         System.out.println("Students in DB: " + students);
-        */
+
         System.out.println("Saved!");
     }
 
