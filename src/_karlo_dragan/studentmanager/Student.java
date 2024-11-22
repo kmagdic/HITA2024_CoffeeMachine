@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
+    private int id;
     private String firstName;
     private String lastName;
     private String oib;
@@ -37,8 +38,16 @@ public class Student {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getUsername() {
@@ -59,6 +68,17 @@ public class Student {
         return oib;
     }
 
+    public void setOib(String oib) {
+        this.oib = oib;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
