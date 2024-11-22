@@ -150,4 +150,12 @@ public class CoffeeMachine {
             System.out.println(line);
         }
     }
+
+
+    public void stop() {
+    }
+
+    public boolean start() {
+        return true;
+    }
 }

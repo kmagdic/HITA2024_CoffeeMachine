@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
+public class CoffeeMachineWithStatusInFile extends CoffeeMachine {
     public CoffeeMachineWithStatusInFile(int water, int milk, int coffeeBeans, int cups, float money) {
         super(water, milk, coffeeBeans, cups, money);
     }
@@ -19,7 +19,7 @@ public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
         saveToFile(statusFileName);
     }
 
-    public boolean loadFromFile(String fileName)  {
+    private boolean loadFromFile(String fileName)  {
         FileReader reader = null;
 
         try {
@@ -48,7 +48,7 @@ public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
         return true;
     }
 
-    public void saveToFile(String fileName){
+    private void saveToFile(String fileName){
         try {
             FileWriter writer = new FileWriter(fileName);
 
