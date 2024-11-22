@@ -1,12 +1,11 @@
 package t5_goran.coffeemachine;
 
-//import _karlo_dragan.coffeemachine.CoffeeType;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -40,10 +39,6 @@ public class CoffeeMachine {
         return coffeeTypes;
     }
 
-    public CoffeeType[] getCoffeeTypesAsArray() {
-        return coffeeTypes.toArray(new CoffeeType[0]);
-    }
-
     public int getWater() {
         return water;
     }
@@ -60,7 +55,7 @@ public class CoffeeMachine {
         return cups;
     }
 
-    public double getMoney() {
+    public float getMoney() {
         return money;
     }
 
@@ -86,12 +81,14 @@ public class CoffeeMachine {
             result = "Sorry, not enough " + missing;
             logTransaction(coffeeType.getName(), "Not bought", missing);
         }
-        return result + "\n";
+        return result;
     }
 
-
     public void logTransaction(String coffeeType, String action, String reason) {
-        String timestamp = LocalDateTime.now().toString();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        String timestamp = LocalDateTime.now().format(formatter);
+
         if (reason == null) {
             transactionLog.add("Date/time: " + timestamp + ", coffee type: " + coffeeType + ", action: " + action);
         } else {
@@ -99,18 +96,13 @@ public class CoffeeMachine {
         }
     }
 
+
     public void printTransactionLog() {
         System.out.println("Transaction log:");
         for (String entry : transactionLog) {
             System.out.println(entry);
         }
         System.out.println();
-    }
-
-    public float takeMoney() {
-        float moneyReturn = money;
-        money = 0;
-        return moneyReturn;
     }
 
     public String calculateWhichIngredientIsMissing(CoffeeType coffeeType) {
@@ -135,6 +127,7 @@ public class CoffeeMachine {
     public boolean changePassword(String newPassword) {
         if (newPassword.length() >= 7 && newPassword.matches(".*\\d.*")) {
             adminPassword = newPassword;
+            saveToFile(statusFileName);
             return true;
         }
         return false;
@@ -206,6 +199,4 @@ public class CoffeeMachine {
                 ", money=" + money +
                 '}';
     }
-
-
 }

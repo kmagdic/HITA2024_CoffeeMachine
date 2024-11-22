@@ -56,4 +56,5 @@ public class CoffeeType {
     public void setCoffeeBeansNeeded(int coffeeBeansNeeded) {
         this.coffeeBeansNeeded = coffeeBeansNeeded;
     }
+
 }
