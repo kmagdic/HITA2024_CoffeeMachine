@@ -128,7 +128,9 @@ public class CoffeeMachineConsole {
                         break;
 
                         case "log":
-                            machine.showLog();
+                            for (TransactionLog log : machine.getTransactionLogList()) {
+                                System.out.println(log);
+                            }
                             break;
 
                 case "exit":
