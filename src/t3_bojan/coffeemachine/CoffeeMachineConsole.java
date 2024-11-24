@@ -1,5 +1,6 @@
 package t3_bojan.coffeemachine;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,7 +10,7 @@ public class CoffeeMachineConsole {
     private final String  ADMIN_PASSWORD_CHANGE_MESSAGE = "Enter new admin password:";
     private final String  AdMIN_PASSWORD_CHANGED = "Password is changed";
     private final String  ADMIN_PASSWORD_CHANGE_MESSAGE_ERROR = "Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.";
-
+    private final DBManager dbManager = new DBManager();
 
     public static void main(String[] args)  {
         CoffeeMachineConsole console = new CoffeeMachineConsole();
@@ -72,7 +73,16 @@ public class CoffeeMachineConsole {
 
         int typeOfCoffeeChoice = scanner.nextInt();
         if (typeOfCoffeeChoice <= coffeeTypes.size()) {
-            String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
+
+            String msg;
+
+            try (Connection connection = dbManager.getConnection()) {
+
+                msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1), connection);
+
+            }catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             System.out.println(msg);
         } else {
             System.out.println("Wrong enter\n");
@@ -128,7 +138,7 @@ public class CoffeeMachineConsole {
                         break;
 
                         case "log":
-                            for (TransactionLog log : machine.getTransactionLogList()) {
+                            for (TransactionLog log : dbManager.getTransactionLogs()) {
                                 System.out.println(log);
                             }
                             break;
