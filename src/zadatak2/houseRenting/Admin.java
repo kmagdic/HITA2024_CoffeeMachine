@@ -5,37 +5,44 @@ import java.util.ArrayList;
 public class Admin {
     private final String username = "admin";
     private final String password = "admin";
-    private ArrayList<RentalAgency> agencies = new ArrayList<>();
+    private ArrayList<RentingObjects> rentingObjects = new ArrayList<>(); // Lista objekata za najam
 
+    // Metoda za prijavu
     public boolean login(String username, String password) {
         return this.username.equals(username) && this.password.equals(password);
     }
 
-    public void addAgency(String name, String address, String owner) {
-        RentalAgency agency = new RentalAgency(name, address, owner);
-        agencies.add(agency);
+    // Dodavanje novog objekta za najam
+    public void addRentingObject(RentingObjects rentingObject) {
+        rentingObjects.add(rentingObject);
+        System.out.println("Objekt '" + rentingObject.getName() + "' uspješno dodan.");
     }
 
-    public  boolean removeAgency(String name) {
-        for (RentalAgency agency : agencies) {
-            if (agency.getName().equalsIgnoreCase(name)) {
-                agencies.remove(agency);
+    // Brisanje objekta za najam prema nazivu
+    public boolean removeRentingObject(String name) {
+        for (RentingObjects object : rentingObjects) {
+            if (object.getName().equalsIgnoreCase(name)) {
+                rentingObjects.remove(object);
                 return true;
             }
         }
         return false;
     }
-    public ArrayList<RentalAgency> getAgencies() {
-        return agencies;
-    }
-    public void displayAgencies() {
-        if (agencies.isEmpty()) {
-            System.out.println("No rental agencies available.");
+
+    // Prikaz svih objekata za najam
+    public void displayRentingObjects() {
+        if (rentingObjects.isEmpty()) {
+            System.out.println("Nema dostupnih objekata za najam.");
         } else {
-            System.out.println("List of all rental agencies: ");
-            for (RentalAgency agency : agencies) {
-                System.out.println(agency);
+            System.out.println("Lista svih objekata za najam:");
+            for (RentingObjects object : rentingObjects) {
+                System.out.println(object);
             }
         }
+    }
+
+    // Getter za listu objekata (ako je potrebno eksterno koristiti)
+    public ArrayList<RentingObjects> getRentingObjects() {
+        return rentingObjects;
     }
 }
