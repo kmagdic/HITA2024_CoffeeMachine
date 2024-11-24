@@ -1,5 +1,7 @@
 package t3_bojan.coffeemachine;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,6 @@ public class CoffeeMachine {
     protected String adminPassword = "admin12345";
     protected String statusFileName = "src/t3_bojan/coffeemachine/coffee_machine_status.txt";
     private List<CoffeeType> coffeeTypes = new ArrayList<>();
-    private List<TransactionLog> transactionLogList = new ArrayList<>();
 
     private final String TRANSACTION_SUCCESS_ACTION = "Bought";
     private final String TRANSACTION_FAIL_ACTION = "Not Bought";
@@ -68,7 +69,7 @@ public class CoffeeMachine {
             return false;
     }
 
-    public String buyCoffee(CoffeeType coffeeType){
+    public String buyCoffee(CoffeeType coffeeType, Connection connection){
 
         if (hasEnoughResources(coffeeType)) {
             this.water -= coffeeType.getWaterNeeded();
@@ -77,17 +78,33 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
-            TransactionLog log = new TransactionLog(LocalDateTime.now(), coffeeType, TRANSACTION_SUCCESS_ACTION);
-            transactionLogList.add(log);
+            InsertTransactionLogToDB(connection, LocalDateTime.now(), coffeeType.getName(), TRANSACTION_SUCCESS_ACTION, null);
 
             return I_HAVE_ENOUGH_RESOURCES + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
 
-            TransactionLog log = new TransactionLog(LocalDateTime.now(), coffeeType, TRANSACTION_FAIL_ACTION, missing);
-            transactionLogList.add(log);
+            InsertTransactionLogToDB(connection, LocalDateTime.now(), coffeeType.getName(), TRANSACTION_FAIL_ACTION, missing);
 
             return I_DONT_HAVE_ENOUGH_RESOURCES + missing + "\n";
+        }
+    }
+
+    private void InsertTransactionLogToDB(Connection connection, LocalDateTime dateTime, String coffeeTypeName, String transactionAction, String missingIngredient) {
+
+        String insertSqlWithoutMissingIngredient = "INSERT INTO " + DBManager.TABLE_NAME + " (date_time, coffee_name, transaction_action) VALUES (?, ?, ?)";
+        String insertSqlWithMissingIngredient = "INSERT INTO " + DBManager.TABLE_NAME + " (date_time, coffee_name, transaction_action, missing_ingredient) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = connection; PreparedStatement stmt = conn.prepareStatement(missingIngredient == null ? insertSqlWithoutMissingIngredient : insertSqlWithMissingIngredient)) {
+            stmt.setTimestamp(1, java.sql.Timestamp.valueOf(dateTime));
+            stmt.setString(2, coffeeTypeName);
+            stmt.setString(3, transactionAction);
+            if (missingIngredient != null) {
+                stmt.setString(4, missingIngredient);
+            }
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -131,10 +148,6 @@ public class CoffeeMachine {
 
     public void changePassword(String newPassword) {
         adminPassword = newPassword;
-    }
-
-    public List<TransactionLog> getTransactionLogList() {
-        return transactionLogList;
     }
 
 
