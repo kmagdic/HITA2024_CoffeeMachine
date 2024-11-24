@@ -22,9 +22,6 @@ public class CoffeeMachine {
     protected static String adminPassword = "admin12345";
     protected String statusFileName = "docs/coffee_machine_status.txt";
 
-    // Lista za transakcije
-    private final List<Transaction> transactionLog = new ArrayList<>();
-
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
         this.milk = milk;
@@ -80,14 +77,12 @@ public class CoffeeMachine {
 
             // Spremi transakciju
             recordTransaction(coffeeType, "Bought");
-
             message = "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
 
             // Spremi transakciju kao neuspješnu
             recordTransaction(coffeeType, "Not bought, no enough ingredients: " + missing);
-
             message = "Sorry, not enough " + missing + "\n";
         }
         return message;
@@ -175,17 +170,11 @@ public class CoffeeMachine {
         return hasNumber;
     }
 
-    // Funkcija za spremanje transakcija u log
     private void recordTransaction(CoffeeType coffeeType, String action) {
         String currentDateTime = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
-        transactionLog.add(new Transaction(currentDateTime, coffeeType.getName(), action));
+
+        // Spremi transakciju u bazu podataka
+        TransactionDB.saveTransaction(currentDateTime, coffeeType.getName(), action);
     }
 
-    // Funkcija za ispis transakcija
-    public void printTransactionLog() {
-        System.out.println("Transaction log:");
-        for (Transaction transaction : transactionLog) {
-            System.out.println(transaction);
-        }
-    }
 }
