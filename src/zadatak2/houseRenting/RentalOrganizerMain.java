@@ -1,9 +1,56 @@
 package zadatak2.houseRenting;
 
-import java.util.Scanner;
+import zadatak2.houseRenting.Event;
+import zadatak2.houseRenting.RentingObjects;
+import zadatak2.houseRenting.HouseRentingRepository;
+import zadatak2.houseRenting.EventRepository;
+
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class RentalOrganizerMain {
+
     public static void main(String[] args) {
+        RentingObjects rentingObjects = new RentingObjects(1, "Draga", "Stan", 2020, "Standard", 100));
+        System.out.println(rentingObjects);
+
+        // Db setup
+        Connection connection = makeDBConnection("docs/houseRentingDB");
+        HouseRentingRepository houseRentingRepository = new HouseRentingRepository(connection);
+        EventRepository eventRepository = new EventRepository(connection);
+        houseRentingRepository.createTable();
+        eventRepository.createTable();
+
+
+        // students in db
+        houseRentingRepository.insertStudent(rentingObjects);
+        List<Student> students = houseRentingRepository.getList();
+        System.out.println("Students in DB: " + students);
+
+        // events in db
+        _karlo_dragan.studentmanager.Event e1 = new _karlo_dragan.studentmanager.Event(LocalDateTime.now(), rentingObjects, "Student sign in ");
+        _karlo_dragan.studentmanager.Event e2 = new Event(LocalDateTime.now(), rentingObjects, "Student sign out");
+        eventRepository.insert(e1);
+        eventRepository.insert(e2);
+        System.out.println("Events in DB: " + eventRepository.getList());
+
+        System.out.println("Saved!");
+
+    }
+
+    public static Connection makeDBConnection(String fileName) {
+        try {
+            return DriverManager.getConnection("jdbc:h2:./" + fileName);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
+    /* public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Admin admin = new Admin();
 
@@ -84,5 +131,5 @@ public class RentalOrganizerMain {
                     System.out.println("Nepoznata opcija. Pokušajte ponovo.");
             }
         }
-    }
+    }*/
 }

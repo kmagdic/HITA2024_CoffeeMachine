@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBMenager {
+public class HouseRentingRepository {
     static Connection connection;
 
     public static void main(String[] args) {
