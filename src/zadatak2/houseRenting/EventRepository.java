@@ -41,7 +41,7 @@ public class EventRepository {
 
     public void insert(Event e) {
 
-        String insertSql = "INSERT INTO events (rentingobject_id, date_time, event) VALUES (?, ?, ?)";
+        String insertSql = "INSERT INTO events (student_id, date_time, event) VALUES (?, ?, ?)";
 
         try {
             PreparedStatement ps = connection.prepareStatement(insertSql);
@@ -71,7 +71,7 @@ public class EventRepository {
                 e.setDatetime(rs.getTimestamp("date_time").toLocalDateTime());
 
                 RentingObjects s = new RentingObjects();
-                s.setId(rs.getInt("rentingobject_id"));
+                s.setId(rs.getInt("student_id"));
                 e.setRentingObjects(s);
 
                 e.setEvent(rs.getString("event"));
