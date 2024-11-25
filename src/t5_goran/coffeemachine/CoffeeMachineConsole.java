@@ -5,9 +5,10 @@ import java.util.Scanner;
 
 public class CoffeeMachineConsole {
 
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        DataManager.getInstance().createTable();
         CoffeeMachineConsole console = new CoffeeMachineConsole();
         console.run();
     }
@@ -15,44 +16,25 @@ public class CoffeeMachineConsole {
     void run() {
         CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
         System.out.println("Welcome to Coffee Machine 1.0 version by Goran");
-        boolean startedSuccessfully = machine.start();
-        if(!startedSuccessfully) {
-            System.out.println("Coffee machine started but without file. Using default values.");
-        }
 
         String action = "";
         while (!action.equals("exit")) {
             System.out.println("Write action (buy, login, exit): ");
             action = scanner.next();
+
             switch (action) {
                 case "buy":
                     buyAction(machine);
                     break;
-
                 case "login":
-                    login(machine);
+                    adminMenu(machine);
                     break;
-
                 case "exit":
                     System.out.println("Shutting down the machine. Bye!");
                     break;
-
                 default:
                     System.out.println("No such option");
             }
-        }
-    }
-
-    private void login(CoffeeMachine machine) {
-        System.out.println("Enter username: ");
-        String username = scanner.next();
-        System.out.println("Enter password: ");
-        String password = scanner.next();
-
-        if (machine.login(username, password)) {
-            adminMenu(machine);
-        } else {
-            System.out.println("Wrong username or password\n");
         }
     }
 
@@ -64,58 +46,57 @@ public class CoffeeMachineConsole {
         }
         System.out.println("Enter your choice: ");
 
-        int typeOfCoffeeChoice = scanner.nextInt();
-        if (typeOfCoffeeChoice > 0 && typeOfCoffeeChoice <= coffeeTypes.size()) {
-            String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
-            System.out.println(msg);
+        int choice = scanner.nextInt();
+        if (choice > 0 && choice <= coffeeTypes.size()) {
+            String message = machine.buyCoffee(coffeeTypes.get(choice - 1));
+            System.out.println(message);
         } else {
-            System.out.println("Wrong enter\n");
+            System.out.println("Invalid choice");
         }
     }
 
     private void adminMenu(CoffeeMachine machine) {
-        String ch = "";
-        while (!ch.equals("exit")) {
-            System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, password, log, exit):");
-            ch = scanner.next();
+        System.out.println("Enter username:");
+        String username = scanner.next();
+        System.out.println("Enter password:");
+        String password = scanner.next();
 
-            switch (ch) {
+        if (!machine.login(username, password)) {
+            System.out.println("Invalid login credentials!");
+            return;
+        }
+
+        String adminAction = "";
+        while (!adminAction.equals("exit")) {
+            System.out.println("Write action (fill, remaining, take, log, password, exit):");
+            adminAction = scanner.next();
+
+            switch (adminAction) {
                 case "fill":
-                    fill(machine);
+                    fillMachine(machine);
                     break;
-
-                case "take":
-                    take(machine);
-                    break;
-
                 case "remaining":
-                    remaining(machine);
+                    System.out.println(machine.remaining());
                     break;
-
-                case "password":
-                    changeAdminPassword(machine);
+                case "take":
+                    System.out.println("I gave you $" + machine.takeMoney());
                     break;
-
                 case "log":
-                    printTransactionLog(machine);
+                    viewTransactionLogs();
                     break;
-
+                case "password":
+                    changePassword(machine);
+                    break;
                 case "exit":
                     System.out.println("Exiting admin menu.");
                     break;
-
                 default:
-                    System.out.println("No such option");
+                    System.out.println("Invalid admin action!");
             }
         }
     }
 
-    private void printTransactionLog(CoffeeMachine machine) {
-        machine.printTransactionLog();
-    }
-
-    private void fill(CoffeeMachine machine) {
+    private void fillMachine(CoffeeMachine machine) {
         System.out.println("Write how many ml of water you want to add:");
         int water = scanner.nextInt();
         System.out.println("Write how many ml of milk you want to add:");
@@ -124,30 +105,27 @@ public class CoffeeMachineConsole {
         int coffeeBeans = scanner.nextInt();
         System.out.println("Write how many disposable cups you want to add:");
         int cups = scanner.nextInt();
+
         machine.fill(water, milk, coffeeBeans, cups);
     }
 
-    private static void take(CoffeeMachine machine) {
-        System.out.println("I gave you $" + machine.getMoney());
-        machine.fill(0, 0, 0, 0); // Reset money
+    private void viewTransactionLogs() {
+        System.out.println("Transaction Logs:");
+        DataManager.getInstance().getTransactions().forEach(log -> System.out.println(log.toFormattedString()));
     }
 
-    private static void remaining(CoffeeMachine machine) {
-        System.out.println("The coffee machine has:");
-        System.out.println(machine.getWater() + " ml of water");
-        System.out.println(machine.getMilk() + " ml of milk");
-        System.out.println(machine.getCoffeeBeans() + " g of coffee beans");
-        System.out.println(machine.getCups() + " cups");
-        System.out.println("$" + machine.getMoney() + " of money");
-    }
+    private void changePassword(CoffeeMachine machine) {
+        boolean isPasswordChanged = false;
 
-    private void changeAdminPassword(CoffeeMachine machine) {
-        System.out.println("Enter new admin password:");
-        String newPassword = scanner.next();
-        while (!machine.changePassword(newPassword)) {
-            System.out.println("Password must have at least 7 characters and 1 number.");
-            newPassword = scanner.next();
+        while (!isPasswordChanged) {
+            System.out.println("Enter new admin password:");
+            String newPassword = scanner.next();
+            if (machine.changePassword(newPassword)) {
+                isPasswordChanged = true;
+            } else {
+                System.out.println("Please enter a stronger password! It must be at least 7 characters long and include at least one number.");
+            }
         }
-        System.out.println("Password is changed.\n");
     }
 }
+
