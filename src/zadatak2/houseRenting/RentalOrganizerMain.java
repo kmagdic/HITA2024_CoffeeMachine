@@ -1,88 +1,53 @@
 package zadatak2.houseRenting;
 
-import java.util.Scanner;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class RentalOrganizerMain {
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Admin admin = new Admin();
+        // Create renting objects
+        RentingObjects rentingObject1 = new RentingObjects(1, "Beachside Villa", "House", 2015, "Luxury", 2500);
+        RentingObjects rentingObject2 = new RentingObjects(2, "Mountain Lodge", "House", 2018, "Standard", 3500);
 
-        // Admin login
-        System.out.print("Unesite korisničko ime: ");
-        String username = scanner.nextLine();
-        System.out.print("Unesite lozinku: ");
-        String password = scanner.nextLine();
+        System.out.println(rentingObject1);
+        System.out.println(rentingObject2);
 
-        if (!admin.login(username, password)) {
-            System.out.println("Pogrešno korisničko ime ili lozinka. Program se zatvara.");
-            return;
-        }
+        // Db setup
+        Connection connection = makeDBConnection("docs/houseRentingDB.mv.db");
+        HouseRentingRepository houseRentingRepository = new HouseRentingRepository(connection);
+        EventRepository eventRepository = new EventRepository(connection);
 
-        System.out.println("Uspješna prijava. Dobrodošli!");
+        // Create tables if they don't exist
+        houseRentingRepository.createTable();
+        eventRepository.createTable();
 
-        // Predefinisani objekti za najam
-        admin.addRentingObject(new RentingObjects(1, "Draga", "Stan", 2020, "Standard", 100));
-        admin.addRentingObject(new RentingObjects(2, "Marija", "Kuća", 2021, "Standard", 150));
-        admin.addRentingObject(new RentingObjects(3, "Kemper", "Vozilo", 2021, "Električni", 80));
-        admin.addRentingObject(new RentingObjects(4, "Vila Paradise", "Kuća", 2024, "Standard", 150));
-        admin.addRentingObject(new RentingObjects(5, "Adrijana", "Stan", 2024, "Standard", 180));
+        // Insert renting objects into DB
+        houseRentingRepository.insertHouse(rentingObject1);
+        houseRentingRepository.insertHouse(rentingObject2);
 
-        // Glavni meni za upravljanje objektima
-        while (true) {
-            System.out.println("\nOdaberite opciju:");
-            System.out.println("1. Prikaz svih objekata za najam");
-            System.out.println("2. Dodavanje novog objekta za najam");
-            System.out.println("3. Brisanje objekta za najam");
-            System.out.println("4. Izlaz");
+        // Insert events related to renting objects into DB
+        Event event1 = new Event(LocalDateTime.now(), rentingObject1, "Renting object rented to John Doe");
+        Event event2 = new Event(LocalDateTime.now().plusDays(1), rentingObject2, "Inspection of renting object scheduled");
+        eventRepository.insertEvent(event1);
+        eventRepository.insertEvent(event2);
 
-            int izbor = scanner.nextInt();
-            scanner.nextLine();
+        // Retrieve and print all renting objects and rental events
+        List<RentingObjects> rentingObjects = houseRentingRepository.getHouses();
+        System.out.println("Renting objects available: " + rentingObjects);
 
-            switch (izbor) {
-                case 1:
-                    // Prikaz svih objekata za najam
-                    admin.displayRentingObjects();
-                    break;
+        List<Event> events = eventRepository.getEvents();
+        System.out.println("Rental events: " + events);
 
-                case 2:
-                    // Dodavanje novog objekta za najam
-                    System.out.print("Unesite naziv objekta: ");
-                    String naziv = scanner.nextLine();
-                    System.out.print("Unesite tip objekta: ");
-                    String tip = scanner.nextLine();
-                    System.out.print("Unesite godinu proizvodnje: ");
-                    int godina = scanner.nextInt();
-                    scanner.nextLine(); // Potroši novi red
-                    System.out.print("Unesite kategoriju: ");
-                    String kategorija = scanner.nextLine();
-                    System.out.print("Unesite cijenu po noćenju: ");
-                    double cijena = scanner.nextDouble();
-                    scanner.nextLine(); // Potroši novi red
+        System.out.println("Rental data saved successfully!");
+    }
 
-                    RentingObjects noviObjekt = new RentingObjects();
-                    admin.addRentingObject(noviObjekt);
-                    System.out.println("Novi objekt uspješno dodan.");
-                    break;
-
-                case 3:
-                    // Brisanje objekta za najam
-                    System.out.print("Unesite naziv objekta za brisanje: ");
-                    String imeZaBrisanje = scanner.nextLine();
-                    if (admin.removeRentingObject(imeZaBrisanje)) {
-                        System.out.println("Objekt '" + imeZaBrisanje + "' uspješno obrisan.");
-                    } else {
-                        System.out.println("Objekt nije pronađen.");
-                    }
-                    break;
-
-                case 4:
-                    System.out.println("Izlaz iz programa.");
-                    scanner.close();
-                    return;
-
-                default:
-                    System.out.println("Nepoznata opcija. Pokušajte ponovo.");
-            }
+    public static Connection makeDBConnection(String fileName) {
+        try {
+            return DriverManager.getConnection("jdbc:h2:./" + fileName);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

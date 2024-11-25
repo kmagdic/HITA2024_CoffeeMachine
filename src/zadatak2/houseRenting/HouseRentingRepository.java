@@ -5,88 +5,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HouseRentingRepository {
-    static Connection connection;
+    private Connection connection;
 
-    public static void main(String[] args) {
-        RentingObjects rentingObjects = new RentingObjects(1, "Draga", "Apartment", 2020, "standard", 100);
-        System.out.println(rentingObjects);
+    // Constructor
+    public HouseRentingRepository(Connection connection) {
+        this.connection = connection;
+    }
 
-        connection = makeDBConnection("docs/houseRentingDB");
-        createTable();
-
-        insertRentingObjects(rentingObjects);
-
-        List<RentingObjects> rentingObjectsList = getList();
-        System.out.println("Renting Objects in DB: " + rentingObjectsList);
-
-        System.out.println("Saved!");
-
-        // Close connection
-        try {
-            if (connection != null) connection.close();
+    // Create table if it doesn't exist
+    public void createTable() {
+        try (Statement stmt = connection.createStatement()) {
+            String sql = "CREATE TABLE IF NOT EXISTS renting_objects (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "name VARCHAR(100)," +
+                    "type VARCHAR(50)," +
+                    "yearOfProduction INT," +
+                    "category VARCHAR(50)," +
+                    "priceForOneNight DOUBLE)";
+            stmt.execute(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static Connection makeDBConnection(String fileName) {
-        try {
-            return DriverManager.getConnection("jdbc:h2:./" + fileName);
+    // Insert renting object into DB
+    public void insertHouse(RentingObjects rentingObject) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "INSERT INTO renting_objects (id, name, type, yearOfProduction, category, priceForOneNight) VALUES (?, ?, ?, ?, ?, ?)")) {
+            stmt.setInt(1, rentingObject.getId());
+            stmt.setString(2, rentingObject.getName());
+            stmt.setString(3, rentingObject.getType());
+            stmt.setInt(4, rentingObject.getYearOfProduction());
+            stmt.setString(5, rentingObject.getCategory());
+            stmt.setDouble(6, rentingObject.getPriceForOneNight());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    public static void createTable() {
-        try {
-            String sqlCreateTable = "CREATE TABLE IF NOT EXISTS RentingObjects (" +
-                    "id integer PRIMARY KEY auto_increment, " +
-                    "name text NOT NULL, " +
-                    "type text NOT NULL, " +
-                    "yearOfProduction integer NOT NULL, " +
-                    "category text NOT NULL, " +
-                    "price double NOT NULL)";
-            Statement st = connection.createStatement();
-            st.execute(sqlCreateTable);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void insertRentingObjects(RentingObjects s) {
-        String insertSql = "INSERT INTO RentingObjects (name, type, yearOfProduction, category, price) VALUES (?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement ps = connection.prepareStatement(insertSql);
-            ps.setString(1, s.getName());
-            ps.setString(2, s.getType());
-            ps.setInt(3, s.getYearOfProduction());
-            ps.setString(4, s.getCategory());
-            ps.setDouble(5, s.getPriceForOneNight());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static List<RentingObjects> getList() {
-        String sqlPrint = "SELECT * FROM RentingObjects";
-        List<RentingObjects> resultList = new ArrayList<>();
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(sqlPrint);
+    // Get all renting objects from DB
+    public List<RentingObjects> getHouses() {
+        List<RentingObjects> rentingObjects = new ArrayList<>();
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM renting_objects")) {
             while (rs.next()) {
-                RentingObjects s = new RentingObjects();
-                s.setId(rs.getInt("id"));
-                s.setName(rs.getString("name"));
-                s.setType(rs.getString("type"));
-                s.setYearOfProduction(rs.getInt("yearOfProduction"));
-                s.setCategory(rs.getString("category"));
-                s.setPriceForOneNight(rs.getDouble("price"));
-                resultList.add(s);
+                rentingObjects.add(new RentingObjects(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("type"),
+                        rs.getInt("yearOfProduction"),
+                        rs.getString("category"),
+                        rs.getDouble("priceForOneNight")
+                ));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        return resultList;
+        return rentingObjects;
     }
 }

@@ -1,88 +1,63 @@
 package zadatak2.houseRenting;
 
-import zadatak2.houseRenting.Event;
-import zadatak2.houseRenting.RentingObjects;
-import zadatak2.houseRenting.HouseRentingRepository;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EventRepository {
-
     private Connection connection;
-    private HouseRentingRepository houseRentingRepository;
 
-    EventRepository(Connection connection) {
+    // Constructor
+    public EventRepository(Connection connection) {
         this.connection = connection;
     }
 
-    public void setHouseRentingRepository(HouseRentingRepository houseRentingRepository) {
-        this.houseRentingRepository = houseRentingRepository;
-    }
-
+    // Create table if it doesn't exist
     public void createTable() {
-
-        try {
-            String sqlCreateTable = "CREATE TABLE IF NOT EXISTS events (\n" +
-                    "id integer PRIMARY KEY auto_increment, \n" +
-                    "rentingobject_id int  NOT NULL,\n " +
-                    "date_time timestamp NOT NULL,\n" +
-                    "event varchar(255)  NOT NULL\n)";
-
-            Statement st = connection.createStatement();
-            st.execute(sqlCreateTable);
-
-        } catch (SQLException e){
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    public void insert(Event e) {
-
-        String insertSql = "INSERT INTO events (student_id, date_time, event) VALUES (?, ?, ?)";
-
-        try {
-            PreparedStatement ps = connection.prepareStatement(insertSql);
-            ps.setInt(1, e.getRentingObjects().getId());
-            ps.setTimestamp(2, java.sql.Timestamp.valueOf(e.getDatetime()));
-            ps.setString(3, e.getEvent());
-
-            ps.executeUpdate();
-
-        } catch (SQLException e1) {
-            throw new RuntimeException(e1);
-        }
-    }
-
-
-    public List<Event> getList() {
-        String sqlPrint = "SELECT * FROM events";
-        List<Event> resultList = new ArrayList<>();
-
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(sqlPrint);
-
-            while (rs.next()) {
-                zadatak2.houseRenting.Event e = new Event();
-                e.setId(rs.getInt("id"));
-                e.setDatetime(rs.getTimestamp("date_time").toLocalDateTime());
-
-                RentingObjects s = new RentingObjects();
-                s.setId(rs.getInt("student_id"));
-                e.setRentingObjects(s);
-
-                e.setEvent(rs.getString("event"));
-
-                resultList.add(e);
-            }
-
+        try (Statement stmt = connection.createStatement()) {
+            String sql = "CREATE TABLE IF NOT EXISTS rental_events (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "timestamp TIMESTAMP," +
+                    "rentingObject_id INT," +
+                    "description VARCHAR(255)," +
+                    "FOREIGN KEY (rentingObject_id) REFERENCES renting_objects(id))";
+            stmt.execute(sql);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        return resultList;
+    }
+
+    // Insert event into DB
+    public void insertEvent(Event event) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "INSERT INTO rental_events (timestamp, rentingObject_id, description) VALUES (?, ?, ?)")) {
+            stmt.setTimestamp(1, Timestamp.valueOf(event.getTimestamp()));
+            stmt.setInt(2, event.getRentingObject().getId());
+            stmt.setString(3, event.getDescription());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Get all events from DB
+    public List<Event> getEvents() {
+        List<Event> events = new ArrayList<>();
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM rental_events")) {
+            while (rs.next()) {
+                int rentingObjectId = rs.getInt("rentingObject_id");
+                String description = rs.getString("description");
+                Timestamp timestamp = rs.getTimestamp("timestamp");
+
+                // Retrieve rentingObject from DB (you would need a separate query or repository for renting objects)
+                RentingObjects rentingObject = new RentingObjects(rentingObjectId, "", "", 0, "", 0); // Simplified for now
+                Event event = new Event(timestamp.toLocalDateTime(), rentingObject, description);
+                events.add(event);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return events;
     }
 }
-

@@ -1,64 +1,48 @@
 package zadatak2.houseRenting;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Event {
+    private LocalDateTime timestamp;
+    private RentingObjects rentingObject;
+    private String description;
 
-    int id;
-    LocalDateTime datetime;
-    RentingObjects rentingObjects;
-    String event;
-
-    public Event() {
+    // Constructor
+    public Event(LocalDateTime timestamp, RentingObjects rentingObject, String description) {
+        this.timestamp = timestamp;
+        this.rentingObject = rentingObject;
+        this.description = description;
     }
 
-    public Event(int id, LocalDateTime datetime, RentingObjects rentingObjects, String event) {
-        this.id = id;
-        this.datetime = datetime;
-        this.rentingObjects = rentingObjects;
-        this.event = event;
+    // Getters and Setters
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public LocalDateTime getDatetime() {
-        return datetime;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public void setDatetime(LocalDateTime datetime) {
-        this.datetime = datetime;
+    public RentingObjects getRentingObject() {
+        return rentingObject;
     }
 
-    public int getId() {
-        return id;
+    public void setRentingObject(RentingObjects rentingObject) {
+        this.rentingObject = rentingObject;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getDescription() {
+        return description;
     }
 
-    public RentingObjects getRentingObjects() {
-        return rentingObjects;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setRentingObjects(RentingObjects rentingObjects) {
-        this.rentingObjects = rentingObjects;
-    }
-
-    public String getEvent() {
-        return event;
-    }
-
-    public void setEvent(String event) {
-        this.event = event;
-    }
-
+    // Override toString for better readability
     @Override
     public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", datetime=" + datetime +
-                ", rentingobjects=" + rentingObjects +
-                ", event='" + event + '\'' +
-                '}';
+        return "Event [timestamp=" + timestamp + ", rentingObject=" + rentingObject.getName() +
+                ", description=" + description + "]";
     }
 }
