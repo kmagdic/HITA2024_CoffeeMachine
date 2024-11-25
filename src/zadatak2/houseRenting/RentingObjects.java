@@ -1,7 +1,6 @@
 package zadatak2.houseRenting;
 
 public class RentingObjects {
-
     private int id;
     private String name;
     private String type;
@@ -9,7 +8,7 @@ public class RentingObjects {
     private String category;
     private double priceForOneNight;
 
-    // Parameterized Constructor
+    // Constructor
     public RentingObjects(int id, String name, String type, int yearOfProduction, String category, double priceForOneNight) {
         this.id = id;
         this.name = name;
@@ -17,11 +16,6 @@ public class RentingObjects {
         this.yearOfProduction = yearOfProduction;
         this.category = category;
         this.priceForOneNight = priceForOneNight;
-    }
-
-    // Default Constructor
-    public RentingObjects() {
-        // Default values can be initialized here if needed
     }
 
     // Getters and Setters
@@ -73,15 +67,11 @@ public class RentingObjects {
         this.priceForOneNight = priceForOneNight;
     }
 
+    // Override toString for better readability
     @Override
     public String toString() {
-        return "RentingObject{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", yearOfProduction=" + yearOfProduction +
-                ", category='" + category + '\'' +
-                ", priceForOneNight=" + priceForOneNight +
-                '}';
+        return "RentingObject [id=" + id + ", name=" + name + ", type=" + type +
+                ", yearOfProduction=" + yearOfProduction + ", category=" + category +
+                ", priceForOneNight=" + priceForOneNight + "]";
     }
 }
