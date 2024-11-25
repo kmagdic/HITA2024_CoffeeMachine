@@ -18,7 +18,7 @@ class TransactionDB {
         return "Date/time: " + dateTime + ", coffee type: " + coffeeType + ", action: " + action;
     }
 
-    private static final String DB_URL = "jdbc:h2:./src/t4_vedran/coffeemachine/coffeemachine_db/coffee_machine_db;AUTO_SERVER=TRUE"; // Lokacija baze u src/coffeemachine
+    private static final String DB_URL = "jdbc:h2:./src/t4_vedran/coffeemachine/coffeemachine_db/coffee_machine_db;AUTO_SERVER=TRUE";
 
 
     // Kreira tablicu u bazi ako ne postoji
