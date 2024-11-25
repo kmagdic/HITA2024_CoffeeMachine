@@ -1,10 +1,5 @@
 package zadatak2.cardealership;
 
-
-
-import _karlo_dragan.studentmanager.EventRepository;
-import _karlo_dragan.studentmanager.StudentRepository;
-
 import java.util.Scanner;
 
 import java.sql.*;
