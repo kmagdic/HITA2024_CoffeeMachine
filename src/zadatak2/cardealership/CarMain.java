@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static _karlo_dragan.studentmanager.StudentManagerSimpleMain.makeDBConnection;
-import static zadatak2.cardealership.CarRepository.*;
+
 
 public class CarMain {
 
@@ -46,7 +46,7 @@ public class CarMain {
 
             } else if (choice == 3) {
                 int counter = 1;
-                for(Car c: getList()){
+                for(Car c: carRepository.getList()){
                     System.out.println("Car " + counter);
                     System.out.println("Name: " + c.getCarName());
                     System.out.println("Type: " + c.getCarType());
