@@ -20,7 +20,7 @@ public class CoffeeMachineConsole {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Welcome to Coffee Machine 1.0 with status ins file");
+        System.out.println("Welcome to Coffee Machine 1.0 with DB");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {
