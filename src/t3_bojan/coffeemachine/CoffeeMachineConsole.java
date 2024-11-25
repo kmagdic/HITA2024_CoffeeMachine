@@ -10,10 +10,10 @@ public class CoffeeMachineConsole {
     private final String  ADMIN_PASSWORD_CHANGE_MESSAGE = "Enter new admin password:";
     private final String  AdMIN_PASSWORD_CHANGED = "Password is changed";
     private final String  ADMIN_PASSWORD_CHANGE_MESSAGE_ERROR = "Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.";
-    private final DBManager dbManager = new DBManager();
 
     public static void main(String[] args)  {
         CoffeeMachineConsole console = new CoffeeMachineConsole();
+        DBManager.getInstance().createTable();
         console.run();
     }
 
@@ -73,16 +73,7 @@ public class CoffeeMachineConsole {
 
         int typeOfCoffeeChoice = scanner.nextInt();
         if (typeOfCoffeeChoice <= coffeeTypes.size()) {
-
-            String msg;
-
-            try (Connection connection = dbManager.getConnection()) {
-
-                msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1), connection);
-
-            }catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
             System.out.println(msg);
         } else {
             System.out.println("Wrong enter\n");
@@ -138,7 +129,7 @@ public class CoffeeMachineConsole {
                         break;
 
                         case "log":
-                            for (TransactionLog log : dbManager.getTransactionLogs()) {
+                            for (TransactionLog log : DBManager.getInstance().getTransactionLogs()) {
                                 System.out.println(log);
                             }
                             break;
