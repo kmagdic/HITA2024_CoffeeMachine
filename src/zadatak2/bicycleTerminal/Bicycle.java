@@ -9,6 +9,9 @@ public class Bicycle {
     private String batteryLevel;
     private int userLevel;
 
+    public Bicycle() {
+    }
+
     public Bicycle(int id, String type, String color, String batteryLevel, int userLevel) {
         this.id = id;
         this.type = type;
@@ -57,6 +60,38 @@ public class Bicycle {
 
     public int getId() {
         return id;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getBatteryLevel() {
+        return batteryLevel;
+    }
+
+    public int getUserLevel() {
+        return userLevel;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setBatteryLevel(String batteryLevel) {
+        this.batteryLevel = batteryLevel;
+    }
+
+    public void setUserLevel(int userLevel) {
+        this.userLevel = userLevel;
     }
 
     @Override

@@ -6,10 +6,13 @@ import java.util.List;
 public class Terminal {
     private int id;
     private String name;
-    private List<Bicycle> bicycles;
+    private List<Bicycle> bicycles = new ArrayList<>();
     private String address;
     private int maxCapacity;
     private boolean isOpen;
+
+    public Terminal() {
+    }
 
     public Terminal(int id, String name, int maxCapacity) {
         this.id = id;
@@ -60,6 +63,46 @@ public class Terminal {
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public boolean getIsOpen() {
+        return isOpen;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBicycles(List<Bicycle> bicycles) {
+        this.bicycles = bicycles;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
     @Override
