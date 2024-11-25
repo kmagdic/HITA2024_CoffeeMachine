@@ -1,16 +1,82 @@
 package t1_mateo.coffeemachine;
 
+import zadatak2.booklibrary.Author;
+
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
 
     Scanner sc = new Scanner(System.in);
-
+    static Connection connection;
 
     public static void main(String[] args)  {
+        connection = makeDBConnection("docs/CoffeeMachineMateo");
+        createTable();
         CoffeeMachineConsole console = new CoffeeMachineConsole();
         console.run();
+    }
+
+    public static Connection makeDBConnection(String fileName) {
+        try {
+            return DriverManager.getConnection("jdbc:h2:c:/" + fileName);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void createTable() {
+        try {
+            String sqlCreateTable = "CREATE TABLE IF NOT EXISTS transaction_log (" +
+                    "date datetime  NOT NULL, " +
+                    "coffee_type text  NOT NULL, " +
+                    "action text NOT NULL, " +
+                    "ingredients text NULL)";
+
+            Statement st = connection.createStatement();
+            st.execute(sqlCreateTable);
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void insertLog(TransactionLog log) {
+
+        String insertSql = "INSERT INTO transaction_log (date, coffee_type, action, ingredients) VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(insertSql);
+            ps.setTimestamp(1, log.getDate());
+            ps.setString(2, log.getCoffeeType());
+            ps.setString(3, log.getAction());
+            ps.setString(4, log.getIngredients());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<TransactionLog> getLog() {
+        String sqlPrint = "SELECT * FROM transaction_log";
+        List<TransactionLog> resultList = new ArrayList<>();
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(sqlPrint);
+            while (rs.next()) {
+                TransactionLog log = new TransactionLog();
+                log.setDate(rs.getTimestamp("date").toLocalDateTime());
+                log.setCoffeeType(rs.getString("coffee_type"));
+                log.setAction(rs.getString("action"));
+                log.setIngredients(rs.getString("ingredients"));
+
+                resultList.add(log);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultList;
     }
 
     void run() {
@@ -47,6 +113,9 @@ public class CoffeeMachineConsole {
 
                 case "exit":
                     machine.stop();
+                    for (TransactionLog log : machine.getTransactionLogList()) {
+                        insertLog(log);
+                    }
                     System.out.println("Shutting down the machine. Bye!");
                     break;
 
@@ -102,7 +171,7 @@ public class CoffeeMachineConsole {
                     System.out.println("The coffee machine has:");
                     System.out.println(machine.getWater() + " ml of water");
                     System.out.println(machine.getMilk() + " ml of milk");
-                    System.out.println(machine.getCoffeeBeans() + " g of water");
+                    System.out.println(machine.getCoffeeBeans() + " g of coffee beans");
                     System.out.println(machine.getCups() + " cups");
                     System.out.println("$" + machine.getMoney() + " of money");
                     break;
@@ -122,14 +191,11 @@ public class CoffeeMachineConsole {
 
                 case "log":
                     System.out.println("Transaction log:");
-                    for (TransactionLog log: machine.getTransactionLogList()) {
-                        System.out.println(log.getRecord());
+
+                    for (TransactionLog log: getLog()) {
+                        System.out.println(log);
                     }
-
-
                     break;
-
-
 
                 case "exit":
                     break;

@@ -20,39 +20,19 @@ public class CoffeeType {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getPrice() {
         return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 
     public int getMilkNeeded() {
         return milkNeeded;
     }
 
-    public void setMilkNeeded(int milkNeeded) {
-        this.milkNeeded = milkNeeded;
-    }
-
     public int getWaterNeeded() {
         return waterNeeded;
     }
 
-    public void setWaterNeeded(int waterNeeded) {
-        this.waterNeeded = waterNeeded;
-    }
-
     public int getCoffeeBeansNeeded() {
         return coffeeBeansNeeded;
-    }
-
-    public void setCoffeeBeansNeeded(int coffeeBeansNeeded) {
-        this.coffeeBeansNeeded = coffeeBeansNeeded;
     }
 }

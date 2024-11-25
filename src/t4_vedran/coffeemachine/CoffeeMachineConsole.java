@@ -10,6 +10,9 @@ public class CoffeeMachineConsole {
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args)  {
+        // Inicijalizacija baze
+        TransactionDB.createTableIfNotExists();
+
         CoffeeMachineConsole console = new CoffeeMachineConsole();
         console.run();
     }
@@ -98,7 +101,7 @@ public class CoffeeMachineConsole {
                     changePassword();
                     break;
                 case "log":
-                    machine.printTransactionLog();
+                    TransactionDB.printTransaction();
                     break;
                 case "remaining":
                     System.out.println("The coffee machine has:");
