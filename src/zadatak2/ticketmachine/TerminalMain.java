@@ -16,6 +16,9 @@ public class TerminalMain {
             Terminal t1 = new Terminal("Zagreb", "Ilica 121");
             terminalRepo.insertTerminal(t1);
 
+            Terminal t2 = new Terminal("Velika Gorica", "Zagrebačka 121");
+            terminalRepo.insertTerminal(t2);
+
             List<Terminal> terminals = terminalRepo.getList();
             System.out.println("Terminals in DB: " + terminals);
         } catch (SQLException e) {
