@@ -16,6 +16,8 @@ public class CoffeeMachine {
     protected String adminUsername = "admin";
     protected String adminPassword = "admin12345";
 
+    private TransactionLog log;
+    private CoffeeMachineDB database;
 
     protected List<TransactionLog> transactionLogList = new ArrayList<>(); //služi mi za spremanje svih logova u listu
 
@@ -30,10 +32,15 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes.add (new CoffeeType("Espresso", 350, 0, 16, 4));
+        this.database = database != null ? database : CoffeeMachineDB.getInstance("docs/pp_coffee_machine");
+        if (coffeeTypes == null) {
+            coffeeTypes = new ArrayList<>();
+        }
+        coffeeTypes.add(new CoffeeType("Espresso", 350, 0, 16, 4));
         coffeeTypes.add(new CoffeeType("Latte", 350, 75, 20, 7));
         coffeeTypes.add(new CoffeeType("Capuccino", 200, 100, 12, 6));
     }
+
 
     public List<CoffeeType> getCoffeeTypes() {
         return coffeeTypes;
@@ -77,12 +84,14 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
-            addRecordToHistoryList("coffee type: " + coffeeType.getName() + ", " + "action: Bought");
+            addRecordToHistoryList(coffeeType.getName(), "Bought", "");
+            //addRecordToHistoryList("coffee type: " + coffeeType.getName() + ", " + "action: Bought");
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
 
-            addRecordToHistoryList("coffee type: " + coffeeType.getName() + ", " + "action: Not bought, no enough ingredients: " + missing);
+            addRecordToHistoryList(coffeeType.getName(), "Not bought", missing);
+            //addRecordToHistoryList("coffee type: " + coffeeType.getName() + ", " + "action: Not bought, no enough ingredients: " + missing);
             return "Sorry, not enough " + missing + "\n"; // ovo pokaže samo prvi resurs koji nedostaje, ne i oba ili više njih koji nedostaju
         }
     }
@@ -129,9 +138,15 @@ public class CoffeeMachine {
         this.adminPassword = adminPassword;
     }
 
-    public void addRecordToHistoryList(String res) {
+    /* public void addRecordToHistoryList(String res) {
         TransactionLog transactionLog = new TransactionLog(res);
         transactionLogList.add(transactionLog);
+    } */
+
+    public void addRecordToHistoryList(String coffeType, String succes, String ingredient) {
+        TransactionLog transactionLog = new TransactionLog(coffeType, succes, ingredient);
+        transactionLogList.add(transactionLog);
+        database.insertTransactionLog(transactionLog);
     }
 
     public void stop() {

@@ -13,7 +13,11 @@ public class CoffeeMachineConsole {
 
 
     public static void main(String[] args) {
+
         CoffeeMachineConsole console = new CoffeeMachineConsole();
+
+        CoffeeMachineDB db = CoffeeMachineDB.getInstance("docs/pp_coffee_machine");
+
         console.run();
     }
 
@@ -121,6 +125,7 @@ public class CoffeeMachineConsole {
                         machine.setAdminPassword(password);
                         System.out.println("Password is changed");
                     }
+                    break;
 
                 case "log":
                     for (TransactionLog h : machine.getHistoryLogList()) {
