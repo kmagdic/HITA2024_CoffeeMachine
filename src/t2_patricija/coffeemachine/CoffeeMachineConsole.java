@@ -16,7 +16,7 @@ public class CoffeeMachineConsole {
 
         CoffeeMachineConsole console = new CoffeeMachineConsole();
 
-        CoffeeMachineDB db = CoffeeMachineDB.getInstance("docs/coffee_machine_patricija");
+        CoffeeMachineDB db = CoffeeMachineDB.getInstance("docs/transaction_log");
 
         console.run();
     }
