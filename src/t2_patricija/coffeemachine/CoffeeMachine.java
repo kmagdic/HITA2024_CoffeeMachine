@@ -41,7 +41,7 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        this.database = database != null ? database : CoffeeMachineDB.getInstance("docs/pp_coffee_machine");
+        this.database = database != null ? database : CoffeeMachineDB.getInstance("docs/coffee_machine_patricija");
         if (coffeeTypes == null) {
             coffeeTypes = new ArrayList<>();
         }

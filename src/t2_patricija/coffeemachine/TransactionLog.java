@@ -2,8 +2,11 @@ package t2_patricija.coffeemachine;
 
 import java.util.Date;
 
+import java.sql.Timestamp;
+
 public class TransactionLog {
-    Date date;
+    //Date date;
+    private Timestamp date_time;
     private int id;
     String coffeeTypeName;
     String success;
@@ -18,7 +21,7 @@ public class TransactionLog {
     // N.B.: We use a String for coffeeTypeName instead of a CoffeeType object
     // because we only need the coffee's name, not the entire object.
     public TransactionLog(String coffeeTypeName, String success, String ingredient) {
-        this.date = new Date();
+        this.date_time = new Timestamp(System.currentTimeMillis());;
         this.coffeeTypeName = coffeeTypeName;
         this.success = success;
         if (ingredient == null || ingredient.isEmpty()) {
@@ -31,12 +34,20 @@ public class TransactionLog {
     // Explanation: java.util.Date includes both date and time, whereas java.sql.Date only stores the date (year, month, day).
     // java.util.Date is incompatible with SQL DATE format, which expects only the date without the time component.
 
-    public java.sql.Date getDate() {
+    /*public java.sql.Date getDate() {
         return new java.sql.Date(date.getTime());
     }
 
     public void setDate(Date date) {
         this.date = date;
+    }*/
+
+    public Timestamp getDate_time() {
+        return date_time;
+    }
+
+    public void setDate_time(Timestamp date_time) {
+        this.date_time = date_time;
     }
 
     public String getCoffeeTypeName() {
@@ -74,7 +85,7 @@ public class TransactionLog {
     @Override
     public String toString() {
         return "TransactionLog{" +
-                "date=" + date +
+                "date=" + date_time +
                 ", coffeeTypeName='" + coffeeTypeName + '\'' +
                 ", success='" + success + '\'' +
                 ", ingredient='" + ingredient + '\'' +

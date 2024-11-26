@@ -49,7 +49,7 @@ public class CoffeeMachineDB {
         try {
             String sqlCreateTable = "CREATE TABLE IF NOT EXISTS transaction_log (\n" +
                     "id integer PRIMARY KEY auto_increment, \n" +
-                    "date_time DATE NOT NULL,\n" +
+                    "date_time DATETIME NOT NULL,\n" +
                     "coffee_type text NOT NULL,\n" +
                     "success text NOT NULL,\n" +
                     "ingredient text NULL\n" +
@@ -70,7 +70,7 @@ public class CoffeeMachineDB {
 
         try {
             PreparedStatement ps = connection.prepareStatement(insertSql);
-            ps.setDate(1, l.getDate());
+            ps.setTimestamp(1, l.getDate_time());
             ps.setString(2, l.getCoffeeTypeName());
             ps.setString(3, l.getSuccess());
             ps.setString(4, l.getIngredient());
@@ -96,7 +96,7 @@ public class CoffeeMachineDB {
             while (rs.next()) {
                 TransactionLog l = new TransactionLog();
                 l.setId(rs.getInt("id"));
-                l.setDate(rs.getDate("date_time"));
+                l.setDate_time(rs.getTimestamp("date_time"));
                 l.setCoffeeTypeName(rs.getString("coffe_type"));
                 l.setSuccess(rs.getString("success"));
                 l.setIngredient(rs.getString("ingredient"));
