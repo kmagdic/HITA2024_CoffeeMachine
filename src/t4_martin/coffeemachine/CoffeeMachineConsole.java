@@ -1,6 +1,5 @@
 package t4_martin.coffeemachine;
 
-
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
@@ -8,7 +7,12 @@ public class CoffeeMachineConsole {
     Scanner sc = new Scanner(System.in);
 
 
+
+
     public static void main(String[] args)  {
+
+
+
         CoffeeMachineConsole console = new CoffeeMachineConsole();
         console.run();
     }

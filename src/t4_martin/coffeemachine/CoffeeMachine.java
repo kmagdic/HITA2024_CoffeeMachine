@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -35,6 +38,8 @@ public class CoffeeMachine {
         coffeeTypes[0] = new CoffeeType("Espresso", 350, 0,16,4);
         coffeeTypes[1] = new CoffeeType("Latte",350, 75,20,7);
         coffeeTypes[2] = new CoffeeType("Capuccino",200, 100,12,6);
+
+        logRepository.createTable();
     }
 
     public CoffeeType[] getCoffeeTypes() {
@@ -61,6 +66,26 @@ public class CoffeeMachine {
         return money;
     }
 
+
+
+
+    Connection connection = makeDBConnection("src/t4_martin/docs/log");
+    LogRepository logRepository = new LogRepository(connection);
+
+
+    public static Connection makeDBConnection(String fileName) {
+        try {
+            return DriverManager.getConnection("jdbc:h2:./" + fileName);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
+
+
     public boolean hasEnoughResources(CoffeeType coffeeType){
         if (water >= coffeeType.getWaterNeeded() &&
                 milk >= coffeeType.getMilkNeeded() &&
@@ -78,11 +103,13 @@ public class CoffeeMachine {
             this.coffeeBeans -= coffeeType.getCoffeeBeansNeeded();
             this.cups -= 1;
             this.money += coffeeType.getPrice();
-            log(coffeeType.getName(), "Bought");
+            TransactionLog transactionLog = new TransactionLog(formattedNow, coffeeType.getName(),"Bought",coffeeType.getPrice());
+            logRepository.insertLog(transactionLog);
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
-            log(coffeeType.getName(), "Not bought, not enough ingredients: " + missing);
+            TransactionLog transactionLog = new TransactionLog(formattedNow, coffeeType.getName(),"Not bought, missing" + missing,0);
+            logRepository.insertLog(transactionLog);
             return "Sorry, not enough " + missing + "\n";
         }
     }
@@ -212,13 +239,13 @@ public class CoffeeMachine {
     private LocalDateTime now = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     String formattedNow = now.format(formatter);
-    private String log = "";
-    public void log(String coffeeType, String action){
-        log = log + formattedNow + " Coffee type: " +  coffeeType + " action: " + action;
-    }
+
 
     public void printLog(){
-        System.out.println(log);
+
+        for(TransactionLog t: logRepository.getList()){
+            System.out.println(t.toString());
+        }
     }
 
 
