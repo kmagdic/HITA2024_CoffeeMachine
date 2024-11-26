@@ -72,8 +72,6 @@ public class CoffeeMachineDB {
 
             ps.executeUpdate();
 
-            System.out.println("Transaction log inserted successfully.");
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
