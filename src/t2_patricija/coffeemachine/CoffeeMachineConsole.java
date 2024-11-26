@@ -129,7 +129,7 @@ public class CoffeeMachineConsole {
 
                 case "log":
                     for (TransactionLog h : machine.getHistoryLogList()) {
-                        System.out.println("Date/time: " + h.getRecord());
+                        System.out.println (h);
                     }
                     break;
 

@@ -11,6 +11,11 @@ public class CoffeeMachineDB {
 
     private static CoffeeMachineDB instance;
 
+    //Explanation: An instance represents a specific object created from a class,
+    // enabling its methods and data to be used.
+    // This method ensures a single instance (singleton) of CoffeeMachineDB is created and reused.
+    // If the instance does not already exist, it is initialized with the provided file name.
+
     public static CoffeeMachineDB getInstance(String fileName) {
         if (instance == null) {
             instance = new CoffeeMachineDB(fileName);
@@ -18,7 +23,9 @@ public class CoffeeMachineDB {
         return instance;
     }
 
-    //Constructor with calls the makeDBConnection method
+    // Explanation: This constructor initializes the database connection using the makeDBConnection method.
+    // If the connection is not successfully established (null), a RuntimeException is thrown.
+
     public CoffeeMachineDB(String fileName) {
         this.connection = makeDBConnection(fileName);
         if (this.connection == null) {
@@ -28,7 +35,7 @@ public class CoffeeMachineDB {
         createTable(); // Ensure table is created when the instance is initialized
     }
 
-    //Make Connection
+    //Make connection method
     public Connection makeDBConnection(String fileName) {
         try {
             return DriverManager.getConnection("jdbc:h2:./" + fileName);
@@ -37,7 +44,7 @@ public class CoffeeMachineDB {
         }
     }
 
-    //Create table
+    //Create table method
     public void createTable() {
         try {
             String sqlCreateTable = "CREATE TABLE IF NOT EXISTS transaction_log (\n" +
@@ -56,9 +63,7 @@ public class CoffeeMachineDB {
         }
     }
 
-    // Insert into table
-
-    //attributes are datetime, coffe_type, success, ingredient
+    // Insert into table method
 
     public void insertTransactionLog(TransactionLog l) {
         String insertSql = "INSERT INTO transaction_log (date_time, coffee_type, success, ingredient) VALUES (?, ?, ?, ?)";
@@ -77,7 +82,8 @@ public class CoffeeMachineDB {
         }
     }
 
-    // List
+    // Retrieves all entries from the transaction_log table in the database
+    // and returns them as a list of TransactionLog objects.
 
     public List<TransactionLog> getList() {
         String sqlPrint = "SELECT * FROM transaction_log";

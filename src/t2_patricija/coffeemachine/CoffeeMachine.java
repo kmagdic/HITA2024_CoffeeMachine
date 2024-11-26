@@ -5,12 +5,16 @@ import java.util.ArrayList;
 
 public class CoffeeMachine {
 
+    // Before creating the CoffeeMachineWithStatusInFile class, these variables were private.
+    // After extending the CoffeeMachine class, we changed the variables to 'protected'
+    // so they can be accessed within the CoffeeMachineWithStatusInFile subclass.
+
     protected int water;
     protected int milk;
     protected int coffeeBeans;
     protected int cups;
     protected float money;
-    protected List <CoffeeType> coffeeTypes = new ArrayList<>();
+    protected List<CoffeeType> coffeeTypes = new ArrayList<>();
     protected String statusFileName = "docs/coffee_machine_status.txt";
 
     protected String adminUsername = "admin";
@@ -19,11 +23,16 @@ public class CoffeeMachine {
     private TransactionLog log;
     private CoffeeMachineDB database;
 
-    protected List<TransactionLog> transactionLogList = new ArrayList<>(); //služi mi za spremanje svih logova u listu
+    //We use this list for putting all logs into it
+    protected List<TransactionLog> transactionLogList = new ArrayList<>();
 
     public List<TransactionLog> getHistoryLogList() { //služi mi za dohvaćanje te liste logova
         return transactionLogList;
     }
+
+    // Explenation for database part in the constructor:
+    // If the database object is not provided (null), we initialize it using the singleton instance of CoffeeMachineDB.
+    // This ensures that the database connection is properly set up, using the default file path if no other is specified.
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
@@ -84,15 +93,19 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
+            // The parameters passed here (coffeeType, success, ingredient) are used as arguments
+            // when calling the TransactionLog constructor in the addRecordToHistoryList method.
+            // This constructor creates a new TransactionLog object, which is then added to the transaction log list
+            // and inserted into the database.
+
             addRecordToHistoryList(coffeeType.getName(), "Bought", "");
-            //addRecordToHistoryList("coffee type: " + coffeeType.getName() + ", " + "action: Bought");
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
 
             addRecordToHistoryList(coffeeType.getName(), "Not bought", missing);
-            //addRecordToHistoryList("coffee type: " + coffeeType.getName() + ", " + "action: Not bought, no enough ingredients: " + missing);
-            return "Sorry, not enough " + missing + "\n"; // ovo pokaže samo prvi resurs koji nedostaje, ne i oba ili više njih koji nedostaju
+            return "Sorry, not enough " + missing + "\n";
+            //at this point it shows only one missing ingredient, even if there are multiple missing
         }
     }
 
@@ -138,13 +151,8 @@ public class CoffeeMachine {
         this.adminPassword = adminPassword;
     }
 
-    /* public void addRecordToHistoryList(String res) {
-        TransactionLog transactionLog = new TransactionLog(res);
-        transactionLogList.add(transactionLog);
-    } */
-
-    public void addRecordToHistoryList(String coffeType, String succes, String ingredient) {
-        TransactionLog transactionLog = new TransactionLog(coffeType, succes, ingredient);
+    public void addRecordToHistoryList(String coffeeType, String succes, String ingredient) {
+        TransactionLog transactionLog = new TransactionLog(coffeeType, succes, ingredient);
         transactionLogList.add(transactionLog);
         database.insertTransactionLog(transactionLog);
     }
@@ -155,6 +163,7 @@ public class CoffeeMachine {
     public boolean start() {
         return true;
     }
+
     @Override
     public String toString() {
         return "CoffeeMachine{" +

@@ -57,4 +57,20 @@ public class CoffeeType {
         this.coffeeBeansNeeded = coffeeBeansNeeded;
     }
 
+    @Override
+    public String toString() {
+        return "CoffeeType{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+    /*@Override
+    public String toString() {
+        return "CoffeeType{" +
+                "milkNeeded=" + milkNeeded +
+                ", waterNeeded=" + waterNeeded +
+                ", coffeeBeansNeeded=" + coffeeBeansNeeded +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                '}';
+    }*/
 }
