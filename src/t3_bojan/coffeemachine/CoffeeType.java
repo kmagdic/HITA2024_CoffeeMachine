@@ -2,6 +2,7 @@ package t3_bojan.coffeemachine;
 
 public class CoffeeType {
 
+    private int id;
     private int milkNeeded;
     private int waterNeeded;
     private int coffeeBeansNeeded;
@@ -57,6 +58,14 @@ public class CoffeeType {
 
     public void setCoffeeBeansNeeded(int coffeeBeansNeeded) {
         this.coffeeBeansNeeded = coffeeBeansNeeded;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
 
