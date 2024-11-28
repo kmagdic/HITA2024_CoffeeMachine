@@ -31,9 +31,9 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes.add(new CoffeeType("Espresso", 350, 0, 16, 4));
-        coffeeTypes.add(new CoffeeType("Latte", 350, 75, 20, 7));
-        coffeeTypes.add(new CoffeeType("Cappuccino", 200, 100, 12, 6));
+        coffeeTypes.add(new CoffeeType(1, "Espresso", 350, 0, 16, 4));
+        coffeeTypes.add(new CoffeeType(2, "Latte", 350, 75, 20, 7));
+        coffeeTypes.add(new CoffeeType(3, "Cappuccino", 200, 100, 12, 6));
     }
 
     public List<CoffeeType> getCoffeeTypes() {
