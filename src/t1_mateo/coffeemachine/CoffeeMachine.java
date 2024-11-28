@@ -1,6 +1,4 @@
 package t1_mateo.coffeemachine;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class CoffeeMachine {
@@ -9,18 +7,12 @@ public class CoffeeMachine {
     private int milk;
     private int coffeeBeans;
     private int cups;
-    private float money;
-
-    private List<t1_mateo.coffeemachine.CoffeeType> coffeeTypes = new ArrayList<>();
-    private List<TransactionLog> transactionLogList = new ArrayList<>();
-
-    public List<TransactionLog> getTransactionLogList() {
-        return transactionLogList;
-    }
+    private double money;
 
     private String adminUsername = "";
     private String adminPassword = "";
 
+    private List<CoffeeType> coffeeTypes;
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
@@ -28,14 +20,6 @@ public class CoffeeMachine {
         this.coffeeBeans = coffeeBeans;
         this.cups = cups;
         this.money = money;
-
-        coffeeTypes.add(new CoffeeType("Espresso", 350, 0,16,4));
-        coffeeTypes.add(new CoffeeType("Latte",350, 75,20,7));
-        coffeeTypes.add(new CoffeeType("Cappuccino",200, 100,12,6));
-    }
-
-    public List<CoffeeType> getCoffeeTypes() {
-        return coffeeTypes;
     }
 
     public int getWater() {
@@ -94,7 +78,6 @@ public class CoffeeMachine {
         this.adminPassword = adminPassword;
     }
 
-
     public boolean hasEnoughResources(CoffeeType coffeeType){
         if (water >= coffeeType.getWaterNeeded() &&
                 milk >= coffeeType.getMilkNeeded() &&
@@ -113,19 +96,16 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
-            addTransactionToTransactionLog(coffeeType.getName(), "Bought");
-
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
-            addTransactionToTransactionLog(coffeeType.getName(), "Not bought", missing);
 
             return "Sorry, not enough " + missing + "\n";
         }
     }
 
-    public float takeMoney(){
-        float moneyReturn = money;
+    public double takeMoney(){
+        double moneyReturn = money;
         money = 0;
         return moneyReturn;
     }
@@ -161,54 +141,6 @@ public class CoffeeMachine {
             return false;
     }
 
-/*
-    public boolean loadFromFile(String fileName)  {
-        FileReader reader = null;
-
-        try {
-            reader = new FileReader(fileName);
-        } catch (FileNotFoundException e) {
-            return false;
-        }
-
-        Scanner fileScanner = new Scanner(reader);
-
-        // FILE format:
-        // <water_status>; <milk_status>; <coffee_beans_status>; <cups_status>; <money_status>
-        // <admin_username>; <admin_password>
-
-        fileScanner.useDelimiter("; |\n"); // delimiter is "; " or "\n" (for the last value)
-
-        water = fileScanner.nextInt();
-        milk = fileScanner.nextInt();
-        coffeeBeans = fileScanner.nextInt();
-        cups = fileScanner.nextInt();
-        money = Float.parseFloat(fileScanner.next());
-
-        adminUsername = fileScanner.next();
-        adminPassword = (fileScanner.next()).trim();
-
-        return true;
-
-
-    }
-
-    public void saveToFile(String fileName){
-        try {
-            FileWriter writer = new FileWriter(fileName);
-
-            writer.write(water + "; " +  milk + "; " + coffeeBeans + "; " + cups + "; " + money);
-            writer.write("\n");
-            writer.write(adminUsername + "; " + adminPassword);
-            writer.write("\n");
-
-            writer.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-*/
     public boolean start() {
         return false;
     }
@@ -220,7 +152,6 @@ public class CoffeeMachine {
         if (password.length() < 7) {
             return false;
         }
-
         boolean hasNumber = false;
         for (char c: password.toCharArray()) {
             if (Character.isDigit(c)) {
@@ -235,14 +166,12 @@ public class CoffeeMachine {
         adminPassword = password;
     }
 
-    public void addTransactionToTransactionLog(String coffeeType, String action, String ingredients) {
-        TransactionLog transactionLog = new TransactionLog(coffeeType, action, ingredients);
-        transactionLogList.add(transactionLog);
+    public List<CoffeeType> getCoffeeTypes() {
+        return coffeeTypes;
     }
-    public void addTransactionToTransactionLog(String coffeeType, String action) {
-        TransactionLog transactionLog = new TransactionLog(coffeeType, action);
-        transactionLogList.add(transactionLog);
 
+    public void setCoffeeTypes(List<CoffeeType> coffeeTypes) {
+        this.coffeeTypes = coffeeTypes;
     }
 
     @Override
@@ -255,6 +184,5 @@ public class CoffeeMachine {
                 ", money=" + money +
                 '}';
     }
-
 
 }
