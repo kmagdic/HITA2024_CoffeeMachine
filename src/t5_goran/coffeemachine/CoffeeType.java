@@ -3,11 +3,11 @@ package t5_goran.coffeemachine;
 public class CoffeeType {
 
     private int id;
-    private String name;
-    private int milkNeeded;
-    private int waterNeeded;
-    private int coffeeBeansNeeded;
-    private int price;
+    private final String name;
+    private final int milkNeeded;
+    private final int waterNeeded;
+    private final int coffeeBeansNeeded;
+    private final int price;
 
     public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
         this.name = name;
