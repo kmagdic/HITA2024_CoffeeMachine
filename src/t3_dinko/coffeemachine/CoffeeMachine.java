@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
 
 public class CoffeeMachine {
@@ -79,9 +82,14 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
+            transactionLog = new TransactionLog(LocalDateTime.now(), coffeeType, TRANSACTION_SUCCESS_ACTION);
+
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
+
             String missing = calculateWhichIngredientIsMissing(coffeeType);
+            transactionLog = new TransactionLog(LocalDateTime.now(), coffeeType, TRANSACTION_FAIL_ACTION, missing);
+
             return "Sorry, not enough " + missing + "\n";
         }
     }
@@ -172,12 +180,27 @@ public class CoffeeMachine {
     }
 
 
-    public boolean start() {
-        return loadFromFile(statusFileName);
+    public boolean start(Connection connection) {
+        coffeeMachineRepository = new CoffeeTypeRepository(connection);
+        coffeeMachineRepository.createTable();
+
+        int rows = coffeeMachineRepository.getCoffeeTypeRowCount();
+
+        if (rows < 3){
+            for (CoffeeType coffeeType : coffeeTypes){
+                coffeeMachineRepository.insert(coffeeType);
+            }
+        }
+
+        return true;
     }
 
     public void stop() {
         saveToFile(statusFileName);
+    }
+
+    public TransactionLog getTransactionLog(){
+        return transactionLog;
     }
 
     @Override
