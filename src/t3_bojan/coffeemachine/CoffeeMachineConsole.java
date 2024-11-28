@@ -1,6 +1,8 @@
 package t3_bojan.coffeemachine;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,17 +12,23 @@ public class CoffeeMachineConsole {
     private final String  ADMIN_PASSWORD_CHANGE_MESSAGE = "Enter new admin password:";
     private final String  AdMIN_PASSWORD_CHANGED = "Password is changed";
     private final String  ADMIN_PASSWORD_CHANGE_MESSAGE_ERROR = "Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.";
+    private static final String DB_URL_AND_NAME = "jdbc:h2:./docs/transaction_log_bojan";
+    private Connection connection;
+    private TransactionLogRepository transactionLogRepository;
 
     public static void main(String[] args)  {
         CoffeeMachineConsole console = new CoffeeMachineConsole();
-        DBManager.getInstance().createTable();
         console.run();
     }
 
     void run() {
+        connection = makeDBConnection();
+        transactionLogRepository = new TransactionLogRepository(connection);
+        transactionLogRepository.createTable();
+
         CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
         System.out.println("Welcome to Coffee Machine 1.0 version by Bojan");
-        boolean startedSuccessfully = machine.start();
+        boolean startedSuccessfully = machine.start(connection);
 
         if(!startedSuccessfully) {
             System.out.println("Coffee machine started but without file. Using default values.");
@@ -75,19 +83,20 @@ public class CoffeeMachineConsole {
         if (typeOfCoffeeChoice <= coffeeTypes.size()) {
             String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
             System.out.println(msg);
+            transactionLogRepository.insert(machine.getTransactionLog());
         } else {
             System.out.println("Wrong enter\n");
         }
     }
 
     private void adminMenu(CoffeeMachine machine) {
-        String ch = "";
-        while (!ch.equals("exit")) {
+        String choice = "";
+        while (!choice.equals("exit")) {
             System.out.println(" ");
             System.out.println("Write action (fill, remaining, take, password, log, exit):");
-            ch = scanner.next();
+            choice = scanner.next();
 
-            switch (ch) {
+            switch (choice) {
                 case "fill":
                     System.out.println("Write how many ml of water you want to add:");
                     int water = scanner.nextInt();
@@ -129,7 +138,7 @@ public class CoffeeMachineConsole {
                         break;
 
                         case "log":
-                            for (TransactionLog log : DBManager.getInstance().getTransactionLogs()) {
+                            for (TransactionLog log : transactionLogRepository.getList()) {
                                 System.out.println(log);
                             }
                             break;
@@ -140,7 +149,11 @@ public class CoffeeMachineConsole {
             }
         }
     }
-
-
-
+    private static Connection makeDBConnection() {
+        try {
+            return DriverManager.getConnection(DB_URL_AND_NAME);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
