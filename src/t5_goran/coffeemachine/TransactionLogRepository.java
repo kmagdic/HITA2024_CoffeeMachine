@@ -55,21 +55,22 @@ public class TransactionLogRepository {
 
     public List<TransactionLog> getAllTransactions() {
         String selectSQL = """
-                      SELECT
-                                   transaction_log.id,
-                                   transaction_log.datetime,
-                                   coffee_type.name AS coffee_type,
-                                   transaction_log.status,
-                                   transaction_log.missing_ingredient
-                               FROM
-                                   transaction_log
-                               INNER JOIN
-                                   coffee_type
-                               ON
-                                   transaction_log.coffee_type_id = coffee_type.id
-                               ORDER BY
-                                   transaction_log.datetime DESC;
-       """;
+   SELECT
+            transaction_log.id,
+            transaction_log.datetime,
+            coffee_type.name AS coffee_type,
+            transaction_log.status,
+            transaction_log.missing_ingredient
+        FROM
+            transaction_log
+        INNER JOIN
+            coffee_type
+        ON
+            transaction_log.coffee_type_id = coffee_type.id
+        ORDER BY
+            transaction_log.datetime DESC;
+   """;
+
 
         List<TransactionLog> transactions = new ArrayList<>();
 
