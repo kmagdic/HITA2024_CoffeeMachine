@@ -1,0 +1,68 @@
+2024-11-28 17:12:25 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION_LOG" not found; SQL statement:
+SELECT * FROM transaction_log ORDER BY datetime DESC [42102-200]
+2024-11-28 17:15:16 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "COFFEE_TYPE" already exists; SQL statement:
+CREATE TABLE coffee_type (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), water INT, milk INT, coffee_beans INT, price FLOAT) [42101-200]
+2024-11-28 17:15:38 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION_LOG" not found; SQL statement:
+INSERT INTO transaction_log (coffee_type_id, success, amount) VALUES (?, ?, ?) [42102-200]
+2024-11-28 17:15:52 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION_LOG" not found; SQL statement:
+INSERT INTO transaction_log (coffee_type_id, success, amount) VALUES (?, ?, ?) [42102-200]
+2024-11-28 17:16:37 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION_LOG" already exists; SQL statement:
+    CREATE TABLE transaction_log (
+        id IDENTITY PRIMARY KEY,
+        datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        coffee_type_id INT,
+        success BOOLEAN,
+        amount DECIMAL(10, 2),
+        FOREIGN KEY (coffee_type_id) REFERENCES coffee_type(id)
+    ); [42101-200]
+2024-11-28 17:18:01 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "COFFEE_TYPE" already exists; SQL statement:
+CREATE TABLE coffee_type (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), water INT, milk INT, coffee_beans INT, price FLOAT) [42101-200]
+2024-11-28 17:18:43 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION_LOG" already exists; SQL statement:
+    CREATE TABLE transaction_log (
+        id IDENTITY PRIMARY KEY,
+        datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        coffee_type_id INT,
+        success BOOLEAN,
+        amount DECIMAL(10, 2),
+        FOREIGN KEY (coffee_type_id) REFERENCES coffee_type(id)
+    ); [42101-200]
+2024-11-28 17:19:20 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION_LOG" already exists; SQL statement:
+    CREATE TABLE transaction_log (
+        id IDENTITY PRIMARY KEY,
+        datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        coffee_type_id INT,
+        success BOOLEAN,
+        amount DECIMAL(10, 2),
+        FOREIGN KEY (coffee_type_id) REFERENCES coffee_type(id)
+    ); [42101-200]
+2024-11-28 17:19:24 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION_LOG" already exists; SQL statement:
+    CREATE TABLE transaction_log (
+        id IDENTITY PRIMARY KEY,
+        datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        coffee_type_id INT,
+        success BOOLEAN,
+        amount DECIMAL(10, 2),
+        FOREIGN KEY (coffee_type_id) REFERENCES coffee_type(id)
+    ); [42101-200]
+2024-11-28 17:19:30 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION_LOG" already exists; SQL statement:
+    CREATE TABLE transaction_log (
+        id IDENTITY PRIMARY KEY,
+        datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        coffee_type_id INT,
+        success BOOLEAN,
+        amount DECIMAL(10, 2),
+        FOREIGN KEY (coffee_type_id) REFERENCES coffee_type(id)
+    ); [42101-200]
+2024-11-28 17:19:42 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "COFFEE_TYPE" already exists; SQL statement:
+CREATE TABLE coffee_type (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), water INT, milk INT, coffee_beans INT, price FLOAT) [42101-200]

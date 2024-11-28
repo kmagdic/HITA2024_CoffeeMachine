@@ -11,6 +11,7 @@ public class TransactionLog {
     private String coffeeType;
     private String action;
     private String ingredients;
+    private int coffeeTypeId;
 
     public TransactionLog() {}
 
@@ -24,14 +25,6 @@ public class TransactionLog {
         this.date = LocalDateTime.now();
         this.coffeeType = coffeeType;
         this.action = action;
-    }
-
-    public String getRecord() {
-        String record = date + ", Coffee: " + coffeeType + ", Action: " + action;
-        if (ingredients != null && !ingredients.isEmpty()) {
-            record += ", Ingredients: " + ingredients;
-        }
-        return record;
     }
 
     public Timestamp getDate() {
@@ -66,6 +59,10 @@ public class TransactionLog {
         this.ingredients = ingredients;
     }
 
+    public void setCoffeeTypeId(int coffeeTypeId) {
+        this.coffeeTypeId = coffeeTypeId;
+    }
+
     public String toString() {
         Date formattedDate = null;
         if (date instanceof LocalDateTime) {
@@ -74,7 +71,8 @@ public class TransactionLog {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String formattedDateString = sdf.format(formattedDate);
 
-        return "Date: " + formattedDateString + ", Coffee: " + coffeeType + ", Action: " + action
+        return "Date: " + formattedDateString + ", CoffeeTypeId: " + coffeeTypeId + ", Action: " + action
                 + (ingredients != null && !ingredients.isEmpty() ? ", Ingredients: " + ingredients : "");
     }
+
 }

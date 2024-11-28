@@ -1,21 +1,24 @@
 package t1_mateo.coffeemachine;
 
-import zadatak2.booklibrary.Author;
-
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
 
     Scanner sc = new Scanner(System.in);
-    static Connection connection;
 
     public static void main(String[] args)  {
-        connection = makeDBConnection("docs/CoffeeMachineMateo");
-        createTable();
-        CoffeeMachineConsole console = new CoffeeMachineConsole();
+
+        Connection connection = makeDBConnection("docs/CoffeeMachineMateo");
+        TransactionLogRepository transactionLogRepository = new TransactionLogRepository(connection);
+        CoffeeTypeRepository coffeeTypeRepository = new CoffeeTypeRepository(connection);
+        coffeeTypeRepository.createTable();
+        transactionLogRepository.createTableTransactionLog();
+
+        List<CoffeeType> coffeeTypes = coffeeTypeRepository.getAllCoffeeTypes();
+
+        CoffeeMachineConsole console = new CoffeeMachineConsole(transactionLogRepository, coffeeTypes);
         console.run();
     }
 
@@ -27,61 +30,17 @@ public class CoffeeMachineConsole {
         }
     }
 
-    public static void createTable() {
-        try {
-            String sqlCreateTable = "CREATE TABLE IF NOT EXISTS transaction_log (" +
-                    "date datetime  NOT NULL, " +
-                    "coffee_type text  NOT NULL, " +
-                    "action text NOT NULL, " +
-                    "ingredients text NULL)";
+    private TransactionLogRepository transactionLogRepository;
+    CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
 
-            Statement st = connection.createStatement();
-            st.execute(sqlCreateTable);
-        } catch (SQLException e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void insertLog(TransactionLog log) {
-
-        String insertSql = "INSERT INTO transaction_log (date, coffee_type, action, ingredients) VALUES (?, ?, ?, ?)";
-        try {
-            PreparedStatement ps = connection.prepareStatement(insertSql);
-            ps.setTimestamp(1, log.getDate());
-            ps.setString(2, log.getCoffeeType());
-            ps.setString(3, log.getAction());
-            ps.setString(4, log.getIngredients());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static List<TransactionLog> getLog() {
-        String sqlPrint = "SELECT * FROM transaction_log";
-        List<TransactionLog> resultList = new ArrayList<>();
-
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(sqlPrint);
-            while (rs.next()) {
-                TransactionLog log = new TransactionLog();
-                log.setDate(rs.getTimestamp("date").toLocalDateTime());
-                log.setCoffeeType(rs.getString("coffee_type"));
-                log.setAction(rs.getString("action"));
-                log.setIngredients(rs.getString("ingredients"));
-
-                resultList.add(log);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return resultList;
+    public CoffeeMachineConsole(TransactionLogRepository transactionLogRepository, List<CoffeeType> coffeeTypes) {
+        this.transactionLogRepository = transactionLogRepository;
+        machine.setCoffeeTypes(coffeeTypes);
     }
 
     void run() {
-        CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Mateo");
+
+        System.out.println("Welcome to Coffee Machine 2.0 version by Mateo");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {
@@ -113,9 +72,6 @@ public class CoffeeMachineConsole {
 
                 case "exit":
                     machine.stop();
-                    for (TransactionLog log : machine.getTransactionLogList()) {
-                        insertLog(log);
-                    }
                     System.out.println("Shutting down the machine. Bye!");
                     break;
 
@@ -127,16 +83,24 @@ public class CoffeeMachineConsole {
 
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
-        List<CoffeeType> coffeeTypes = machine.getCoffeeTypes();
-        for (int i = 0; i < coffeeTypes.size(); i++) {
-            System.out.println((i + 1) + " - " + coffeeTypes.get(i).getName());
+        for (int i = 0; i < machine.getCoffeeTypes().size(); i++) {
+            System.out.println((i + 1) + " - " + machine.getCoffeeTypes().get(i).getName());
         }
         System.out.println("Enter your choice: ");
 
-        int typeOfCoffeeChoice = sc.nextInt();
-        if (typeOfCoffeeChoice <= coffeeTypes.size()) {
-            String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
+        int choice = sc.nextInt();
+        if (choice <= machine.getCoffeeTypes().size()) {
+            CoffeeType chosenCoffeeType = machine.getCoffeeTypes().get(choice - 1);
+            String msg = machine.buyCoffee(chosenCoffeeType);
             System.out.println(msg);
+
+            String action = msg.contains("not enough") ? "Not bought" : "Bought";
+            String missingIngredients = msg.contains("not enough") ? machine.calculateWhichIngredientIsMissing(chosenCoffeeType) : null;
+
+            TransactionLog log = new TransactionLog(chosenCoffeeType.getName(), action, missingIngredients);
+
+            transactionLogRepository.insertLog(log, chosenCoffeeType);
+
         } else {
             System.out.println("Wrong enter\n");
         }
@@ -163,7 +127,7 @@ public class CoffeeMachineConsole {
                     break;
 
                 case "take":
-                    float amount = machine.takeMoney();
+                    double amount = machine.takeMoney();
                     System.out.println("I gave you $" + amount + "\n");
                     break;
 
@@ -188,11 +152,11 @@ public class CoffeeMachineConsole {
                             System.out.println("Please enter stronger password! It has to be a least 7 characters and it needs has at least one number.");
                         }
                     }
+                    break;
 
                 case "log":
                     System.out.println("Transaction log:");
-
-                    for (TransactionLog log: getLog()) {
+                    for (TransactionLog log : transactionLogRepository.getLog()) {
                         System.out.println(log);
                     }
                     break;

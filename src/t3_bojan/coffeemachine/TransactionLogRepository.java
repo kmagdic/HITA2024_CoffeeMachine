@@ -21,7 +21,9 @@ public class TransactionLogRepository implements Repository<TransactionLog> {
                 "date_time TIMESTAMP NOT NULL,\n" +
                 "coffee_name VARCHAR(255) NOT NULL,\n" +
                 "transaction_action VARCHAR(255) NOT NULL,\n" +
-                "missing_ingredient VARCHAR(255)\n" +
+                "missing_ingredient VARCHAR(255) NULL,\n" +
+                "coffee_type_id integer NOT NULL,\n" +
+                "FOREIGN KEY (coffee_type_id) REFERENCES coffee_type(id)\n" +
                 ");";
 
         try (Statement stmt = connection.createStatement()) {
@@ -55,14 +57,6 @@ public class TransactionLogRepository implements Repository<TransactionLog> {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.out.println("Can't close connection");
-                }
-            }
         }
 
         return transactionLogs;
@@ -71,15 +65,16 @@ public class TransactionLogRepository implements Repository<TransactionLog> {
     @Override
     public void insert(TransactionLog transactionLog) {
 
-        String insertSqlWithoutMissingIngredient = "INSERT INTO " + DBManager.TABLE_NAME + " (date_time, coffee_name, transaction_action) VALUES (?, ?, ?)";
-        String insertSqlWithMissingIngredient = "INSERT INTO " + DBManager.TABLE_NAME + " (date_time, coffee_name, transaction_action, missing_ingredient) VALUES (?, ?, ?, ?)";
+        String insertSqlWithoutMissingIngredient = "INSERT INTO " + TABLE_NAME + " (date_time, coffee_name, transaction_action, coffee_type_id) VALUES (?, ?, ?, ?)";
+        String insertSqlWithMissingIngredient = "INSERT INTO " + TABLE_NAME + " (date_time, coffee_name, transaction_action, coffee_type_id, missing_ingredient) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(transactionLog.getMissingIngredient() == null ? insertSqlWithoutMissingIngredient : insertSqlWithMissingIngredient)) {
             stmt.setTimestamp(1, java.sql.Timestamp.valueOf(transactionLog.getDateTime()));
             stmt.setString(2, transactionLog.getCoffeeType().getName());
             stmt.setString(3, transactionLog.getTransactionAction());
+            stmt.setInt(4, transactionLog.getCoffeeType().getId());
             if (transactionLog.getMissingIngredient() != null) {
-                stmt.setString(4, transactionLog.getMissingIngredient());
+                stmt.setString(5, transactionLog.getMissingIngredient());
             }
             stmt.executeUpdate();
         } catch (Exception e) {

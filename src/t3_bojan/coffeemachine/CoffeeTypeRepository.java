@@ -53,14 +53,6 @@ public class CoffeeTypeRepository implements Repository<CoffeeType> {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.out.println("Can't close connection");
-                }
-            }
         }
         return coffeeTypes;
     }

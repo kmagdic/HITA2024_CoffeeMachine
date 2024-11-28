@@ -10,6 +10,7 @@ public class TransactionLog {
     private CoffeeType coffeeType;
     private String transactionAction;
     private String missingIngredient;
+    private int coffeeTypeId;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     public TransactionLog() {
@@ -82,6 +83,14 @@ public class TransactionLog {
 
     public void setMissingIngredient(String missingIngredient) {
         this.missingIngredient = missingIngredient;
+    }
+
+    public int getCoffeeTypeId() {
+        return coffeeTypeId;
+    }
+
+    public void setCoffeeTypeId(int coffeeTypeId) {
+        this.coffeeTypeId = coffeeTypeId;
     }
 
     @Override

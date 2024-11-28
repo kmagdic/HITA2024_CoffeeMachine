@@ -2,18 +2,20 @@ package t1_mateo.coffeemachine;
 
 public class CoffeeType {
 
+    private int id;
     private int milkNeeded;
     private int waterNeeded;
     private int coffeeBeansNeeded;
-    private int price;
+    private double price;
     private String name;
 
-    public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+    public CoffeeType(int id, String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, double price) {
+        this.id = id;
+        this.name = name;
         this.milkNeeded = milkNeeded;
         this.waterNeeded = waterNeeded;
         this.coffeeBeansNeeded = coffeeBeansNeeded;
         this.price = price;
-        this.name = name;
     }
 
     public String getName() {
@@ -24,7 +26,7 @@ public class CoffeeType {
         this.name = name;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
@@ -55,7 +57,12 @@ public class CoffeeType {
     public void setCoffeeBeansNeeded(int coffeeBeansNeeded) {
         this.coffeeBeansNeeded = coffeeBeansNeeded;
     }
+
+    public int getId() {
+        return id;
+    }
 }
+
 
 
 

@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class TransactionLog {
+
     private int id;
-    private LocalDateTime dateTime;
-    private String coffeeType;
-    private String status;
-    private String missingIngredient;
+    private final LocalDateTime dateTime;
+    private final String coffeeType;
+    private final String status;
+    private final String missingIngredient;
 
     public TransactionLog(int id, LocalDateTime dateTime, String coffeeType, String status, String missingIngredient) {
         this.id = id;
@@ -26,7 +27,7 @@ public class TransactionLog {
             return "Date/time: " + formattedDateTime + ", coffee type: " + coffeeType + ", action: " + status;
         } else {
             return "Date/time: " + formattedDateTime + ", coffee type: " + coffeeType + ", action: " + status +
-                    ", no enough ingredients: " + missingIngredient;
+                    ", not enough: " + missingIngredient;
         }
     }
 }

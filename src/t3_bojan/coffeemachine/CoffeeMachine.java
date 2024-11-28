@@ -15,6 +15,7 @@ public class CoffeeMachine {
     protected String adminUsername = "admin";
     protected String adminPassword = "admin12345";
     protected String statusFileName = "src/t3_bojan/coffeemachine/coffee_machine_status.txt";
+    protected boolean isLoadedFromDB = false;
     private List<CoffeeType> coffeeTypes = new ArrayList<>();
     private TransactionLog transactionLog;
     private CoffeeTypeRepository coffeeTypeRepository;
@@ -31,9 +32,9 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes.add(new CoffeeType("Espresso", 350, 0, 16, 4));
-        coffeeTypes.add(new CoffeeType("Latte", 350, 75, 20, 7));
-        coffeeTypes.add(new CoffeeType("Cappuccino", 200, 100, 12, 6));
+        coffeeTypes.add(new CoffeeType(1, "Espresso", 350, 0, 16, 4));
+        coffeeTypes.add(new CoffeeType(2, "Latte", 350, 75, 20, 7));
+        coffeeTypes.add(new CoffeeType(3, "Cappuccino", 200, 100, 12, 6));
     }
 
     public List<CoffeeType> getCoffeeTypes() {
@@ -142,7 +143,7 @@ public class CoffeeMachine {
                 coffeeTypeRepository.insert(coffeeType);
             }
         }
-        return true;
+        return isLoadedFromDB;
     }
 
 
