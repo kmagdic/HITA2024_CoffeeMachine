@@ -12,6 +12,7 @@ public class CoffeeMachineConsole {
     public static void main(String[] args)  {
         // Inicijalizacija baze
         TransactionDB.createTableIfNotExists();
+        TransactionDB.initializeCoffeeTypes();
 
         CoffeeMachineConsole console = new CoffeeMachineConsole();
         console.run();
@@ -79,7 +80,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, password, log, exit):");
+            System.out.println("Write action (fill, remaining, coffee_menu, take, password, log, exit):");
             ch = sc.next();
             switch (ch) {
                 case "fill":
@@ -111,11 +112,67 @@ public class CoffeeMachineConsole {
                     System.out.println(machine.getCups() + " cups");
                     System.out.println("$" + machine.getMoney() + " of money");
                     break;
+                case "coffee_menu":
+                    coffeeMenu(machine);
+                    break;
                 case "exit":
                     break;
                 default:
                     System.out.println("Unknown action. Please try again.");
 
+            }
+        }
+    }
+    private void coffeeMenu(CoffeeMachine machine) {
+        String choice = "";
+        while (!choice.equals("exit")) {
+            System.out.println(" ");
+            System.out.println("Manage coffee types (add, update, delete, list, exit):");
+            choice = sc.next();
+            switch (choice) {
+                case "add":
+                    System.out.println("Enter name: ");
+                    String name = sc.next();
+                    System.out.println("Enter water needed: ");
+                    int water = sc.nextInt();
+                    System.out.println("Enter milk needed: ");
+                    int milk = sc.nextInt();
+                    System.out.println("Enter coffee beans needed: ");
+                    int beans = sc.nextInt();
+                    System.out.println("Enter price: ");
+                    int price = sc.nextInt();
+                    machine.addCoffeeType(name, water, milk, beans, price);
+                    break;
+                case "update":
+                    System.out.println("Enter name of coffee to update: ");
+                    name = sc.next();
+                    System.out.println("Enter new water needed: ");
+                    water = sc.nextInt();
+                    System.out.println("Enter new milk needed: ");
+                    milk = sc.nextInt();
+                    System.out.println("Enter new coffee beans needed: ");
+                    beans = sc.nextInt();
+                    System.out.println("Enter new price: ");
+                    price = sc.nextInt();
+                    machine.updateCoffeeType(name, water, milk, beans, price);
+                    break;
+                case "delete":
+                    System.out.println("Enter name of coffee to delete: ");
+                    name = sc.next();
+                    machine.deleteCoffeeType(name);
+                    break;
+                case "list":
+                    System.out.println("Available coffee types:");
+                    for (CoffeeType coffeeType : machine.getCoffeeTypes()) {
+                        System.out.println("Name: " + coffeeType.getName() + ", Water: " + coffeeType.getWaterNeeded()
+                                + ", Milk: " + coffeeType.getMilkNeeded() + ", Beans: " + coffeeType.getCoffeeBeansNeeded()
+                                + ", Price: $" + coffeeType.getPrice());
+                    }
+                    break;
+                case "exit":
+                    break;
+                default:
+                    System.out.println("Unknown option. Please try again.");
             }
         }
     }
