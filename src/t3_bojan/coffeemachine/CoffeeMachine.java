@@ -15,6 +15,7 @@ public class CoffeeMachine {
     protected String adminUsername = "admin";
     protected String adminPassword = "admin12345";
     protected String statusFileName = "src/t3_bojan/coffeemachine/coffee_machine_status.txt";
+    protected boolean isLoadedFromDB = false;
     private List<CoffeeType> coffeeTypes = new ArrayList<>();
     private TransactionLog transactionLog;
     private CoffeeTypeRepository coffeeTypeRepository;
@@ -142,7 +143,7 @@ public class CoffeeMachine {
                 coffeeTypeRepository.insert(coffeeType);
             }
         }
-        return true;
+        return isLoadedFromDB;
     }
 
 

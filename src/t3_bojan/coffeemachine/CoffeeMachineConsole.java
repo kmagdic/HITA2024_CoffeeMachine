@@ -25,7 +25,7 @@ public class CoffeeMachineConsole {
         connection = makeDBConnection();
         transactionLogRepository = new TransactionLogRepository(connection);
 
-        CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
+        CoffeeMachine machine = new CoffeeMachineWithDB(connection,400, 540, 120, 9, 550);
         System.out.println("Welcome to Coffee Machine 1.0 version by Bojan");
         boolean startedSuccessfully = machine.start(connection);
         transactionLogRepository.createTable();

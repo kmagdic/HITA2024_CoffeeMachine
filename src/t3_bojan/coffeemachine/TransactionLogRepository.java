@@ -57,14 +57,6 @@ public class TransactionLogRepository implements Repository<TransactionLog> {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.out.println("Can't close connection");
-                }
-            }
         }
 
         return transactionLogs;
