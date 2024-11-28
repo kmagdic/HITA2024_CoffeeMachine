@@ -13,11 +13,13 @@ public class CoffeeMachineConsole {
     private TransactionLogDAO transactionLogDAO;
 
     public static void main(String[] args) {
-        CoffeeMachineConsole console = new CoffeeMachineConsole();
+        // Pass the machine ID to the constructor
+        int machineId = 1; // Or any other ID you want to pass
+        CoffeeMachineConsole console = new CoffeeMachineConsole(machineId);
         console.run();
     }
 
-    public CoffeeMachineConsole() {
+    public CoffeeMachineConsole(int id) {
         try {
             // Establish connection to the database
             connection = DriverManager.getConnection("jdbc:h2:./src/t5_marin/coffeemachine/coffee_machine_db.mv.db", "marin", "");
@@ -28,18 +30,17 @@ public class CoffeeMachineConsole {
             // Check if the coffee_type table exists, if not, create it and add default coffee types
             checkAndCreateCoffeeTypeTable();
 
+            // Set machineId to the passed ID
+            this.machineId = id;
+            this.machine = getCoffeeMachineFromDB(machineId);
+
         } catch (SQLException e) {
             System.out.println("Error connecting to the database: " + e.getMessage());
-            return;
         }
     }
 
     void run() {
-        System.out.println("Choose a coffee machine by ID to activate: ");
-        int machineId = sc.nextInt();
-        this.machineId = machineId;
-
-        this.machine = getCoffeeMachineFromDB(machineId);
+        checkAndCreateMachineTables();
 
         if (this.machine == null) {
             System.out.println("Coffee machine with ID " + machineId + " not found.");
@@ -48,38 +49,94 @@ public class CoffeeMachineConsole {
 
         System.out.println("Welcome to Coffee Machine " + machineId + " Console!");
 
-        String action = "";
+        while (true) {
+            System.out.println("\nMain Menu:");
+            System.out.println("1. Buy coffee");
+            System.out.println("2. Login as admin");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = sc.nextInt();
 
-        while (!action.equals("exit")) {
-            System.out.println("Write action (buy, login, exit): ");
-            action = sc.next();
-            switch (action) {
-                case "buy":
+            switch (choice) {
+                case 1:
                     buyAction();
                     break;
-
-                case "login":
-                    System.out.println("Enter username: ");
-                    String username = sc.next();
-                    System.out.println("Enter password: ");
-                    String password = sc.next();
-
-                    if (machine.checkPassword(password)) {
-                        adminMenu();
-                    } else {
-                        System.out.println("Wrong password\n");
-                    }
+                case 2:
+                    loginAction();
                     break;
-
-                case "exit":
+                case 3:
                     System.out.println("Shutting down the machine. Bye!");
-                    break;
-
+                    return;
                 default:
-                    System.out.println("No such option");
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
     }
+    private void checkAndCreateMachineTables() {
+        // Check and create coffee_type_<machineId> table
+        String checkCoffeeTypeTableQuery = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'coffee_type_" + machineId + "'";
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery(checkCoffeeTypeTableQuery);
+
+            if (rs.next() && rs.getInt(1) == 0) {
+                // Create the coffee_type_<machineId> table
+                String createCoffeeTypeTableQuery = "CREATE TABLE coffee_type_" + machineId + " (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                        "name VARCHAR(255), " +
+                        "water INT, " +
+                        "milk INT, " +
+                        "coffee_beans INT, " +
+                        "price FLOAT)";
+                stmt.executeUpdate(createCoffeeTypeTableQuery);
+
+                // Retrieve default coffee types from the global coffee_type table
+                String fetchDefaultsQuery = "SELECT name, water, milk, coffee_beans, price FROM coffee_type";
+                ResultSet coffeeTypesResultSet = stmt.executeQuery(fetchDefaultsQuery);
+
+                // Insert the default coffee types into the coffee_type_<machineId> table
+                while (coffeeTypesResultSet.next()) {
+                    String name = coffeeTypesResultSet.getString("name");
+                    int water = coffeeTypesResultSet.getInt("water");
+                    int milk = coffeeTypesResultSet.getInt("milk");
+                    int coffeeBeans = coffeeTypesResultSet.getInt("coffee_beans");
+                    float price = coffeeTypesResultSet.getFloat("price");
+
+                    // Insert each coffee type into the machine-specific table
+                    String insertCoffeeTypeQuery = "INSERT INTO coffee_type_" + machineId + " (name, water, milk, coffee_beans, price) VALUES (?, ?, ?, ?, ?)";
+                    try (PreparedStatement pstmt = connection.prepareStatement(insertCoffeeTypeQuery)) {
+                        pstmt.setString(1, name);
+                        pstmt.setInt(2, water);
+                        pstmt.setInt(3, milk);
+                        pstmt.setInt(4, coffeeBeans);
+                        pstmt.setFloat(5, price);
+                        pstmt.executeUpdate();
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error creating or initializing coffee_type_" + machineId + " table: " + e.getMessage());
+        }
+
+        // Check and create transaction_log_<machineId> table
+        String checkTransactionLogTableQuery = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'transaction_log_" + machineId + "'";
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery(checkTransactionLogTableQuery);
+
+            if (rs.next() && rs.getInt(1) == 0) {
+                // Create the transaction_log_<machineId> table
+                String createTransactionLogTableQuery = "CREATE TABLE transaction_log_" + machineId + " (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                        "datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
+                        "coffee_type_id INT, " +
+                        "success BOOLEAN, " +
+                        "amount FLOAT)";
+                stmt.executeUpdate(createTransactionLogTableQuery);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error creating or initializing transaction_log_" + machineId + " table: " + e.getMessage());
+        }
+    }
+
 
     private CoffeeMachine getCoffeeMachineFromDB(int machineId) {
         String query = "SELECT * FROM coffee_machine WHERE id = ?";
@@ -107,26 +164,21 @@ public class CoffeeMachineConsole {
 
     private void buyAction() {
         System.out.println("Buying coffee... Choose coffee type:");
-        // Here you can provide a list of available coffee types to the user
         List<CoffeeType> coffeeTypes = coffeeTypeDAO.getAllCoffeeTypes(connection);
         for (CoffeeType coffeeType : coffeeTypes) {
             System.out.println(coffeeType);
         }
-        System.out.println("Choose coffee type ID to buy:");
+        System.out.print("Enter coffee type ID to buy: ");
         int coffeeId = sc.nextInt();
 
         CoffeeType coffeeType = coffeeTypeDAO.getCoffeeTypeById(coffeeId, connection);
         if (coffeeType != null) {
             System.out.println("You bought: " + coffeeType.getName());
 
-            // Log the transaction after a successful purchase
             try {
-                // Here we assume the purchase is always successful for simplicity
-                // You can modify the success flag and the amount accordingly
-                boolean success = true;
+                boolean success = true; // For simplicity, assume the purchase is successful
                 float amount = coffeeType.getPrice();
 
-                // Log the transaction
                 transactionLogDAO.logTransaction(coffeeId, success, amount);
             } catch (SQLException e) {
                 System.out.println("Error logging transaction: " + e.getMessage());
@@ -138,179 +190,99 @@ public class CoffeeMachineConsole {
         updateMachineInDB();
     }
 
+    private void loginAction() {
+        System.out.print("Enter admin password: ");
+        String password = sc.next();
+
+        if (machine.checkPassword(password)) {
+            adminMenu();
+        } else {
+            System.out.println("Wrong password.");
+        }
+    }
 
     private void adminMenu() {
-        String ch = "";
-        while (!ch.equals("exit")) {
-            System.out.println("\nWrite action (fill, remaining, take, password, log, coffee, exit):");
-            ch = sc.next();
+        while (true) {
+            System.out.println("\nAdmin Menu:");
+            System.out.println("1. Fill resources");
+            System.out.println("2. View remaining resources");
+            System.out.println("3. Take money");
+            System.out.println("4. Change password");
+            System.out.println("5. View transaction log");
+            System.out.println("6. Manage coffee types");
+            System.out.println("7. Exit to main menu");
+            System.out.print("Enter your choice: ");
+            int choice = sc.nextInt();
 
-            switch (ch) {
-                case "fill":
+            switch (choice) {
+                case 1:
                     handleFill();
                     break;
-
-                case "take":
-                    handleTakeMoney();
-                    break;
-
-                case "remaining":
+                case 2:
                     handleRemaining();
                     break;
-
-                case "password":
+                case 3:
+                    handleTakeMoney();
+                    break;
+                case 4:
                     handleChangePassword();
                     break;
-
-                case "log":
+                case 5:
                     handleTransactionLog();
                     break;
-
-                case "coffee":
-                    coffeeMenu();  // New menu for managing coffee types
+                case 6:
+                    coffeeMenu();
                     break;
-
-                case "exit":
-                    break;
-
+                case 7:
+                    return;
                 default:
-                    System.out.println("No such option");
+                    System.out.println("Invalid choice. Please try again.");
             }
-
-            // Update machine in DB after every admin action
-            updateMachineInDB();
         }
     }
 
     private void coffeeMenu() {
-        String option = "";
-        while (!option.equals("exit")) {
-            System.out.println("\nCoffee Menu: (add, remove, list, update, exit):");
-            option = sc.next();
+        while (true) {
+            System.out.println("\nCoffee Management Menu:");
+            System.out.println("1. Add coffee");
+            System.out.println("2. Remove coffee");
+            System.out.println("3. List coffee types");
+            System.out.println("4. Update coffee details");
+            System.out.println("5. Exit to admin menu");
+            System.out.print("Enter your choice: ");
+            int choice = sc.nextInt();
 
-            switch (option) {
-                case "add":
+            switch (choice) {
+                case 1:
                     handleAddCoffee();
                     break;
-
-                case "remove":
+                case 2:
                     handleRemoveCoffee();
                     break;
-
-                case "list":
+                case 3:
                     handleListCoffee();
                     break;
-
-                case "update":
+                case 4:
                     handleUpdateCoffee();
                     break;
-
-                case "exit":
-                    break;
-
+                case 5:
+                    return;
                 default:
-                    System.out.println("No such option");
+                    System.out.println("Invalid choice. Please try again.");
             }
-        }
-    }
-
-    private void handleAddCoffee() {
-        System.out.println("Enter coffee name:");
-        String coffeeName = sc.next();
-        System.out.println("Enter amount of water needed:");
-        int waterNeeded = sc.nextInt();
-        System.out.println("Enter amount of milk needed:");
-        int milkNeeded = sc.nextInt();
-        System.out.println("Enter amount of coffee beans needed:");
-        int coffeeBeansNeeded = sc.nextInt();
-        System.out.println("Enter price of the coffee:");
-        float price = sc.nextFloat();
-
-        CoffeeType newCoffee = new CoffeeType(0, coffeeName, waterNeeded, milkNeeded, coffeeBeansNeeded, price);
-        try {
-            coffeeTypeDAO.insertCoffeeType(newCoffee, connection);
-            System.out.println("Coffee added successfully.");
-        } catch (SQLException e) {
-            System.out.println("Error adding coffee: " + e.getMessage());
-        }
-    }
-
-    private void handleRemoveCoffee() {
-        System.out.println("Enter coffee ID to remove:");
-        int coffeeId = sc.nextInt();
-
-        CoffeeType coffeeType = coffeeTypeDAO.getCoffeeTypeById(coffeeId, connection);
-        if (coffeeType != null) {
-            String deleteSQL = "DELETE FROM coffee_type WHERE id = ?";
-            try (PreparedStatement pstmt = connection.prepareStatement(deleteSQL)) {
-                pstmt.setInt(1, coffeeId);
-                pstmt.executeUpdate();
-                System.out.println("Coffee removed successfully.");
-            } catch (SQLException e) {
-                System.out.println("Error removing coffee: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Invalid coffee ID.");
-        }
-    }
-
-    private void handleListCoffee() {
-        List<CoffeeType> coffeeTypes = coffeeTypeDAO.getAllCoffeeTypes(connection);
-        System.out.println("Available coffee types:");
-        for (CoffeeType coffeeType : coffeeTypes) {
-            System.out.println(coffeeType);
-        }
-    }
-
-    private void handleUpdateCoffee() {
-        System.out.println("Enter coffee ID to update:");
-        int coffeeId = sc.nextInt();
-
-        CoffeeType coffeeType = coffeeTypeDAO.getCoffeeTypeById(coffeeId, connection);
-        if (coffeeType != null) {
-            System.out.println("Enter new name for coffee:");
-            String coffeeName = sc.next();
-            System.out.println("Enter new amount of water needed:");
-            int waterNeeded = sc.nextInt();
-            System.out.println("Enter new amount of milk needed:");
-            int milkNeeded = sc.nextInt();
-            System.out.println("Enter new amount of coffee beans needed:");
-            int coffeeBeansNeeded = sc.nextInt();
-            System.out.println("Enter new price of coffee:");
-            float price = sc.nextFloat();
-
-            CoffeeType updatedCoffee = new CoffeeType(coffeeId, coffeeName, waterNeeded, milkNeeded, coffeeBeansNeeded, price);
-            String updateSQL = "UPDATE coffee_type SET name = ?, water = ?, milk = ?, coffee_beans = ?, price = ? WHERE id = ?";
-            try (PreparedStatement pstmt = connection.prepareStatement(updateSQL)) {
-                pstmt.setString(1, updatedCoffee.getName());
-                pstmt.setInt(2, updatedCoffee.getWaterNeeded());
-                pstmt.setInt(3, updatedCoffee.getMilkNeeded());
-                pstmt.setInt(4, updatedCoffee.getCoffeeBeansNeeded());
-                pstmt.setFloat(5, updatedCoffee.getPrice());
-                pstmt.setInt(6, coffeeId);
-                pstmt.executeUpdate();
-                System.out.println("Coffee updated successfully.");
-            } catch (SQLException e) {
-                System.out.println("Error updating coffee: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Coffee not found.");
         }
     }
 
     private void handleFill() {
-        System.out.println("Fill the resources...");
+        System.out.print("Enter amount of water to add: ");
         int water = sc.nextInt();
+        System.out.print("Enter amount of milk to add: ");
         int milk = sc.nextInt();
+        System.out.print("Enter amount of coffee beans to add: ");
         int coffeeBeans = sc.nextInt();
+        System.out.print("Enter number of cups to add: ");
         int cups = sc.nextInt();
         machine.fillResources(water, milk, coffeeBeans, cups);
-        updateMachineInDB();
-    }
-
-    private void handleTakeMoney() {
-        float amount = machine.takeMoney();
-        System.out.println("I gave you $" + amount + "\n");
         updateMachineInDB();
     }
 
@@ -319,8 +291,14 @@ public class CoffeeMachineConsole {
         System.out.println(machine);
     }
 
+    private void handleTakeMoney() {
+        float amount = machine.takeMoney();
+        System.out.println("I gave you $" + amount + ".");
+        updateMachineInDB();
+    }
+
     private void handleChangePassword() {
-        System.out.println("Enter new password:");
+        System.out.print("Enter new password: ");
         String newPassword = sc.next();
         machine.setPassword(newPassword);
         System.out.println("Password updated successfully.");
@@ -345,7 +323,6 @@ public class CoffeeMachineConsole {
         }
     }
 
-
     private void updateMachineInDB() {
         String updateQuery = "UPDATE coffee_machine SET water = ?, milk = ?, coffee_beans = ?, cups = ?, money = ? WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(updateQuery)) {
@@ -368,7 +345,6 @@ public class CoffeeMachineConsole {
             ResultSet rs = stmt.executeQuery(checkTableQuery);
 
             if (rs.next() && rs.getInt(1) == 0) {
-                // Create the coffee_type table if it doesn't exist
                 String createTableQuery = "CREATE TABLE coffee_type (" +
                         "id INT AUTO_INCREMENT PRIMARY KEY, " +
                         "name VARCHAR(255), " +
@@ -377,20 +353,108 @@ public class CoffeeMachineConsole {
                         "coffee_beans INT, " +
                         "price FLOAT)";
                 stmt.executeUpdate(createTableQuery);
-                System.out.println("Created 'coffee_type' table.");
 
-                // Add default coffee types to the table
-                addDefaultCoffeeTypes();
+                // Add default coffee types
+                String insertDefaults = "INSERT INTO coffee_type (name, water, milk, coffee_beans, price) VALUES " +
+                        "('Espresso', 50, 0, 18, 1.50), " +
+                        "('Latte', 200, 150, 24, 2.50), " +
+                        "('Cappuccino', 200, 100, 24, 3.00)";
+                stmt.executeUpdate(insertDefaults);
             }
         } catch (SQLException e) {
-            System.out.println("Error checking or creating 'coffee_type' table: " + e.getMessage());
+            System.out.println("Error creating or initializing coffee_type table: " + e.getMessage());
         }
     }
 
-    private void addDefaultCoffeeTypes() throws SQLException {
-        coffeeTypeDAO.insertCoffeeType(new CoffeeType(1,"Espresso", 350, 0, 16, 4), connection);
-        coffeeTypeDAO.insertCoffeeType(new CoffeeType(2,"Latte", 350, 75, 20, 7), connection);
-        coffeeTypeDAO.insertCoffeeType(new CoffeeType(3,"Cappuccino", 200, 100, 12, 6), connection);
-        System.out.println("Default coffee types added.");
+    private void handleAddCoffee() {
+        System.out.print("Enter coffee name: ");
+        String name = sc.next();
+        System.out.print("Enter water amount: ");
+        int water = sc.nextInt();
+        System.out.print("Enter milk amount: ");
+        int milk = sc.nextInt();
+        System.out.print("Enter coffee beans amount: ");
+        int coffeeBeans = sc.nextInt();
+        System.out.print("Enter coffee price: ");
+        float price = sc.nextFloat();
+
+        String insertQuery = "INSERT INTO coffee_type (name, water, milk, coffee_beans, price) VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+            pstmt.setString(1, name);
+            pstmt.setInt(2, water);
+            pstmt.setInt(3, milk);
+            pstmt.setInt(4, coffeeBeans);
+            pstmt.setFloat(5, price);
+            pstmt.executeUpdate();
+            System.out.println("Coffee type added successfully.");
+        } catch (SQLException e) {
+            System.out.println("Error adding coffee type: " + e.getMessage());
+        }
+    }
+
+    private void handleRemoveCoffee() {
+        System.out.print("Enter coffee type ID to remove: ");
+        int coffeeId = sc.nextInt();
+
+        String deleteQuery = "DELETE FROM coffee_type WHERE id = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
+            pstmt.setInt(1, coffeeId);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Coffee type removed successfully.");
+            } else {
+                System.out.println("No coffee type found with that ID.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error removing coffee type: " + e.getMessage());
+        }
+    }
+
+    private void handleListCoffee() {
+        List<CoffeeType> coffeeTypes = coffeeTypeDAO.getAllCoffeeTypes(connection);
+        System.out.println("Coffee Types:");
+        for (CoffeeType coffeeType : coffeeTypes) {
+            System.out.println(coffeeType);
+        }
+    }
+
+    private void handleUpdateCoffee() {
+        System.out.print("Enter coffee type ID to update: ");
+        int coffeeId = sc.nextInt();
+
+        CoffeeType coffeeType = coffeeTypeDAO.getCoffeeTypeById(coffeeId, connection);
+        if (coffeeType == null) {
+            System.out.println("Coffee type not found.");
+            return;
+        }
+
+        System.out.print("Enter new name (current: " + coffeeType.getName() + "): ");
+        String name = sc.next();
+        System.out.print("Enter new water amount (current: " + coffeeType.getWaterNeeded() + "): ");
+        int water = sc.nextInt();
+        System.out.print("Enter new milk amount (current: " + coffeeType.getMilkNeeded() + "): ");
+        int milk = sc.nextInt();
+        System.out.print("Enter new coffee beans amount (current: " + coffeeType.getCoffeeBeansNeeded() + "): ");
+        int coffeeBeans = sc.nextInt();
+        System.out.print("Enter new price (current: " + coffeeType.getPrice() + "): ");
+        float price = sc.nextFloat();
+
+        String updateQuery = "UPDATE coffee_type SET name = ?, water = ?, milk = ?, coffee_beans = ?, price = ? WHERE id = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(updateQuery)) {
+            pstmt.setString(1, name);
+            pstmt.setInt(2, water);
+            pstmt.setInt(3, milk);
+            pstmt.setInt(4, coffeeBeans);
+            pstmt.setFloat(5, price);
+            pstmt.setInt(6, coffeeId);
+            pstmt.executeUpdate();
+            System.out.println("Coffee type updated successfully.");
+        } catch (SQLException e) {
+            System.out.println("Error updating coffee type: " + e.getMessage());
+        }
     }
 }

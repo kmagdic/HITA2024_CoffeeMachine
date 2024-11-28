@@ -1,83 +1,34 @@
 package t5_marin.coffeemachine;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Scanner;
 
 public class CoffeeMachineManager {
     private static final Scanner sc = new Scanner(System.in);
     private static Connection connection;
+    private static CoffeeMachineManagerDB dbManager;
 
     public static void main(String[] args) {
         try {
             // Establishing connection to the database
             connection = DriverManager.getConnection("jdbc:h2:./src/t5_marin/coffeemachine/coffee_machine_db.mv.db", "marin", "");
 
-            // Check if connection is successful
-            if (connection != null) {
-                System.out.println("Connection successful!");
-            }
+            // Initialize dbManager with the connection
+            dbManager = new CoffeeMachineManagerDB(connection);
 
-            // Initialize manager and check for table existence
-            CoffeeMachineManager manager = new CoffeeMachineManager();
-            manager.checkAndCreateTable();
+            // Check and create necessary tables
+            dbManager.checkAndCreateTable();
 
             // Start the Coffee Machine Manager functionality
-            manager.run();
+            run();
         } catch (SQLException e) {
             System.out.println("Database connection error: " + e.getMessage());
         }
     }
 
-    // Check and create necessary tables
-    public void checkAndCreateTable() {
-        if (connection == null) {
-            throw new IllegalStateException("Database connection is not established.");
-        }
-
-        try {
-            DatabaseMetaData metaData = connection.getMetaData();
-            ResultSet tables = metaData.getTables(null, null, "COFFEE_MACHINE", null);
-
-            if (!tables.next()) {
-                System.out.println("Table 'coffee_machine' not found. Creating the table...");
-                String createTableSQL = "CREATE TABLE coffee_machine (" +
-                        "id INT PRIMARY KEY AUTO_INCREMENT, " +
-                        "water INT, " +
-                        "milk INT, " +
-                        "coffee_beans INT, " +
-                        "cups INT, " +
-                        "money FLOAT)";
-                try (Statement stmt = connection.createStatement()) {
-                    stmt.executeUpdate(createTableSQL);
-                    System.out.println("Table 'coffee_machine' created.");
-                }
-            } else {
-                System.out.println("Table 'coffee_machine' found.");
-            }
-
-            // Create coffee_types table if not already present
-            tables = metaData.getTables(null, null, "COFFEE_TYPES", null);
-            if (!tables.next()) {
-                System.out.println("Table 'coffee_types' not found. Creating the table...");
-                String createCoffeeTypesSQL = "CREATE TABLE coffee_types (" +
-                        "id INT PRIMARY KEY AUTO_INCREMENT, " +
-                        "name VARCHAR(255), " +
-                        "description TEXT)";
-                try (Statement stmt = connection.createStatement()) {
-                    stmt.executeUpdate(createCoffeeTypesSQL);
-                    System.out.println("Table 'coffee_types' created.");
-                }
-            } else {
-                System.out.println("Table 'coffee_types' found.");
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error checking or creating tables: " + e.getMessage());
-        }
-    }
-
     // Run the Coffee Machine Manager's main functionality
-    public void run() {
+    public static void run() {
         System.out.println("Coffee Machine Manager");
         int action = 0;
 
@@ -118,7 +69,7 @@ public class CoffeeMachineManager {
     }
 
     // Add a new coffee machine to the database
-    public void addCoffeeMachine() {
+    public static void addCoffeeMachine() {
         System.out.println("Enter coffee machine details:");
 
         System.out.print("Enter water amount (ml): ");
@@ -136,45 +87,21 @@ public class CoffeeMachineManager {
         System.out.print("Enter amount of money ($): ");
         float money = sc.nextFloat();
 
-        String insertSQL = "INSERT INTO coffee_machine (water, milk, coffee_beans, cups, money) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setInt(1, water);
-            pstmt.setInt(2, milk);
-            pstmt.setInt(3, coffeeBeans);
-            pstmt.setInt(4, cups);
-            pstmt.setFloat(5, money);
-            pstmt.executeUpdate();
-            System.out.println("Coffee machine added successfully!");
-        } catch (SQLException e) {
-            System.out.println("Error inserting coffee machine: " + e.getMessage());
-        }
+        dbManager.addCoffeeMachine(water, milk, coffeeBeans, cups, money);
     }
 
     // View all coffee machines in the database
-    public void viewCoffeeMachines() {
-        String selectSQL = "SELECT * FROM coffee_machine";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSQL)) {
-
-            System.out.println("List of coffee machines:");
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                int water = rs.getInt("water");
-                int milk = rs.getInt("milk");
-                int coffeeBeans = rs.getInt("coffee_beans");
-                int cups = rs.getInt("cups");
-                float money = rs.getFloat("money");
-
-                System.out.printf("ID: %d, Water: %d ml, Milk: %d ml, Coffee Beans: %d g, Cups: %d, Money: $%.2f\n",
-                        id, water, milk, coffeeBeans, cups, money);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error fetching coffee machines: " + e.getMessage());
+    public static void viewCoffeeMachines() {
+        List<CoffeeMachine> machines = dbManager.viewCoffeeMachines();
+        System.out.println("List of coffee machines:");
+        for (CoffeeMachine machine : machines) {
+            System.out.printf("ID: %d, Water: %d ml, Milk: %d ml, Coffee Beans: %d g, Cups: %d, Money: $%.2f\n",
+                    machine.getId(), machine.getWater(), machine.getMilk(), machine.getCoffeeBeans(), machine.getCups(), machine.getMoney());
         }
     }
 
     // Update a coffee machine's details
-    public void updateCoffeeMachine() {
+    public static void updateCoffeeMachine() {
         System.out.println("Enter the ID of the coffee machine to update:");
         int id = sc.nextInt();
 
@@ -185,94 +112,34 @@ public class CoffeeMachineManager {
         int cups = sc.nextInt();
         float money = sc.nextFloat();
 
-        String updateSQL = "UPDATE coffee_machine SET water = ?, milk = ?, coffee_beans = ?, cups = ?, money = ? WHERE id = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(updateSQL)) {
-            pstmt.setInt(1, water);
-            pstmt.setInt(2, milk);
-            pstmt.setInt(3, coffeeBeans);
-            pstmt.setInt(4, cups);
-            pstmt.setFloat(5, money);
-            pstmt.setInt(6, id);
-            int rowsUpdated = pstmt.executeUpdate();
-
-            if (rowsUpdated > 0) {
-                System.out.println("Coffee machine updated successfully!");
-            } else {
-                System.out.println("No coffee machine found with ID " + id);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error updating coffee machine: " + e.getMessage());
-        }
+        dbManager.updateCoffeeMachine(id, water, milk, coffeeBeans, cups, money);
     }
 
     // Delete a coffee machine from the database
-    public void deleteCoffeeMachine() {
+    public static void deleteCoffeeMachine() {
         System.out.println("Enter the ID of the coffee machine to delete:");
         int id = sc.nextInt();
-
-        String deleteSQL = "DELETE FROM coffee_machine WHERE id = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(deleteSQL)) {
-            pstmt.setInt(1, id);
-            int rowsDeleted = pstmt.executeUpdate();
-
-            if (rowsDeleted > 0) {
-                System.out.println("Coffee machine deleted successfully!");
-            } else {
-                System.out.println("No coffee machine found with ID " + id);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error deleting coffee machine: " + e.getMessage());
-        }
+        dbManager.deleteCoffeeMachine(id);
     }
 
-    // Activate a specific coffee machine
-    public void activateCoffeeMachine() {
-        // Display available coffee machines
-        System.out.println("List of available coffee machines:");
-        String selectSQL = "SELECT * FROM coffee_machine";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSQL)) {
+    // Activate a specific coffee machine (Placeholder for actual activation)
+    public static void activateCoffeeMachine() {
+        System.out.print("Enter the ID of the coffee machine to activate: ");
+        int id = sc.nextInt();
 
-            boolean hasMachines = false;
-            while (rs.next()) {
-                hasMachines = true;
-                int id = rs.getInt("id");
-                int water = rs.getInt("water");
-                int milk = rs.getInt("milk");
-                int coffeeBeans = rs.getInt("coffee_beans");
-                int cups = rs.getInt("cups");
-                float money = rs.getFloat("money");
+        // Check if the machine exists in the database
+        CoffeeMachine machine = dbManager.getCoffeeMachineById(id);  // Fetch the coffee machine by ID.
 
-                System.out.printf("ID: %d, Water: %d ml, Milk: %d ml, Coffee Beans: %d g, Cups: %d, Money: $%.2f\n",
-                        id, water, milk, coffeeBeans, cups, money);
-            }
-
-            if (!hasMachines) {
-                System.out.println("No available coffee machines to activate.");
-                return;
-            }
-
-            // Prompt user to select the coffee machine
-            System.out.print("Enter the ID of the coffee machine you want to activate: ");
-            int selectedMachineId = sc.nextInt();
-
-            // Check if the selected coffee machine ID exists
-            String checkMachineSQL = "SELECT * FROM coffee_machine WHERE id = ?";
-            try (PreparedStatement pstmt = connection.prepareStatement(checkMachineSQL)) {
-                pstmt.setInt(1, selectedMachineId);
-                ResultSet machineResult = pstmt.executeQuery();
-
-                if (machineResult.next()) {
-                    // If machine exists, activate it
-                    System.out.println("Activating Coffee Machine Console for machine ID " + selectedMachineId + "...");
-                    CoffeeMachineConsole.main(new String[]{});
-                } else {
-                    System.out.println("No coffee machine found with ID " + selectedMachineId);
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error fetching coffee machines: " + e.getMessage());
+        if (machine == null) {
+            System.out.println("Coffee machine with ID " + id + " does not exist.");
+            return;
         }
+
+        // Activate the coffee machine and open the console interface for that machine
+        System.out.println("Activating Coffee Machine ID: " + id);
+        CoffeeMachineConsole console = new CoffeeMachineConsole(id);  // Pass the selected machine ID to the console
+        console.run();  // Run the console interface for the selected machine
     }
+
+
 }
