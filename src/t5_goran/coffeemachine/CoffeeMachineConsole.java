@@ -1,32 +1,33 @@
 package t5_goran.coffeemachine;
 
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.List;
 
 public class CoffeeMachineConsole {
 
     private final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        DataManager.getInstance().createTable();
         CoffeeMachineConsole console = new CoffeeMachineConsole();
         console.run();
     }
 
     void run() {
         CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Goran");
+        machine.start();
+
+        System.out.println("Welcome to Coffee Machine 1.0");
 
         String action = "";
         while (!action.equals("exit")) {
-            System.out.println("Write action (buy, login, exit): ");
+            System.out.println("Write action (buy, admin, exit): ");
             action = scanner.next();
 
             switch (action) {
                 case "buy":
                     buyAction(machine);
                     break;
-                case "login":
+                case "admin":
                     adminMenu(machine);
                     break;
                 case "exit":
@@ -40,7 +41,7 @@ public class CoffeeMachineConsole {
 
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
-        ArrayList<CoffeeType> coffeeTypes = machine.getCoffeeTypes();
+        List<CoffeeType> coffeeTypes = machine.getCoffeeTypes();
         for (int i = 0; i < coffeeTypes.size(); i++) {
             System.out.println((i + 1) + " - " + coffeeTypes.get(i).getName());
         }
@@ -110,8 +111,13 @@ public class CoffeeMachineConsole {
     }
 
     private void viewTransactionLogs() {
+        TransactionLogRepository logRepo = new TransactionLogRepository(DataConnection.getInstance().getConnection());
+        List<TransactionLog> logs = logRepo.getAllTransactions();
+
         System.out.println("Transaction Logs:");
-        DataManager.getInstance().getTransactions().forEach(log -> System.out.println(log.toFormattedString()));
+        for (TransactionLog log : logs) {
+            System.out.println(log.toFormattedString());
+        }
     }
 
     private void changePassword(CoffeeMachine machine) {
@@ -128,4 +134,3 @@ public class CoffeeMachineConsole {
         }
     }
 }
-

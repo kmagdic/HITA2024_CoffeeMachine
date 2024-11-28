@@ -28,10 +28,8 @@ public class CoffeeMachine {
         this.coffeeBeans = coffeeBeans;
         this.cups = cups;
         this.money = money;
+        this.coffeeTypes.addAll(CoffeeTypeDB.getAllCoffeeTypes());
 
-        coffeeTypes.add(new CoffeeType("Espresso", 350, 0,16,4));
-        coffeeTypes.add(new CoffeeType("Latte",350, 75,20,7));
-        coffeeTypes.add(new CoffeeType("Capuccino",200, 100,12,6));
     }
 
     public List<CoffeeType> getCoffeeTypes() {
@@ -176,5 +174,41 @@ public class CoffeeMachine {
         // Spremi transakciju u bazu podataka
         TransactionDB.saveTransaction(currentDateTime, coffeeType.getName(), action);
     }
+    public void addCoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+        // Provjerava da li kava sa upisanim imenom već postoji
+        boolean coffeeExists = CoffeeTypeDB.getAllCoffeeTypes()
+                .stream()
+                .anyMatch(coffee -> coffee.getName().equalsIgnoreCase(name));
 
+        if (coffeeExists) {
+            System.out.println("Coffee type with the name '" + name + "' already exists in the database.");
+            return;
+        }
+
+        // Ako kava ne postoji, dodaje novu kavu
+        CoffeeTypeDB.addCoffeeType(name, waterNeeded, milkNeeded, coffeeBeansNeeded, price);
+        this.coffeeTypes.clear();
+        this.coffeeTypes.addAll(CoffeeTypeDB.getAllCoffeeTypes());
+        System.out.println("Coffee type added successfully.");
+    }
+
+    public void deleteCoffeeType(String name) {
+        if (CoffeeTypeDB.deleteCoffeeType(name)) {
+            this.coffeeTypes.clear();
+            this.coffeeTypes.addAll(CoffeeTypeDB.getAllCoffeeTypes());
+            System.out.println("Coffee type deleted successfully.");
+        } else {
+            System.out.println("No coffee type with the name '" + name + "' found.");
+        }
+    }
+
+    public void updateCoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+        if (CoffeeTypeDB.updateCoffeeType(name, waterNeeded, milkNeeded, coffeeBeansNeeded, price)) {
+            this.coffeeTypes.clear();
+            this.coffeeTypes.addAll(CoffeeTypeDB.getAllCoffeeTypes());
+            System.out.println("Coffee type updated successfully.");
+        } else {
+            System.out.println("No coffee type with the name '" + name + "' found.");
+        }
+    }
 }

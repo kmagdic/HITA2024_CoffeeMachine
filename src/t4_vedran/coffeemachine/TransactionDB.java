@@ -21,7 +21,7 @@ class TransactionDB {
     private static final String DB_URL = "jdbc:h2:./src/t4_vedran/coffeemachine/coffeemachine_db/coffee_machine_db;AUTO_SERVER=TRUE";
 
 
-    // Kreira tablicu u bazi ako ne postoji
+    // Kreira se tablica u bazi ako ne postoji
     public static void createTableIfNotExists() {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS transaction_log (" +
                 "datetime VARCHAR(30), " +
@@ -51,6 +51,7 @@ class TransactionDB {
         }
     }
 
+    // Ispis transakcija iz baze
     public static void printTransaction() {
         String querySQL = "SELECT * FROM transaction_log";
 
@@ -66,6 +67,20 @@ class TransactionDB {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    public static void initializeCoffeeTypes() {
+        CoffeeTypeDB.createTableIfNotExists(); // Kreiraj tablicu ako ne postoji
+
+        // Provjera broja vrsti kave
+        if (CoffeeTypeDB.getCoffeeTypeCount() < 3) {
+            // Dodaj osnovne vrste kave
+            CoffeeTypeDB.addCoffeeType("Espresso", 350, 0, 16, 4);
+            CoffeeTypeDB.addCoffeeType("Latte", 350, 75, 20, 7);
+            CoffeeTypeDB.addCoffeeType("Cappuccino", 200, 100, 12, 6);
+            System.out.println("Initialized basic coffee types in the database.");
+        } else {
+            System.out.println("Basic coffee types already exist in the database.");
         }
     }
 }
