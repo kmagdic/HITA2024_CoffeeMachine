@@ -1,7 +1,5 @@
 package t3_dinko.coffeemachine;
 
-import _karlo_dragan.coffeemachine.CoffeeType;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,7 +13,13 @@ public class CoffeeMachine {
     private int coffeeBeans;
     private int cups;
     private float money;
-    private _karlo_dragan.coffeemachine.CoffeeType[] coffeeTypes = new _karlo_dragan.coffeemachine.CoffeeType[3];
+    private CoffeeType[] coffeeTypes = new CoffeeType[3];
+    private CoffeeTypeRepository coffeeMachineRepository;
+    private TransactionLog transactionLog;
+    private final String TRANSACTION_SUCCESS_ACTION = "Bought";
+    private final String TRANSACTION_FAIL_ACTION = "Not Bought";
+    private final String I_HAVE_ENOUGH_RESOURCES = "I have enough resources, making you ";
+    private final String I_DONT_HAVE_ENOUGH_RESOURCES = "Sorry, not enough ";
 
     private String adminUsername = "admin";
     private String adminPassword = "admin12345";
@@ -28,12 +32,12 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes[0] = new _karlo_dragan.coffeemachine.CoffeeType("Espresso", 350, 0,16,4);
-        coffeeTypes[1] = new _karlo_dragan.coffeemachine.CoffeeType("Latte",350, 75,20,7);
-        coffeeTypes[2] = new _karlo_dragan.coffeemachine.CoffeeType("Capuccino",200, 100,12,6);
+        coffeeTypes[0] = new CoffeeType(1, "Espresso", 350, 0,16,4);
+        coffeeTypes[1] = new CoffeeType(2,"Latte",350, 75,20,7);
+        coffeeTypes[2] = new CoffeeType(3, "Capuccino",200, 100,12,6);
     }
 
-    public _karlo_dragan.coffeemachine.CoffeeType[] getCoffeeTypes() {
+    public CoffeeType[] getCoffeeTypes() {
         return coffeeTypes;
     }
 
@@ -57,7 +61,7 @@ public class CoffeeMachine {
         return money;
     }
 
-    public boolean hasEnoughResources(_karlo_dragan.coffeemachine.CoffeeType coffeeType){
+    public boolean hasEnoughResources(CoffeeType coffeeType){
         if (water >= coffeeType.getWaterNeeded() &&
                 milk >= coffeeType.getMilkNeeded() &&
                 coffeeBeans >= coffeeType.getCoffeeBeansNeeded() &&
@@ -67,7 +71,7 @@ public class CoffeeMachine {
             return false;
     }
 
-    public String buyCoffee(_karlo_dragan.coffeemachine.CoffeeType coffeeType){
+    public String buyCoffee(CoffeeType coffeeType){
         if (hasEnoughResources(coffeeType)) {
             this.water -= coffeeType.getWaterNeeded();
             this.milk -= coffeeType.getMilkNeeded();
