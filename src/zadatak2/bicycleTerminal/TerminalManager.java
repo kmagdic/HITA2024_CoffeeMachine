@@ -1,11 +1,57 @@
 package zadatak2.bicycleTerminal;
 
-import javax.management.modelmbean.ModelMBeanNotificationBroadcaster;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 public class TerminalManager {
 
     public static void main(String[] args) {
+
+        // Db setup
+        Connection connection = makeDBConnection("docs/tesbojan");
+
+        BicycleRepository bicycleRepository = new BicycleRepository(connection);
+        TerminalRepository terminalRepository = new TerminalRepository(connection);
+        bicycleRepository.createTable();
+        terminalRepository.createTable();
+
+        // add a bicycle
+        Bicycle bicycle = new Bicycle(101, "Mountain", "Red", "Full", 3);
+        Bicycle bicycle2 = new Bicycle(102, "Road", "Blue", "Medium", 1);
+        bicycleRepository.insert(bicycle);
+        bicycleRepository.insert(bicycle2);
+
+        // get bicycles
+        List<Bicycle> bicycles = bicycleRepository.getList();
+        for (Bicycle b : bicycles) {
+            System.out.println(b);
+        }
+
+        // add terminal
+        Terminal terminal = new Terminal(1, "Central Terminal", 10);
+        Terminal terminal2 = new Terminal(2, "West Side Terminal", 8);
+        terminalRepository.insert(terminal);
+        terminalRepository.insert(terminal2);
+
+        // get terminals
+        List<Terminal> terminals = terminalRepository.getList();
+        for (Terminal t : terminals) {
+            System.out.println(t);
+        }
+    }
+
+    private static Connection makeDBConnection(String DB) {
+        try {
+            return DriverManager.getConnection("jdbc:h2:./" + DB);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void oldStuff() {
 
         Scanner scanner = new Scanner(System.in);
 
@@ -63,6 +109,5 @@ public class TerminalManager {
         admin.removeTerminalById(2);
 
         admin.printTerminals();
-
     }
 }

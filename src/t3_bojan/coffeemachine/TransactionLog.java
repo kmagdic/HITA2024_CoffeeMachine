@@ -1,21 +1,103 @@
 package t3_bojan.coffeemachine;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TransactionLog {
 
-    private List<String> logList = new ArrayList<>();//sadrzaj loga>
+    private int id;
+    private LocalDateTime dateTime;
+    private CoffeeType coffeeType;
+    private String transactionAction;
+    private String missingIngredient;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     public TransactionLog() {
-        logList.add("Transaction log:");
+        this.id = 0;
+        this.dateTime = null;
+        this.coffeeType = null;
+        this.transactionAction = null;
+        this.missingIngredient = null;
     }
 
-    public void setLog(String log) {
-        logList.add(log);
+    public TransactionLog(LocalDateTime dateTime, CoffeeType coffeeType, String transactionAction) {
+        this.id = 0;
+        this.dateTime = dateTime;
+        this.coffeeType = coffeeType;
+        this.transactionAction = transactionAction;
+        missingIngredient = null;
     }
 
-    public List<String> getLog() {
-        return logList;
+    public TransactionLog(LocalDateTime date, CoffeeType coffeeType, String transactionStatement, String missingIngredient) {
+        this.id = 0;
+        this.dateTime = date;
+        this.coffeeType = coffeeType;
+        this.transactionAction = transactionStatement;
+        this.missingIngredient = missingIngredient;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public CoffeeType getCoffeeType() {
+        return coffeeType;
+    }
+
+    public String getTransactionAction() {
+        return transactionAction;
+    }
+
+    public String getMissingIngredient() {
+        return missingIngredient;
+    }
+
+    public DateTimeFormatter getFormatter() {
+        return formatter;
+    }
+
+    public void setFormatter(DateTimeFormatter formatter) {
+        this.formatter = formatter;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setCoffeeType(CoffeeType coffeeType) {
+        this.coffeeType = coffeeType;
+    }
+
+    public void setTransactionAction(String transactionAction) {
+        this.transactionAction = transactionAction;
+    }
+
+    public void setMissingIngredient(String missingIngredient) {
+        this.missingIngredient = missingIngredient;
+    }
+
+    @Override
+    public String toString() {
+
+        if (missingIngredient == null) {
+            return "Transaction log:" +
+                    "Date/time: " + dateTime.format(formatter) +
+                    ", coffeeType: " + coffeeType.getName() +
+                    ", action: " + transactionAction;
+        } else {
+            return "Transaction log:" +
+                    "Date/time: " + dateTime.format(formatter) +
+                    ", coffeeType: " + coffeeType.getName() +
+                    ", action: " + transactionAction +
+                    ", ingredients: " + missingIngredient;
+        }
     }
 }

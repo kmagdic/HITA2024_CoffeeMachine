@@ -1,4 +1,4 @@
-package zadatak2.ticketmachine;
+/* package zadatak2.ticketmachine;
 
 import java.util.List;
 import java.util.Scanner;
@@ -86,3 +86,5 @@ public class ConsoleMain {
         s.close();
     }
 }
+
+ */

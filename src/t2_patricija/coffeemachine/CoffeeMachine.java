@@ -1,31 +1,38 @@
 package t2_patricija.coffeemachine;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 
 public class CoffeeMachine {
 
-    private int water;
-    private int milk;
-    private int coffeeBeans;
-    private int cups;
-    private float money;
-    private CoffeeType[] coffeeTypes = new CoffeeType[3];
+    // Before creating the CoffeeMachineWithStatusInFile class, these variables were private.
+    // After extending the CoffeeMachine class, we changed the variables to 'protected'
+    // so they can be accessed within the CoffeeMachineWithStatusInFile subclass.
 
-    private String adminUsername = "admin";
-    private String adminPassword = "admin12345";
-    private String statusFileName = "docs/coffee_machine_status.txt";
+    protected int water;
+    protected int milk;
+    protected int coffeeBeans;
+    protected int cups;
+    protected float money;
+    protected List<CoffeeType> coffeeTypes = new ArrayList<>();
+    protected String statusFileName = "docs/coffee_machine_status.txt";
 
-    private List<TransactionLog> transactionLogList = new ArrayList<>(); //služi mi za spremanje svih logova u listu
+    protected String adminUsername = "admin";
+    protected String adminPassword = "admin12345";
+
+    private TransactionLog log;
+    private CoffeeMachineDB database;
+
+    //We use this list for putting all logs into it
+    protected List<TransactionLog> transactionLogList = new ArrayList<>();
 
     public List<TransactionLog> getHistoryLogList() { //služi mi za dohvaćanje te liste logova
         return transactionLogList;
     }
+
+    // Explenation for database part in the constructor:
+    // If the database object is not provided (null), we initialize it using the singleton instance of CoffeeMachineDB.
+    // This ensures that the database connection is properly set up, using the default file path if no other is specified.
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
@@ -34,12 +41,17 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        coffeeTypes[0] = new CoffeeType("Espresso", 350, 0, 16, 4);
-        coffeeTypes[1] = new CoffeeType("Latte", 350, 75, 20, 7);
-        coffeeTypes[2] = new CoffeeType("Capuccino", 200, 100, 12, 6);
+        this.database = database != null ? database : CoffeeMachineDB.getInstance("docs/transaction_log");
+        if (coffeeTypes == null) {
+            coffeeTypes = new ArrayList<>();
+        }
+        coffeeTypes.add(new CoffeeType("Espresso", 350, 0, 16, 4));
+        coffeeTypes.add(new CoffeeType("Latte", 350, 75, 20, 7));
+        coffeeTypes.add(new CoffeeType("Capuccino", 200, 100, 12, 6));
     }
 
-    public CoffeeType[] getCoffeeTypes() {
+
+    public List<CoffeeType> getCoffeeTypes() {
         return coffeeTypes;
     }
 
@@ -81,13 +93,19 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
-            addRecordToHistoryList(", " + "coffee type: " + coffeeType.getName() + ", " + "action: Bought");
+            // The parameters passed here (coffeeType, success, ingredient) are used as arguments
+            // when calling the TransactionLog constructor in the addRecordToHistoryList method.
+            // This constructor creates a new TransactionLog object, which is then added to the transaction log list
+            // and inserted into the database.
+
+            addRecordToHistoryList(coffeeType.getName(), "Bought", "");
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
 
-            addRecordToHistoryList(", " + "coffee type: " + coffeeType.getName() + ", " + "action: Not bought, no enough ingredients: " + missing);
-            return "Sorry, not enough " + missing + "\n"; // ovo pokaže samo prvi resurs koji nedostaje, ne i oba ili više njih koji nedostaju
+            addRecordToHistoryList(coffeeType.getName(), "Not bought", missing);
+            return "Sorry, not enough " + missing + "\n";
+            //at this point it shows only one missing ingredient, even if there are multiple missing
         }
     }
 
@@ -133,63 +151,17 @@ public class CoffeeMachine {
         this.adminPassword = adminPassword;
     }
 
-    public boolean loadFromFile(String fileName) {
-        FileReader reader = null;
-
-        try {
-            reader = new FileReader(fileName);
-        } catch (FileNotFoundException e) {
-            return false;
-        }
-
-        Scanner fileScanner = new Scanner(reader);
-
-        // FILE format:
-        // <water_status>; <milk_status>; <coffee_beans_status>; <cups_status>; <money_status>
-        // <admin_username>; <admin_password>
-
-        fileScanner.useDelimiter("; |\n"); // delimiter is "; " or "\n" (for the last value)
-
-        water = fileScanner.nextInt();
-        milk = fileScanner.nextInt();
-        coffeeBeans = fileScanner.nextInt();
-        cups = fileScanner.nextInt();
-        money = Float.parseFloat(fileScanner.next());
-
-        adminUsername = fileScanner.next();
-        adminPassword = (fileScanner.next()).trim();
-
-        return true;
-    }
-
-    public void saveToFile(String fileName) {
-        try {
-            FileWriter writer = new FileWriter(fileName);
-
-            writer.write(water + "; " + milk + "; " + coffeeBeans + "; " + cups + "; " + money);
-            writer.write("\n");
-            writer.write(adminUsername + "; " + adminPassword);
-            writer.write("\n");
-
-            writer.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    public boolean start() {
-        return loadFromFile(statusFileName);
+    public void addRecordToHistoryList(String coffeeType, String succes, String ingredient) {
+        TransactionLog transactionLog = new TransactionLog(coffeeType, succes, ingredient);
+        transactionLogList.add(transactionLog);
+        database.insertTransactionLog(transactionLog);
     }
 
     public void stop() {
-        saveToFile(statusFileName);
     }
 
-    public void addRecordToHistoryList(String res) {
-        TransactionLog transactionLog = new TransactionLog(res);
-        transactionLogList.add(transactionLog);
+    public boolean start() {
+        return true;
     }
 
     @Override

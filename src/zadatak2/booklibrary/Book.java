@@ -4,27 +4,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Book {
+    private int id;
     private String title;
     private int yearOfPublication;
-    private List<Author> authors;
+    private Author author;
+
+    public Book() {
+    }
 
     public Book(String title) {
         this.title = title;
-        this.authors = new ArrayList<>();
+
     }
 
-    public Book(String title, int yearOfPublication){
+    public Book(String title, int yearOfPublication, Author author){
         this.title = title;
         this.yearOfPublication = yearOfPublication;
-        this.authors = new ArrayList<>();
+        this.author = author;
+
     }
 
-    public void addAuthor(Author author) {
-        authors.add(author);
+    public int getId() {
+        return id;
     }
 
-    public List<Author> getAuthors() {
-        return authors;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setYearOfPublication(int yearOfPublication) {
+        this.yearOfPublication = yearOfPublication;
+    }
+
+    public void setAuthors(Author author) {
+        this.author = author;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public String getTitle() {
@@ -37,6 +62,11 @@ public class Book {
 
     @Override
     public String toString() {
-        return this.title + " " + this.yearOfPublication + " " + authors;
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", yearOfPublication=" + yearOfPublication +
+                ", author=" + author +
+                '}';
     }
 }

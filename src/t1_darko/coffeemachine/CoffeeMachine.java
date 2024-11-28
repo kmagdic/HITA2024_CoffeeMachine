@@ -77,12 +77,12 @@ public class CoffeeMachine {
             this.coffeeBeans -= coffeeType.getCoffeeBeansNeeded();
             this.cups -= 1;
             this.money += coffeeType.getPrice();
-            Transaction buyTransaction = new Transaction(LocalDateTime.now(), coffeeType.getName(), "Bought");
+            Transaction buyTransaction = new Transaction(LocalDateTime.now(), coffeeType, "Bought");
             transactionLog.add(buyTransaction);
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
-            Transaction notBuyTransaction = new Transaction(LocalDateTime.now(), coffeeType.getName(), "Not Bought", missing);
+            Transaction notBuyTransaction = new Transaction(LocalDateTime.now(), coffeeType, "Not Bought", missing);
             transactionLog.add(notBuyTransaction);
             return "Sorry, not enough " + missing + "\n";
         }

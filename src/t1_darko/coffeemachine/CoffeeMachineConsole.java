@@ -1,5 +1,6 @@
 package t1_darko.coffeemachine;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,8 +14,13 @@ public class CoffeeMachineConsole {
     }
 
     void run() {
-        CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 with status ins file");
+        CoffeeMachine machine = null;
+        try {
+            machine = new CoffeeMachineWithDb(400, 540, 120, 9, 550);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Welcome to Coffee Machine 1.0 with DB");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {

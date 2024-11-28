@@ -113,12 +113,12 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
-            addTransactionToTransactionLog("coffee type: " + coffeeType.getName() + ", action: Bought");
+            addTransactionToTransactionLog(coffeeType.getName(), "Bought");
 
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
-            addTransactionToTransactionLog("coffee type: " + coffeeType.getName() + ", action: Not bought, not enough ingredients: " + missing);
+            addTransactionToTransactionLog(coffeeType.getName(), "Not bought", missing);
 
             return "Sorry, not enough " + missing + "\n";
         }
@@ -133,16 +133,16 @@ public class CoffeeMachine {
     public String calculateWhichIngredientIsMissing(CoffeeType coffeeType){
         String ingredientMissing = null;
         if (water < coffeeType.getWaterNeeded()) {
-            ingredientMissing = "water";
+            ingredientMissing = "water ";
         }
-        else if (milk < coffeeType.getMilkNeeded()) {
-            ingredientMissing = "milk" ;
+        if (milk < coffeeType.getMilkNeeded()) {
+            ingredientMissing += "milk " ;
         }
-        else if (coffeeBeans < coffeeType.getCoffeeBeansNeeded()) {
-            ingredientMissing = "coffee beans" ;
+        if (coffeeBeans < coffeeType.getCoffeeBeansNeeded()) {
+            ingredientMissing += "coffee beans " ;
         }
-        else if (cups < 1) {
-            ingredientMissing = "cups" ;
+        if (cups < 1) {
+            ingredientMissing += "cups" ;
         }
         return ingredientMissing;
     }
@@ -235,9 +235,14 @@ public class CoffeeMachine {
         adminPassword = password;
     }
 
-    public void addTransactionToTransactionLog(String log) {
-        TransactionLog transactionLog = new TransactionLog(log);
+    public void addTransactionToTransactionLog(String coffeeType, String action, String ingredients) {
+        TransactionLog transactionLog = new TransactionLog(coffeeType, action, ingredients);
         transactionLogList.add(transactionLog);
+    }
+    public void addTransactionToTransactionLog(String coffeeType, String action) {
+        TransactionLog transactionLog = new TransactionLog(coffeeType, action);
+        transactionLogList.add(transactionLog);
+
     }
 
     @Override

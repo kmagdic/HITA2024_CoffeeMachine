@@ -65,6 +65,8 @@ public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
 
     public void stop() {
         saveToFile(statusFileName);
+
     }
+
 
 }

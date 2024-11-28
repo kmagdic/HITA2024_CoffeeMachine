@@ -4,6 +4,8 @@ package t2_patricija.coffeemachine;
 //import _karlo_dragan.coffeemachine.CoffeeType;
 
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 public class CoffeeMachineConsole {
 
@@ -11,12 +13,16 @@ public class CoffeeMachineConsole {
 
 
     public static void main(String[] args) {
+
         CoffeeMachineConsole console = new CoffeeMachineConsole();
+
+        CoffeeMachineDB db = CoffeeMachineDB.getInstance("docs/transaction_log");
+
         console.run();
     }
 
     void run() {
-        CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
+        CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
         System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
         boolean startedSuccessfully = machine.start();
 
@@ -60,15 +66,15 @@ public class CoffeeMachineConsole {
 
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
-        CoffeeType[] coffeeTypes = machine.getCoffeeTypes();
-        for (int i = 0; i < machine.getCoffeeTypes().length; i++) {
-            System.out.println((i + 1) + " - " + coffeeTypes[i].getName());
+        List <CoffeeType> coffeeTypes = machine.getCoffeeTypes();
+        for (int i = 0; i < machine.getCoffeeTypes().size(); i++) {
+            System.out.println((i + 1) + " - " + coffeeTypes.get(i).getName());
         }
         System.out.println("Enter your choice: ");
 
         int typeOfCoffeeChoice = sc.nextInt();
-        if (typeOfCoffeeChoice <= coffeeTypes.length) {
-            String msg = machine.buyCoffee(coffeeTypes[typeOfCoffeeChoice - 1]);
+        if (typeOfCoffeeChoice <= coffeeTypes.size()) {
+            String msg = machine.buyCoffee(coffeeTypes.get(typeOfCoffeeChoice - 1));
             System.out.println(msg);
         } else {
             System.out.println("Wrong enter\n");
@@ -119,10 +125,11 @@ public class CoffeeMachineConsole {
                         machine.setAdminPassword(password);
                         System.out.println("Password is changed");
                     }
+                    break;
 
                 case "log":
                     for (TransactionLog h : machine.getHistoryLogList()) {
-                        System.out.println("Date/time: " + h.getRecord());
+                        System.out.println (h);
                     }
                     break;
 

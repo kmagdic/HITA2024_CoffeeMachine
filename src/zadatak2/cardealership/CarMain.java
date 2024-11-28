@@ -2,13 +2,23 @@ package zadatak2.cardealership;
 
 import java.util.Scanner;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static _karlo_dragan.studentmanager.StudentManagerSimpleMain.makeDBConnection;
+
+
 public class CarMain {
+
+
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-
-        CarDealer tomic = new CarDealer("Tomic", "Zagreb", 1990);
-
+        Connection connection = makeDBConnection("src/zadatak2/cardealership/cars");
+        CarRepository carRepository = new CarRepository(connection);
+        carRepository.createTable();
 
 
 
@@ -22,14 +32,28 @@ public class CarMain {
                 String carType = scanner.next();
                 System.out.println("Unesi godinu proizvodnje: ");
                 int yearOfProduction = scanner.nextInt();
-                tomic.addCar(carName, carType, yearOfProduction);
+
+                Car newCar = new Car(carName,carType,yearOfProduction);
+
+
+
+                carRepository.insertCar(newCar);
+
             } else if (choice == 2) {
                 System.out.println("Koji auto želiš izbrisati");
                 String carToDelete = scanner.next();
-                tomic.deleteCar(carToDelete);
+                //tomic.deleteCar(carToDelete);
 
             } else if (choice == 3) {
-                tomic.printCars();
+                int counter = 1;
+                for(Car c: carRepository.getList()){
+                    System.out.println("Car " + counter);
+                    System.out.println("Name: " + c.getCarName());
+                    System.out.println("Type: " + c.getCarType());
+                    System.out.println("Year: " + c.getYearOfProduction());
+                    System.out.println("*****************");
+                    counter ++;
+                }
 
             } else if (choice == 4) {
                 break;

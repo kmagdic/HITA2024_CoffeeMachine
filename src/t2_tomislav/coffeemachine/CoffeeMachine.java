@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class CoffeeMachine {
-
+//ggrgrg
     private int water;
     private int milk;
     private int coffeeBeans;

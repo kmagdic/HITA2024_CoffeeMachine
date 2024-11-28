@@ -11,6 +11,8 @@ public class Student {
     private int currentPoints;
     private String username;
     private String password;
+    // private List<Course> course;
+
 
     public Student() {
     }
@@ -82,14 +84,14 @@ public class Student {
 
     @Override
     public String toString() {
-        return "User{" +
-                "firstName='" + firstName + '\'' +
+        return "Student{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", oib='" + oib + '\'' +
                 ", currentPoints=" + currentPoints +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-
                 '}';
     }
 }

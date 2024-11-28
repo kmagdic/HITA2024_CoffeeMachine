@@ -2,12 +2,15 @@ package t3_bojan.coffeemachine;
 
 public class CoffeeType {
 
+    private int id;
     private int milkNeeded;
     private int waterNeeded;
     private int coffeeBeansNeeded;
     private int price;
     private String name;
 
+    public CoffeeType() {
+    }
 
     public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
         this.milkNeeded = milkNeeded;
@@ -55,6 +58,14 @@ public class CoffeeType {
 
     public void setCoffeeBeansNeeded(int coffeeBeansNeeded) {
         this.coffeeBeansNeeded = coffeeBeansNeeded;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
 
