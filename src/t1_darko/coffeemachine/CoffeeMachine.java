@@ -1,5 +1,8 @@
 package t1_darko.coffeemachine;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,30 +13,73 @@ public class CoffeeMachine {
     protected int milk;
     protected int coffeeBeans;
     protected int cups;
-    protected float money;
+    protected int money;
     private List<CoffeeType> coffeeTypes = new ArrayList<>();
 
     protected String adminUsername = "admin";
     protected String adminPassword = "admin12345";
+    private final String URL = "jdbc:h2:./docs/test_darko";
 
-    // transaction log
-    private List<Transaction> transactionLog = new ArrayList<>();
+    private Connection connection;
+    private CoffeeTypeRepository coffeeTypeRepository;
+    private TransactionRepository transactionRepository;
+    private CoffeeMachineRepository coffeeMachineRepository;
 
-    public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
+    public CoffeeMachine() {
+        // setup database
+        makeConnection();
+        initializeRepositories();
+        createTables();
+        checkResetPopulateCoffeeTypesWithBasicTypes();
+
+        coffeeMachineRepository.getStatus(this);
+        coffeeTypes = coffeeTypeRepository.getAllCoffeeTypes();
+    }
+
+    public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, int money) {
         this.water = water;
         this.milk = milk;
         this.coffeeBeans = coffeeBeans;
         this.cups = cups;
         this.money = money;
-
-        // List.of
-        coffeeTypes.add(new CoffeeType("Espresso", 350, 0,16,4));
-        coffeeTypes.add(new CoffeeType("Latte",350, 75,20,7));
-        coffeeTypes.add(new CoffeeType("Cappuccino",200, 100,12,6));
     }
 
-    public List<CoffeeType> getCoffeeTypes() {
-        return coffeeTypes;
+    private void makeConnection() {
+        try {
+            connection = DriverManager.getConnection(URL);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void initializeRepositories() {
+        coffeeTypeRepository = new CoffeeTypeRepository(connection);
+        transactionRepository = new TransactionRepository(connection);
+        coffeeMachineRepository = new CoffeeMachineRepository(connection);
+    }
+
+    private void createTables() {
+        coffeeTypeRepository.createTable();
+        transactionRepository.createTable();
+        coffeeMachineRepository.createTable();
+    }
+
+    private void checkResetPopulateCoffeeTypesWithBasicTypes() {
+        // if coffee machine less than 3 populate with 3 basic types
+        if(coffeeTypeRepository.getAllCoffeeTypes().size() < 3) {
+            transactionRepository.dropTable();
+            coffeeTypeRepository.dropTable();
+            coffeeTypeRepository.createTable();
+            transactionRepository.createTable();
+
+            coffeeTypes.add(new CoffeeType("Espresso", 250, 0,16,4));
+            coffeeTypes.add(new CoffeeType("Latte",350, 75,20,7));
+            coffeeTypes.add(new CoffeeType("Cappuccino",200, 100,12,6));
+
+            for (CoffeeType coffeeType : coffeeTypes) {
+                coffeeTypeRepository.saveCoffeeType(coffeeType);
+            }
+        }
     }
 
     public int getWater() {
@@ -52,12 +98,36 @@ public class CoffeeMachine {
         return cups;
     }
 
-    public double getMoney() {
+    public int getMoney() {
         return money;
     }
 
+    public void setWater(int water) {
+        this.water = water;
+    }
+
+    public void setMilk(int milk) {
+        this.milk = milk;
+    }
+
+    public void setCoffeeBeans(int coffeeBeans) {
+        this.coffeeBeans = coffeeBeans;
+    }
+
+    public void setCups(int cups) {
+        this.cups = cups;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public List<CoffeeType> getCoffeeTypes() {
+        return coffeeTypeRepository.getAllCoffeeTypes();
+    }
+
     public List<Transaction> getTransactionLog() {
-        return transactionLog;
+        return transactionRepository.getAllTransactions();
     }
 
     public boolean hasEnoughResources(CoffeeType coffeeType){
@@ -78,12 +148,12 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
             Transaction buyTransaction = new Transaction(LocalDateTime.now(), coffeeType, "Bought");
-            transactionLog.add(buyTransaction);
+            transactionRepository.saveTransaction(buyTransaction);
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
             Transaction notBuyTransaction = new Transaction(LocalDateTime.now(), coffeeType, "Not Bought", missing);
-            transactionLog.add(notBuyTransaction);
+            transactionRepository.saveTransaction(notBuyTransaction);
             return "Sorry, not enough " + missing + "\n";
         }
     }
@@ -143,15 +213,16 @@ public class CoffeeMachine {
     }
 
     public boolean start() {
-        return false;
+        return true;
     }
 
     public void stop() {
+        coffeeMachineRepository.updateStatus(this);
     }
 
     @Override
     public String toString() {
-        return "stage2.CoffeeMachine{" +
+        return "CoffeeMachine{" +
                 "water=" + water +
                 ", milk=" + milk +
                 ", coffeeBeans=" + coffeeBeans +

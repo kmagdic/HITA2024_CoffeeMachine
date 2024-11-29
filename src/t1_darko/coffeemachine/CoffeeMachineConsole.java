@@ -7,7 +7,6 @@ import java.util.Scanner;
 public class CoffeeMachineConsole {
     Scanner sc = new Scanner(System.in);
 
-
     public static void main(String[] args)  {
         CoffeeMachineConsole console = new CoffeeMachineConsole();
         console.run();
@@ -15,16 +14,13 @@ public class CoffeeMachineConsole {
 
     void run() {
         CoffeeMachine machine = null;
-        try {
-            machine = new CoffeeMachineWithDb(400, 540, 120, 9, 550);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("Welcome to Coffee Machine 1.0 with DB");
+        machine = new CoffeeMachine();
+
+        System.out.println("Welcome to Coffee Machine 1.0 with database");
         boolean startedSuccessfully = machine.start();
 
         if(!startedSuccessfully) {
-            System.out.println("Coffee machine started but without file. Using default values.");
+            System.out.println("Coffee machine started but without database. Using default values.");
         }
 
         String action = "";
