@@ -8,28 +8,28 @@ public class H2DatabaseManager {
 
     private final Connection connection;
 
+    // Konstruktor za inicijalizaciju baze podataka
     public H2DatabaseManager(String absolutePath) {
-        this.connection = makeDBConnection(absolutePath);
+        this.connection = makeDBConnection(absolutePath); // Uspostava konekcije
         if (this.connection == null) {
             throw new RuntimeException("Failed to connect to the database");
         }
-        createTable();
+        createTable(); // Kreiranje tablice odmah nakon uspostave konekcije
     }
 
-    // Metoda za stvaranje konekcije s apsolutnom putanjom
+    // Metoda za stvaranje konekcije s bazom koristeći apsolutnu putanju
     private Connection makeDBConnection(String absolutePath) {
         try {
-            // Apsolutna putanja baze
             return DriverManager.getConnection("jdbc:h2:" + absolutePath);
         } catch (SQLException e) {
             throw new RuntimeException("Error creating database connection: " + e.getMessage(), e);
         }
     }
 
-    // Metoda za kreiranje tablice ako ne postoji
+    // Kreira tablicu `transaction_log` ako ne postoji
     private void createTable() {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS transaction_log (" +
-                "id BIGINT  PRIMARY KEY, " +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "date_time TIMESTAMP NOT NULL, " +
                 "coffee_type VARCHAR(50) NOT NULL, " +
                 "success VARCHAR(10) NOT NULL, " +
@@ -42,7 +42,7 @@ public class H2DatabaseManager {
         }
     }
 
-    // Metoda za umetanje transakcijskog zapisa u bazu
+    // Umeće transakciju u tablicu
     public void insertTransactionLog(TransactionLog log) {
         String insertSQL = "INSERT INTO transaction_log (date_time, coffee_type, success, ingredient) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(insertSQL)) {
@@ -56,7 +56,7 @@ public class H2DatabaseManager {
         }
     }
 
-    // Metoda za dohvaćanje svih zapisa iz baze
+    // Dohvaća sve zapise iz tablice
     public List<TransactionLog> getTransactionLogs() {
         List<TransactionLog> logs = new ArrayList<>();
         String selectSQL = "SELECT * FROM transaction_log";
@@ -79,16 +79,16 @@ public class H2DatabaseManager {
         return logs;
     }
 
-    // Metoda za ispis svih zapisa iz baze u konzolu
-    //public void printTransactionLogs() {
-       // List<TransactionLog> logs = getTransactionLogs();
-       // if (logs.isEmpty()) {
-        //    System.out.println("No transaction logs available.");
-       // } else {
-        //    System.out.println("Transaction logs:");
-          //  for (TransactionLog log : logs) {
-          //      System.out.println(log);
-           // }
-       // }
-   // }
+    // Ispisuje zapise u konzolu
+    public void printTransactionLogs() {
+        List<TransactionLog> logs = getTransactionLogs();
+        if (logs.isEmpty()) {
+            System.out.println("No transaction logs available.");
+        } else {
+            System.out.println("Transaction logs:");
+            for (TransactionLog log : logs) {
+                System.out.println(log);
+            }
+        }
+    }
 }
