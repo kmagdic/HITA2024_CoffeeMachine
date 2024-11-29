@@ -2,19 +2,34 @@ package t3_dinko.coffeemachine;
 
 public class CoffeeType {
 
+    private  int id;
     private int milkNeeded;
     private int waterNeeded;
     private int coffeeBeansNeeded;
     private int price;
     private String name;
 
+    public CoffeeType(){
 
-    public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+    }
+
+
+    public CoffeeType(int id, String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+        this.id = id;
         this.milkNeeded = milkNeeded;
         this.waterNeeded = waterNeeded;
         this.coffeeBeansNeeded = coffeeBeansNeeded;
         this.price = price;
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
+
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

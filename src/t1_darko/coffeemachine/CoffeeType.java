@@ -2,6 +2,8 @@ package t1_darko.coffeemachine;
 
 public class CoffeeType {
 
+    private int id;
+
     private int milkNeeded;
     private int waterNeeded;
     private int coffeeBeansNeeded;
@@ -15,6 +17,23 @@ public class CoffeeType {
         this.coffeeBeansNeeded = coffeeBeansNeeded;
         this.price = price;
         this.name = name;
+    }
+
+    public CoffeeType(int id, String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+        this.id = id;
+        this.milkNeeded = milkNeeded;
+        this.waterNeeded = waterNeeded;
+        this.coffeeBeansNeeded = coffeeBeansNeeded;
+        this.price = price;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

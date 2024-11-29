@@ -9,6 +9,7 @@ public class TransactionLogRepository {
 
     private final Connection connection;
 
+    // Constructor to initialize the repository with a database connection
     public TransactionLogRepository(Connection connection) {
         this.connection = connection;
     }
@@ -25,37 +26,39 @@ public class TransactionLogRepository {
             );
         """;
 
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(createTableSQL);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(createTableSQL);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to create transaction_log table", e);
         }
     }
 
+    // Method to log a transaction in the database
     public void logTransaction(LocalDateTime timestamp, int coffeeTypeId, String status, String missingIngredient) {
         String insertSQL = """
             INSERT INTO transaction_log (datetime, coffee_type_id, status, missing_ingredient)
             VALUES (?, ?, ?, ?);
         """;
 
-        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setTimestamp(1, Timestamp.valueOf(timestamp));
-            pstmt.setInt(2, coffeeTypeId);
-            pstmt.setString(3, status);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(timestamp));
+            preparedStatement.setInt(2, coffeeTypeId);
+            preparedStatement.setString(3, status);
             if (missingIngredient != null) {
-                pstmt.setString(4, missingIngredient);
+                preparedStatement.setString(4, missingIngredient);
             } else {
-                pstmt.setNull(4, Types.VARCHAR);
+                preparedStatement.setNull(4, Types.VARCHAR);
             }
-            pstmt.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to log the transaction", e);
         }
     }
 
+    // Method to retrieve all transaction logs from the database
     public List<TransactionLog> getAllTransactions() {
         String selectSQL = """
-   SELECT
+        SELECT
             transaction_log.id,
             transaction_log.datetime,
             coffee_type.name AS coffee_type,
@@ -69,21 +72,21 @@ public class TransactionLogRepository {
             transaction_log.coffee_type_id = coffee_type.id
         ORDER BY
             transaction_log.datetime DESC;
-   """;
-
+        """;
 
         List<TransactionLog> transactions = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSQL)) {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(selectSQL)) {
 
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                LocalDateTime dateTime = rs.getTimestamp("datetime").toLocalDateTime();
-                String coffeeType = rs.getString("coffee_type");
-                String status = rs.getString("status");
-                String missingIngredient = rs.getString("missing_ingredient");
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                LocalDateTime dateTime = resultSet.getTimestamp("datetime").toLocalDateTime();
+                String coffeeType = resultSet.getString("coffee_type");
+                String status = resultSet.getString("status");
+                String missingIngredient = resultSet.getString("missing_ingredient");
 
+                // Add each transaction log to the list
                 transactions.add(new TransactionLog(id, dateTime, coffeeType, status, missingIngredient));
             }
         } catch (SQLException e) {

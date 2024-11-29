@@ -1,16 +1,15 @@
 package t3_dinko.coffeemachine;
 
-
-
-import _karlo_dragan.coffeemachine.CoffeeMachine;
-import _karlo_dragan.coffeemachine.CoffeeType;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CoffeeMachineConsole {
 
     Scanner sc = new Scanner(System.in);
-
+    private static final String URL_DB_NAME = "jdbc:h2:./docs/transaction_log_dinko";
+    TransactionLogRepository transactionLogRepository;
 
     public static void main(String[] args)  {
         CoffeeMachineConsole console = new CoffeeMachineConsole();
@@ -19,8 +18,11 @@ public class CoffeeMachineConsole {
 
     void run() {
         CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
-        boolean startedSuccessfully = machine.start();
+        System.out.println("Welcome to Coffee Machine 2.0 version by Dinko");
+        transactionLogRepository = new TransactionLogRepository(getConnection());
+
+        boolean startedSuccessfully = machine.start(getConnection());
+        transactionLogRepository.createTable();
 
         if(!startedSuccessfully) {
             System.out.println("Coffee machine started but without file. Using default values.");
@@ -72,6 +74,7 @@ public class CoffeeMachineConsole {
         if (typeOfCoffeeChoice <= coffeeTypes.length) {
             String msg = machine.buyCoffee(coffeeTypes[typeOfCoffeeChoice - 1]);
             System.out.println(msg);
+            transactionLogRepository.insert(machine.getTransactionLog());
         } else {
             System.out.println("Wrong enter\n");
         }
@@ -81,7 +84,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, exit):");
+            System.out.println("Write action (fill, remaining, take, log, exit):");
             ch = sc.next();
 
             switch (ch) {
@@ -111,6 +114,12 @@ public class CoffeeMachineConsole {
                     System.out.println("$" + machine.getMoney() + " of money");
                     break;
 
+                case "log":
+                    for (TransactionLog transactionLog : transactionLogRepository.getList()) {
+                        System.out.println(transactionLog);
+                    }
+                    break;
+
                 case "exit":
                     break;
 
@@ -118,6 +127,12 @@ public class CoffeeMachineConsole {
         }
     }
 
-
+    private static Connection getConnection(){
+        try {
+            return DriverManager.getConnection(URL_DB_NAME);
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
 
 }
