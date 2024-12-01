@@ -23,7 +23,7 @@ public class CoffeeMachineConsole {
 
     void run() {
         CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
+        System.out.println("Welcome to Coffee Machine 2.0 version by Patricija");
         boolean startedSuccessfully = machine.start();
 
         if (!startedSuccessfully) {
