@@ -7,7 +7,16 @@ public class CoffeeType {
     private int coffeeBeansNeeded;
     private int price;
     private String name;
+    private int id;
 
+    public CoffeeType(int id, String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+        this.id = id;
+        this.milkNeeded = milkNeeded;
+        this.waterNeeded = waterNeeded;
+        this.coffeeBeansNeeded = coffeeBeansNeeded;
+        this.price = price;
+        this.name = name;
+    }
 
     public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
         this.milkNeeded = milkNeeded;
@@ -56,6 +65,10 @@ public class CoffeeType {
     public void setCoffeeBeansNeeded(int coffeeBeansNeeded) {
         this.coffeeBeansNeeded = coffeeBeansNeeded;
     }
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     @Override
     public String toString() {

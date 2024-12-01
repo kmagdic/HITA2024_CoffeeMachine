@@ -16,7 +16,7 @@ public class CoffeeMachineConsole {
 
         CoffeeMachineConsole console = new CoffeeMachineConsole();
 
-        CoffeeMachineDB db = CoffeeMachineDB.getInstance("docs/transaction_log");
+        DbClient db = DbClient.getInstance();
 
         console.run();
     }
@@ -128,7 +128,7 @@ public class CoffeeMachineConsole {
                     break;
 
                 case "log":
-                    for (TransactionLog h : machine.getHistoryLogList()) {
+                    for (TransactionLog h : machine.transactionLogDao.findAll()) {
                         System.out.println (h);
                     }
                     break;
