@@ -31,10 +31,9 @@ public class CoffeeMachine {
 
     // Getting the data source
     JdbcDataSource dataSource = dbClient.getDataSource();
-    private CoffeeTypeDAO coffeeTypeDao = new CoffeeTypeDAO(dataSource);
+    CoffeeTypeDAO coffeeTypeDao = new CoffeeTypeDAO(dataSource);
     // Now you can create your DAOs and pass the data source
     TransactionLogDAO transactionLogDao = new TransactionLogDAO(dataSource, coffeeTypeDao);
-
 
 
     // Explenation for dbClient part in the constructor:
@@ -107,7 +106,7 @@ public class CoffeeMachine {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
             LocalDateTime dateTime = LocalDateTime.now();
 
-            log = new TransactionLog(dateTime, coffeeType, "Bought", missing);
+            log = new TransactionLog(dateTime, coffeeType, "Not bought", missing);
 
             transactionLogDao.add(log);
             return "Sorry, not enough " + missing + "\n";

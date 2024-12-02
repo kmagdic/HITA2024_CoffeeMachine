@@ -66,7 +66,7 @@ public class CoffeeTypeDAO implements GenericDao<CoffeeType> {
 
     @Override
     public void add(CoffeeType entity) {
-        String query = "INSERT INTO coffee_type (name, milk, water, coffee_beans, price) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO coffee_type (name, water, milk, coffee_beans, price) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = dataSource.getConnection();
              PreparedStatement statement = con.prepareStatement(query)) {
@@ -85,14 +85,14 @@ public class CoffeeTypeDAO implements GenericDao<CoffeeType> {
 
     @Override
     public void update(CoffeeType entity) {
-        String query = "UPDATE coffee_type SET name = ?, milk = ?, water = ?, coffee_beans = ?, price = ? WHERE id = ?";
+        String query = "UPDATE coffee_type SET name = ?, water = ?, milk = ?, coffee_beans = ?, price = ? WHERE id = ?";
 
         try (Connection con = dataSource.getConnection();
              PreparedStatement statement = con.prepareStatement(query)) {
 
             statement.setString(1, entity.getName());
-            statement.setInt(2, entity.getMilkNeeded());
             statement.setInt(3, entity.getWaterNeeded());
+            statement.setInt(2, entity.getMilkNeeded());
             statement.setInt(4, entity.getCoffeeBeansNeeded());
             statement.setInt(5, entity.getPrice());
             statement.setInt(6, entity.getId());

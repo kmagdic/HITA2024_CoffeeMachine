@@ -30,8 +30,8 @@ public class DbClient {
         String createCoffeeTypeTable = "CREATE TABLE IF NOT EXISTS coffee_type (" +
                 "id INT PRIMARY KEY AUTO_INCREMENT, " +
                 "name VARCHAR(100) NOT NULL, " +
-                "milk INT NOT NULL, " +
                 "water INT NOT NULL, " +
+                "milk INT NOT NULL, " +
                 "coffee_beans INT NOT NULL, " +
                 "price INT NOT NULL" +
                 ")";

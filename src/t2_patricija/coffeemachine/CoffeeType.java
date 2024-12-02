@@ -11,16 +11,16 @@ public class CoffeeType {
 
     public CoffeeType(int id, String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
         this.id = id;
-        this.milkNeeded = milkNeeded;
         this.waterNeeded = waterNeeded;
+        this.milkNeeded = milkNeeded;
         this.coffeeBeansNeeded = coffeeBeansNeeded;
         this.price = price;
         this.name = name;
     }
 
     public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
-        this.milkNeeded = milkNeeded;
         this.waterNeeded = waterNeeded;
+        this.milkNeeded = milkNeeded;
         this.coffeeBeansNeeded = coffeeBeansNeeded;
         this.price = price;
         this.name = name;
