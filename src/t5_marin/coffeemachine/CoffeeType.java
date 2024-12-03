@@ -1,13 +1,15 @@
 package t5_marin.coffeemachine;
 
 public class CoffeeType {
-    private final int id; // Add an ID field
-    private final String name;
-    private final int waterNeeded;
-    private final int milkNeeded;
-    private final int coffeeBeansNeeded;
-    private final float price;
 
+    private int id;
+    private String name;
+    private int waterNeeded;      // Water needed for the coffee (in milliliters)
+    private int milkNeeded;       // Milk needed for the coffee (in milliliters)
+    private int coffeeBeansNeeded; // Coffee beans needed for the coffee (in grams)
+    private float price;          // Price of the coffee
+
+    // Constructor
     public CoffeeType(int id, String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, float price) {
         this.id = id;
         this.name = name;
@@ -17,39 +19,52 @@ public class CoffeeType {
         this.price = price;
     }
 
+    // Getters and Setters
     public int getId() {
-        return id; // Getter for ID
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getWaterNeeded() {
         return waterNeeded;
+    }
+
+    public void setWaterNeeded(int waterNeeded) {
+        this.waterNeeded = waterNeeded;
     }
 
     public int getMilkNeeded() {
         return milkNeeded;
     }
 
+    public void setMilkNeeded(int milkNeeded) {
+        this.milkNeeded = milkNeeded;
+    }
+
     public int getCoffeeBeansNeeded() {
         return coffeeBeansNeeded;
+    }
+
+    public void setCoffeeBeansNeeded(int coffeeBeansNeeded) {
+        this.coffeeBeansNeeded = coffeeBeansNeeded;
     }
 
     public float getPrice() {
         return price;
     }
 
-    @Override
-    public String toString() {
-        return "CoffeeType{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", waterNeeded=" + waterNeeded +
-                ", milkNeeded=" + milkNeeded +
-                ", coffeeBeansNeeded=" + coffeeBeansNeeded +
-                ", price=" + price +
-                '}';
+    public void setPrice(float price) {
+        this.price = price;
     }
 }
