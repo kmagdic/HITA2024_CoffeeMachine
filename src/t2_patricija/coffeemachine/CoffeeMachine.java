@@ -1,5 +1,10 @@
 package t2_patricija.coffeemachine;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.h2.jdbcx.JdbcDataSource;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -15,23 +20,24 @@ public class CoffeeMachine {
     protected int cups;
     protected float money;
     protected List<CoffeeType> coffeeTypes = new ArrayList<>();
+    TransactionLog transactionLog;
     protected String statusFileName = "docs/coffee_machine_status.txt";
 
     protected String adminUsername = "admin";
     protected String adminPassword = "admin12345";
 
     private TransactionLog log;
-    private CoffeeMachineDB database;
+    DbClient dbClient = DbClient.getInstance();
 
-    //We use this list for putting all logs into it
-    protected List<TransactionLog> transactionLogList = new ArrayList<>();
+    // Getting the data source
+    JdbcDataSource dataSource = dbClient.getDataSource();
+    CoffeeTypeDAO coffeeTypeDao = new CoffeeTypeDAO(dataSource);
+    // Now you can create your DAOs and pass the data source
+    TransactionLogDAO transactionLogDao = new TransactionLogDAO(dataSource, coffeeTypeDao);
 
-    public List<TransactionLog> getHistoryLogList() { //služi mi za dohvaćanje te liste logova
-        return transactionLogList;
-    }
 
-    // Explenation for database part in the constructor:
-    // If the database object is not provided (null), we initialize it using the singleton instance of CoffeeMachineDB.
+    // Explenation for dbClient part in the constructor:
+    // If the database object is not provided (null), we initialize it using the singleton instance of dbClient.
     // This ensures that the database connection is properly set up, using the default file path if no other is specified.
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
@@ -41,13 +47,11 @@ public class CoffeeMachine {
         this.cups = cups;
         this.money = money;
 
-        this.database = database != null ? database : CoffeeMachineDB.getInstance("docs/transaction_log");
-        if (coffeeTypes == null) {
-            coffeeTypes = new ArrayList<>();
-        }
-        coffeeTypes.add(new CoffeeType("Espresso", 350, 0, 16, 4));
-        coffeeTypes.add(new CoffeeType("Latte", 350, 75, 20, 7));
-        coffeeTypes.add(new CoffeeType("Capuccino", 200, 100, 12, 6));
+        // Inicijalizirajte listu coffeeTypes
+        this.coffeeTypes = new ArrayList<>();
+
+        // Check if coffee types exist and add them if not
+        loadCoffeeTypes(coffeeTypeDao);
     }
 
 
@@ -93,19 +97,19 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
 
-            // The parameters passed here (coffeeType, success, ingredient) are used as arguments
-            // when calling the TransactionLog constructor in the addRecordToHistoryList method.
-            // This constructor creates a new TransactionLog object, which is then added to the transaction log list
-            // and inserted into the database.
+            LocalDateTime dateTime = LocalDateTime.now();
 
-            addRecordToHistoryList(coffeeType.getName(), "Bought", "");
+            log = new TransactionLog(dateTime, coffeeType, "Bought", null);
+            transactionLogDao.add(log);
             return "I have enough resources, making you " + coffeeType.getName() + "\n";
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
+            LocalDateTime dateTime = LocalDateTime.now();
 
-            addRecordToHistoryList(coffeeType.getName(), "Not bought", missing);
+            log = new TransactionLog(dateTime, coffeeType, "Not bought", missing);
+
+            transactionLogDao.add(log);
             return "Sorry, not enough " + missing + "\n";
-            //at this point it shows only one missing ingredient, even if there are multiple missing
         }
     }
 
@@ -151,17 +155,30 @@ public class CoffeeMachine {
         this.adminPassword = adminPassword;
     }
 
-    public void addRecordToHistoryList(String coffeeType, String succes, String ingredient) {
-        TransactionLog transactionLog = new TransactionLog(coffeeType, succes, ingredient);
-        transactionLogList.add(transactionLog);
-        database.insertTransactionLog(transactionLog);
-    }
-
     public void stop() {
     }
 
     public boolean start() {
         return true;
+    }
+
+    private void loadCoffeeTypes(CoffeeTypeDAO coffeeTypeDAO) {
+        // Initialize coffee types if there aren't any
+        List<CoffeeType> storedCoffeeTypes = coffeeTypeDAO.findAll();
+
+        if (storedCoffeeTypes.isEmpty()) {
+            // Add coffee types if there aren't any
+            CoffeeType espresso = new CoffeeType("Espresso", 350, 0, 16, 4);
+            CoffeeType latte = new CoffeeType("Latte", 350, 75, 20, 7);
+            CoffeeType cappuccino = new CoffeeType("Capuccino", 200, 100, 12, 6);
+
+            coffeeTypeDAO.add(espresso);
+            coffeeTypeDAO.add(latte);
+            coffeeTypeDAO.add(cappuccino);
+        } else {
+            // If there are coffee types, just load them
+            coffeeTypes.addAll(storedCoffeeTypes);
+        }
     }
 
     @Override

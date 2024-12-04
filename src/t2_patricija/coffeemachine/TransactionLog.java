@@ -1,61 +1,54 @@
 package t2_patricija.coffeemachine;
 
-import java.util.Date;
-
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class TransactionLog {
-    //Date date;
-    private Timestamp date_time;
+    private LocalDateTime dateTime;
     private int id;
-    String coffeeTypeName;
-    String success;
-    String ingredient;
+    private CoffeeType coffeeType;
+    private String success;
+    private String ingredient;
+    private int coffeeId; // Dodano polje za ID kave
 
-    // We need this parameterless constructor to allow the printing of TransactionLog objects in the log list.
-    // Without it, the default toString() method would be used, which may not provide useful output for logging.
-    public TransactionLog() {}
+    public TransactionLog() {
+        this.id = 0;
+        this.dateTime = null;
+        this.coffeeType = null;
+        this.success = null;
+        this.ingredient = null;
+    }
 
-    // Constructor for the TransactionLog class that initializes a new log entry.
-    //We pass it as parameter for inserting into DB later
-    // N.B.: We use a String for coffeeTypeName instead of a CoffeeType object
-    // because we only need the coffee's name, not the entire object.
-    public TransactionLog(String coffeeTypeName, String success, String ingredient) {
-        this.date_time = new Timestamp(System.currentTimeMillis());;
-        this.coffeeTypeName = coffeeTypeName;
+    public TransactionLog(LocalDateTime dateTime, CoffeeType coffeeType, String success, String ingredient) {
+        this.id = 0;
+        this.dateTime = dateTime;
+        this.coffeeType = coffeeType;
         this.success = success;
-        if (ingredient == null || ingredient.isEmpty()) {
-            this.ingredient = "null";
-        } else {
-            this.ingredient = ingredient;
-        }
+        this.ingredient = ingredient;
     }
 
-    // Explanation: java.util.Date includes both date and time, whereas java.sql.Date only stores the date (year, month, day).
-    // java.util.Date is incompatible with SQL DATE format, which expects only the date without the time component.
-
-    /*public java.sql.Date getDate() {
-        return new java.sql.Date(date.getTime());
+    // Getters i Setters za coffeeId
+    public int getCoffeeId() {
+        return coffeeId;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }*/
-
-    public Timestamp getDate_time() {
-        return date_time;
+    public void setCoffeeId(int coffeeId) {
+        this.coffeeId = coffeeId;
     }
 
-    public void setDate_time(Timestamp date_time) {
-        this.date_time = date_time;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public String getCoffeeTypeName() {
-        return coffeeTypeName;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public void setCoffeeTypeName(String coffeeTypeName) {
-        this.coffeeTypeName = coffeeTypeName;
+    public CoffeeType getCoffeeType() {
+        return coffeeType;
+    }
+
+    public void setCoffeeType(CoffeeType coffeeType) {
+        this.coffeeType = coffeeType;
     }
 
     public String getSuccess() {
@@ -85,11 +78,12 @@ public class TransactionLog {
     @Override
     public String toString() {
         return "TransactionLog{" +
-                "date=" + date_time +
-                ", coffeeTypeName='" + coffeeTypeName + '\'' +
+                "dateTime=" + dateTime +
+                ", id=" + id +
+                ", coffeeType=" + coffeeType +
                 ", success='" + success + '\'' +
                 ", ingredient='" + ingredient + '\'' +
+                ", coffeeId=" + coffeeId + // Dodano u toString
                 '}';
     }
-
 }

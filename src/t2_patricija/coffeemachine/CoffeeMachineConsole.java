@@ -16,14 +16,16 @@ public class CoffeeMachineConsole {
 
         CoffeeMachineConsole console = new CoffeeMachineConsole();
 
-        CoffeeMachineDB db = CoffeeMachineDB.getInstance("docs/transaction_log");
+        DbClient db = DbClient.getInstance();
 
         console.run();
     }
 
+    CoffeeTypeDAO coffeeTypeDAO = new CoffeeTypeDAO(DbClient.getInstance().getDataSource());
+
     void run() {
         CoffeeMachine machine = new CoffeeMachineWithStatusInFile(400, 540, 120, 9, 550);
-        System.out.println("Welcome to Coffee Machine 1.0 version by Karlo");
+        System.out.println("Welcome to Coffee Machine 2.0 version by Patricija");
         boolean startedSuccessfully = machine.start();
 
         if (!startedSuccessfully) {
@@ -66,8 +68,9 @@ public class CoffeeMachineConsole {
 
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
-        List <CoffeeType> coffeeTypes = machine.getCoffeeTypes();
-        for (int i = 0; i < machine.getCoffeeTypes().size(); i++) {
+        List<CoffeeType> coffeeTypes = coffeeTypeDAO.findAll();
+
+        for (int i = 0; i < coffeeTypes.size(); i++) {
             System.out.println((i + 1) + " - " + coffeeTypes.get(i).getName());
         }
         System.out.println("Enter your choice: ");
@@ -85,7 +88,7 @@ public class CoffeeMachineConsole {
         String ch = "";
         while (!ch.equals("exit")) {
             System.out.println(" ");
-            System.out.println("Write action (fill, remaining, take, password, log, exit):");
+            System.out.println("Write action (fill, remaining, take, password, log, add_coffee, exit):");
             ch = sc.next();
 
             switch (ch) {
@@ -128,8 +131,29 @@ public class CoffeeMachineConsole {
                     break;
 
                 case "log":
-                    for (TransactionLog h : machine.getHistoryLogList()) {
-                        System.out.println (h);
+                    for (TransactionLog h : machine.transactionLogDao.findAll()) {
+                        System.out.println(h);
+                    }
+                    break;
+
+                case "add_coffee":
+                    System.out.println("Enter coffee name: ");
+                    String name = sc.next();
+                    System.out.println("Enter water amount: ");
+                    int needed_water = sc.nextInt();
+                    System.out.println("Enter milk amount: ");
+                    int needed_milk = sc.nextInt();
+                    System.out.println("Enter coffee beans amount: ");
+                    int coffee_beans = sc.nextInt();
+                    System.out.println("Enter price: ");
+                    int price = sc.nextInt();
+
+                    CoffeeType coffeeType = new CoffeeType(name, needed_water, needed_milk, coffee_beans, price);
+                    if (coffeeTypeDAO.exists(coffeeType)) {
+                        System.out.println("This coffee type already exists.");
+                    } else {
+                        coffeeTypeDAO.add(coffeeType);
+                        System.out.println("Coffee type added successfully!");
                     }
                     break;
 

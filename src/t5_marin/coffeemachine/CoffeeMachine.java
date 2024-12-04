@@ -1,87 +1,90 @@
 package t5_marin.coffeemachine;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CoffeeMachine {
+    private int id;
     private int water;
     private int milk;
     private int coffeeBeans;
     private int cups;
     private float money;
+    private String password;
 
-    public void setPassword(String password) {
-        this.password = password;
+    public CoffeeMachine(int id, int water, int milk, int coffeeBeans, int cups, float money) {
+        this.id = id;
+        this.water = water;
+        this.milk = milk;
+        this.coffeeBeans = coffeeBeans;
+        this.cups = cups;
+        this.money = money;
+        this.password = "admin"; // Default password
     }
 
-    private String password = "admin";  // Default password
-    private List<String> transactionLog;
-
-    public CoffeeMachine() {
-        // Initial resources
-        this.water = 1000;
-        this.milk = 500;
-        this.coffeeBeans = 200;
-        this.cups = 10;
-        this.money = 0.0f;
-        this.transactionLog = new ArrayList<>();
+    public int getId() {
+        return id;
     }
 
-    // Fill resources
-    public void fillResources(int water, int milk, int coffeeBeans, int cups) {
-        this.water += water;
-        this.milk += milk;
-        this.coffeeBeans += coffeeBeans;
-        this.cups += cups;
-        transactionLog.add("Filled resources: " + water + " ml water, " + milk + " ml milk, " + coffeeBeans + "g coffee beans, " + cups + " cups.");
+    public void setId(int id) {
+        this.id = id;
     }
 
-    // Take money
-    public float takeMoney() {
-        float tempMoney = this.money;
-        this.money = 0;
-        return tempMoney;
-    }
-
-    // Getters for remaining resources
     public int getWater() {
         return water;
+    }
+
+    public void setWater(int water) {
+        this.water = water;
     }
 
     public int getMilk() {
         return milk;
     }
 
+    public void setMilk(int milk) {
+        this.milk = milk;
+    }
+
     public int getCoffeeBeans() {
         return coffeeBeans;
+    }
+
+    public void setCoffeeBeans(int coffeeBeans) {
+        this.coffeeBeans = coffeeBeans;
     }
 
     public int getCups() {
         return cups;
     }
 
+    public void setCups(int cups) {
+        this.cups = cups;
+    }
+
     public float getMoney() {
         return money;
     }
 
-    // Check password
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    public void setMoney(float money) {
+        this.money = money;
     }
 
-    // Change password
-    public void changePassword(String newPassword) {
-        this.password = newPassword;
+    public String getPassword() {
+        return password;
     }
 
-    // Show transaction log
-    public void showTransactionLog() {
-        if (transactionLog.isEmpty()) {
-            System.out.println("No transactions recorded.");
-        } else {
-            for (String log : transactionLog) {
-                System.out.println(log);
-            }
-        }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "CoffeeMachine{" +
+                "id=" + id +
+                ", water=" + water +
+                ", milk=" + milk +
+                ", coffeeBeans=" + coffeeBeans +
+                ", cups=" + cups +
+                ", money=" + money +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
