@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calculator">
+        <h1>Calculator</h1>
+        <p>My basic calculator</p>
+        <div class="icon">
+            <img src="img/calculator.jpg" alt="Calculator Icon">
+        </div>
+        <form id="calculator-form">
+            <label for="first-number">First number</label>
+            <input type="number" id="first-number" placeholder="Prvi broj">
+            
+            <label for="operation">Operation</label>
+            <input type="text" id="operation" placeholder="Operacija (+, -, *, /)">
+            
+            <label for="second-number">Second number</label>
+            <input type="number" id="second-number" placeholder="Drugi broj">
+            
+            <div class="buttons">
+                <button type="button" id="calculate">Calculate</button>
+                <button type="button" id="reset">Reset</button>
+            </div>
+        </form>
+        <div class="result">
+            <label for="result">Result</label>
+            <input type="text" id="result" readonly>
+        </div>
+        <button id="add-to-list">Add to list</button>
+        <button id="add-to-table">Add to table</button>
+        <div class="history">
+            <h3>Record history (List)</h3>
+            <ul id="history-list"></ul>
+        </div>
+        <div class="history-table">
+            <h3>Record history (Table)</h3>
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Record</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
