@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Calculator</h1>
+        <h2>My Basic Calculator</h2>
+        <img src="images/calculator-image.jpg" alt="Calculator Image">
+    </header>
+    <div class="calculator">
+        <div class="display">
+            <label for="numberA">Number A:</label>
+            <input type="text" id="numberA" placeholder="A">
+            <select id="operation">
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="*">*</option>
+                <option value="/">/</option>
+            </select>
+            <input type="text" id="numberB" placeholder="B">
+        </div>
+        <div id="result" class="lcd">0</div>
+        <button id="calculate">=</button>
+        <div class="history-button">
+            <button id="toggleHistory">History</button>
+        </div>
+    </div>
+    <div class="history-panel" id="historyPanel">
+        <h2>History</h2>
+        <ul id="historyList"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
