@@ -1,63 +1,80 @@
 package t5_goran.coffeemachine;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class CoffeeMachine {
 
-    private int water;
-    private int milk;
-    private int coffeeBeans;
-    private int cups;
-    private float money;
-    private List<CoffeeType> coffeeTypes;
-
+    int water;
+    int milk;
+    int coffeeBeans;
+    int cups;
+    float money;
+    private List<CoffeeType> coffeeTypes = new ArrayList<>();
     private String adminUsername = "admin";
     private String adminPassword = "admin12345";
     private final String statusFileName = "docs/coffee_machine_status.txt";
 
+    // Constructor to initialize the coffee machine with given resources
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
         this.milk = milk;
         this.coffeeBeans = coffeeBeans;
         this.cups = cups;
         this.money = money;
+        coffeeTypes.add(new CoffeeType(1, "Espresso", 350, 0, 16, 4));
+        coffeeTypes.add(new CoffeeType(2, "Latte", 350, 75, 20, 7));
+        coffeeTypes.add(new CoffeeType(3, "Cappuccino", 200, 100, 12, 6));
     }
 
-    public boolean start() {
-        boolean loadedFromFile = loadFromFile(statusFileName);
-
-        DataConnection dataConnection = DataConnection.getInstance();
-        CoffeeTypeRepository coffeeTypeRepo = new CoffeeTypeRepository(dataConnection.getConnection());
-        TransactionLogRepository logRepo = new TransactionLogRepository(dataConnection.getConnection());
-
-        coffeeTypeRepo.createTable();
-        logRepo.createTable();
-
-        coffeeTypes = coffeeTypeRepo.getAllCoffeeTypes();
-        if (coffeeTypes.isEmpty()) {
-            coffeeTypeRepo.addCoffeeType(new CoffeeType("Espresso", 350, 0, 16, 4));
-            coffeeTypeRepo.addCoffeeType(new CoffeeType("Latte", 350, 75, 20, 7));
-            coffeeTypeRepo.addCoffeeType(new CoffeeType("Cappuccino", 200, 100, 12, 6));
-            coffeeTypes = coffeeTypeRepo.getAllCoffeeTypes();
-        }
-
-        return loadedFromFile;
+    public int getWater() {
+        return water;
     }
 
-    public void stop() {
-        saveToFile(statusFileName);
+    public int getMilk() {
+        return milk;
+    }
+
+    public int getCoffeeBeans() {
+        return coffeeBeans;
+    }
+
+    public int getCups() {
+        return cups;
+    }
+
+    public float getMoney() {
+        return money;
     }
 
     public List<CoffeeType> getCoffeeTypes() {
         return coffeeTypes;
     }
 
+    public String getAdminUsername() {
+        return adminUsername;
+    }
+
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    protected void setAdminUsername(String adminUsername) {
+        this.adminUsername = adminUsername;
+    }
+
+    protected void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
+    // Check if the machine has enough resources for the selected coffee type
+    public boolean hasEnoughResources(CoffeeType coffeeType) {
+        return water >= coffeeType.getWaterNeeded() &&
+                milk >= coffeeType.getMilkNeeded() &&
+                coffeeBeans >= coffeeType.getCoffeeBeansNeeded() &&
+                cups >= 1;
+    }
+        // Method to buy a coffee, and log the transaction
     public String buyCoffee(CoffeeType coffeeType) {
         String result;
         LocalDateTime transactionTime = LocalDateTime.now();
@@ -70,25 +87,16 @@ public class CoffeeMachine {
             this.cups -= 1;
             this.money += coffeeType.getPrice();
             result = "I have enough resources, making you " + coffeeType.getName();
-
             logRepo.logTransaction(transactionTime, coffeeType.getId(), "Bought", null);
         } else {
             String missing = calculateWhichIngredientIsMissing(coffeeType);
             result = "Sorry, not enough " + missing;
-
             logRepo.logTransaction(transactionTime, coffeeType.getId(), "Not bought", missing);
         }
         return result;
     }
 
-    private boolean hasEnoughResources(CoffeeType coffeeType) {
-        return water >= coffeeType.getWaterNeeded() &&
-                milk >= coffeeType.getMilkNeeded() &&
-                coffeeBeans >= coffeeType.getCoffeeBeansNeeded() &&
-                cups >= 1;
-    }
-
-    private String calculateWhichIngredientIsMissing(CoffeeType coffeeType) {
+    public String calculateWhichIngredientIsMissing(CoffeeType coffeeType) {
         if (water < coffeeType.getWaterNeeded()) return "water";
         if (milk < coffeeType.getMilkNeeded()) return "milk";
         if (coffeeBeans < coffeeType.getCoffeeBeansNeeded()) return "coffee beans";
@@ -96,19 +104,16 @@ public class CoffeeMachine {
         return "unknown";
     }
 
-    public String remaining() {
-        return "The coffee machine has:\n" +
-                water + " ml of water\n" +
-                milk + " ml of milk\n" +
-                coffeeBeans + " g of coffee beans\n" +
-                cups + " disposable cups\n" +
-                "$" + money + " of money";
+    public void fill(int water, int milk, int coffeeBeans, int cups) {
+        this.water += water;
+        this.milk += milk;
+        this.coffeeBeans += coffeeBeans;
+        this.cups += cups;
     }
 
     public float takeMoney() {
         float taken = money;
         money = 0;
-        saveToFile(statusFileName);
         return taken;
     }
 
@@ -119,61 +124,71 @@ public class CoffeeMachine {
     public boolean changePassword(String newPassword) {
         if (newPassword.length() >= 7 && newPassword.matches(".*\\d.*")) {
             adminPassword = newPassword;
-            saveToFile(statusFileName);
-            System.out.println("Password is changed successfully.");
+            System.out.println("Password is changed");
             return true;
         } else {
             return false;
         }
     }
 
-    public void fill(int water, int milk, int coffeeBeans, int cups) {
-        this.water += water;
-        this.milk += milk;
-        this.coffeeBeans += coffeeBeans;
-        this.cups += cups;
-        saveToFile(statusFileName);
-    }
+//    public boolean loadFromFile(String fileName) {
+//        try (FileReader reader = new FileReader(fileName);
+//             Scanner fileScanner = new Scanner(reader)) {
+//
+//            fileScanner.useDelimiter("; |\n");
+//            if (!fileScanner.hasNextInt()) throw new IOException("Invalid file format.");
+//
+//            water = fileScanner.nextInt();
+//            milk = fileScanner.nextInt();
+//            coffeeBeans = fileScanner.nextInt();
+//            cups = fileScanner.nextInt();
+//            money = Float.parseFloat(fileScanner.next());
+//            adminUsername = fileScanner.next();
+//            adminPassword = fileScanner.next().trim();
+//            return true;
+//
+//        } catch (FileNotFoundException e) {
+//            System.out.println("Status file not found. Using default values.");
+//            return false;
+//        } catch (Exception e) {
+//            System.out.println("Failed to load the file. Using default values.");
+//            return false;
+//        }
+//    }
+//
+//    public void saveToFile(String fileName) {
+//        try (FileWriter writer = new FileWriter(fileName)) {
+//            writer.write(water + "; " + milk + "; " + coffeeBeans + "; " + cups + "; " + money + "\n");
+//            writer.write(adminUsername + "; " + adminPassword + "\n");
+//        } catch (IOException e) {
+//            System.out.println("Failed to save the status file.");
+//        }
+//    }
 
-    public boolean loadFromFile(String fileName) {
-        try (FileReader reader = new FileReader(fileName);
-             Scanner fileScanner = new Scanner(reader)) {
+// Start the machine by initializing resources and database
+    public boolean start() {
+        DataConnection dataConnection = DataConnection.getInstance();
+        CoffeeTypeRepository coffeeTypeRepository = new CoffeeTypeRepository(dataConnection.getConnection());
+        TransactionLogRepository transactionLogRepository = new TransactionLogRepository(dataConnection.getConnection());
 
-            fileScanner.useDelimiter("; |\n"); // Delimiter je "; " ili "\n"
+        coffeeTypeRepository.createTable();
+        transactionLogRepository.createTable();
 
-            water = fileScanner.nextInt();
-            milk = fileScanner.nextInt();
-            coffeeBeans = fileScanner.nextInt();
-            cups = fileScanner.nextInt();
-            money = Float.parseFloat(fileScanner.next());
+        coffeeTypes = coffeeTypeRepository.getAllCoffeeTypes();
+        if (coffeeTypes.isEmpty()) {
+            coffeeTypes.add(new CoffeeType(1, "Espresso", 350, 0, 16, 4));
+            coffeeTypes.add(new CoffeeType(2, "Latte", 350, 75, 20, 7));
+            coffeeTypes.add(new CoffeeType(3, "Cappuccino", 200, 100, 12, 6));
 
-            adminUsername = fileScanner.next();
-            adminPassword = (fileScanner.next()).trim();
-
-            return true;
-
-        } catch (FileNotFoundException e) {
-            System.out.println("Status file not found, using default values.");
-            return false;
-        } catch (Exception e) {
-            System.out.println("Failed to load the file. Using default values.");
-            return false;
         }
+
+        return true;
     }
 
-    public void saveToFile(String fileName) {
-        try (FileWriter writer = new FileWriter(fileName)) {
+    public void stop() {
 
-            writer.write(water + "; " + milk + "; " + coffeeBeans + "; " + cups + "; " + money);
-            writer.write("\n");
-            writer.write(adminUsername + "; " + adminPassword);
-            writer.write("\n");
-
-        } catch (IOException e) {
-            System.out.println("Failed to save the status file.");
-        }
     }
-
+    // String representation of the coffee machine state
     @Override
     public String toString() {
         return "CoffeeMachine{" +

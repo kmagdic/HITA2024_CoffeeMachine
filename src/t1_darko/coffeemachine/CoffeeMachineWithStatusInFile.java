@@ -11,7 +11,7 @@ public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
     // rename file name
     private String statusFileName = "docs/coffee_machine_status.txt";
 
-    public CoffeeMachineWithStatusInFile(int water, int milk, int coffeeBeans, int cups, float money) {
+    public CoffeeMachineWithStatusInFile(int water, int milk, int coffeeBeans, int cups, int money) {
         super(water, milk, coffeeBeans, cups, money);
     }
 
@@ -36,7 +36,7 @@ public class CoffeeMachineWithStatusInFile extends CoffeeMachine{
         milk = fileScanner.nextInt();
         coffeeBeans = fileScanner.nextInt();
         cups = fileScanner.nextInt();
-        money = Float.parseFloat(fileScanner.next());
+        money = Integer.parseInt(fileScanner.next());
 
         adminUsername = fileScanner.next();
         adminPassword = (fileScanner.next()).trim();

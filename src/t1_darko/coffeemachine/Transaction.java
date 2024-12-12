@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
-
     private LocalDateTime localDateTime;
     private CoffeeType coffeeType;
     private String action;
@@ -43,10 +42,11 @@ public class Transaction {
     public String toFormattedString() {
         String formattedString = "Date/time: " + DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss").format(localDateTime) +
                 ", coffee type: " + coffeeType.getName() +
-                ", action" + action;
+                ", action: " + action;
         if (ingredients != null) {
             formattedString += ", no enough ingredients: " + ingredients;
         }
         return formattedString;
     }
+
 }

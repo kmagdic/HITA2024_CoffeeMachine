@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeleMed Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="width: 24rem;">
+        <div class="text-center mb-4">
+            <h1 class="text-primary fw-bold">TELEMED</h1>
+            <p class="text-muted">Pratite svoje zdravlje jednostavno i brzo</p>
+        </div>
+        <form onsubmit="handleLogin(event)">
+            <!-- Email Field -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    <input type="email" class="form-control" id="email" placeholder="Unesite email" required>
+                </div>
+            </div>
+            <!-- Password Field -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Lozinka</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input type="password" class="form-control" id="password" placeholder="Unesite lozinku" required>
+                </div>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Prijavi se</button>
+            </div>
+            <div class="text-center mt-3">
+                <a href="#" class="text-decoration-none text-muted">Zaboravili ste lozinku?</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Definirane vrijednosti za email i lozinku
+    const FIXED_EMAIL = "admin@telemed.hr";
+    const FIXED_PASSWORD = "admin123";
+
+    function handleLogin(event) {
+        event.preventDefault(); // Sprječava ponovno učitavanje stranice
+
+        // Dohvaćanje unesenih vrijednosti
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Provjera unesenih podataka
+        if (email === FIXED_EMAIL && password === FIXED_PASSWORD) {
+            // Ako su podaci točni, preusmjeri na stranicu Unos Podataka
+            window.location.href = 'unos_podataka.html';
+        } else {
+            // Ako su podaci pogrešni, prikaz poruke o grešci
+            alert("Neispravan email ili lozinka. Pokušajte ponovno.");
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

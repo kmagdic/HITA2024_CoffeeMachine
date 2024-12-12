@@ -1,3 +1,4 @@
+/*
 package t2_patricija.coffeemachine;
 
 
@@ -111,3 +112,5 @@ public class CoffeeMachineDB {
     }
 
 }
+
+ */

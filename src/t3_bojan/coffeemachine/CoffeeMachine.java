@@ -16,14 +16,7 @@ public class CoffeeMachine {
     protected String adminPassword = "admin12345";
     protected String statusFileName = "src/t3_bojan/coffeemachine/coffee_machine_status.txt";
     protected boolean isLoadedFromDB = false;
-    private List<CoffeeType> coffeeTypes = new ArrayList<>();
-    private TransactionLog transactionLog;
-    private CoffeeTypeRepository coffeeTypeRepository;
-
-    private final String TRANSACTION_SUCCESS_ACTION = "Bought";
-    private final String TRANSACTION_FAIL_ACTION = "Not Bought";
-    private final String I_HAVE_ENOUGH_RESOURCES = "I have enough resources, making you ";
-    private final String I_DONT_HAVE_ENOUGH_RESOURCES = "Sorry, not enough ";
+    protected List<CoffeeType> coffeeTypes = new ArrayList<>();
 
     public CoffeeMachine(int water, int milk, int coffeeBeans, int cups, float money) {
         this.water = water;
@@ -72,22 +65,7 @@ public class CoffeeMachine {
     }
 
     public String buyCoffee(CoffeeType coffeeType) {
-
-        if (hasEnoughResources(coffeeType)) {
-            this.water -= coffeeType.getWaterNeeded();
-            this.milk -= coffeeType.getMilkNeeded();
-            this.coffeeBeans -= coffeeType.getCoffeeBeansNeeded();
-            this.cups -= 1;
-            this.money += coffeeType.getPrice();
-            transactionLog = new TransactionLog(LocalDateTime.now(), coffeeType, TRANSACTION_SUCCESS_ACTION);
-
-            return I_HAVE_ENOUGH_RESOURCES + coffeeType.getName() + "\n";
-        } else {
-            String missing = calculateWhichIngredientIsMissing(coffeeType);
-            transactionLog = new TransactionLog(LocalDateTime.now(), coffeeType, TRANSACTION_FAIL_ACTION, missing);
-
-            return I_DONT_HAVE_ENOUGH_RESOURCES + missing + "\n";
-        }
+        return null;
     }
 
     public float takeMoney() {
@@ -129,20 +107,11 @@ public class CoffeeMachine {
         adminPassword = newPassword;
     }
 
-    public TransactionLog getTransactionLog() {
-        return transactionLog;
+    public List<TransactionLog> getTransactionLog() {
+        return null;
     }
 
-    public boolean start(Connection connection) {
-        coffeeTypeRepository = new CoffeeTypeRepository(connection);
-        coffeeTypeRepository.createTable();
-        int rows = coffeeTypeRepository.getCoffeeTypeRowCount();
-
-        if (rows < 3) {
-            for (CoffeeType coffeeType : coffeeTypes) {
-                coffeeTypeRepository.insert(coffeeType);
-            }
-        }
+    public boolean start() {
         return isLoadedFromDB;
     }
 

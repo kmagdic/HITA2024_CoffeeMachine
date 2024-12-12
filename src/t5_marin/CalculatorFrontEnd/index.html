@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="calculator">
+    <h1>Calculator</h1>
+    <p>My basic calculator</p>
+    <div class="icon">
+        <img src="https://img.icons8.com/ios-filled/50/000000/calculator.png" alt="Calculator icon">
+    </div>
+    <form id="calculator-form">
+        <label for="first-number">First number</label>
+        <input type="number" id="first-number" placeholder="Enter first number">
+
+        <label for="operation">Operation</label>
+        <select id="operation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+
+        <label for="second-number">Second number</label>
+        <input type="number" id="second-number" placeholder="Enter second number">
+
+        <div class="buttons">
+            <button type="button" id="calculate-btn">Calculate</button>
+            <button type="button" id="reset-btn">Reset</button>
+        </div>
+
+        <label for="result">Result</label>
+        <input type="text" id="result" readonly>
+
+        <button type="button" id="add-to-list">Add to list</button>
+    </form>
+
+    <h3>Record history</h3>
+    <ul id="history"></ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

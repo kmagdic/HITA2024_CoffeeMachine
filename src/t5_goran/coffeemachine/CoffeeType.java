@@ -9,7 +9,8 @@ public class CoffeeType {
     private final int coffeeBeansNeeded;
     private final int price;
 
-    public CoffeeType(String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+    public CoffeeType(int id, String name, int waterNeeded, int milkNeeded, int coffeeBeansNeeded, int price) {
+        this.id = id;
         this.name = name;
         this.waterNeeded = waterNeeded;
         this.milkNeeded = milkNeeded;

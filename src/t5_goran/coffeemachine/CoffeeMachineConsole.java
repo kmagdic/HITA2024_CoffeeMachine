@@ -1,7 +1,7 @@
 package t5_goran.coffeemachine;
 
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
 
 public class CoffeeMachineConsole {
 
@@ -12,25 +12,28 @@ public class CoffeeMachineConsole {
         console.run();
     }
 
+    // Main method to handle user interactions
     void run() {
-        CoffeeMachine machine = new CoffeeMachine(400, 540, 120, 9, 550);
-        machine.start();
+        DataConnection dataConnection = DataConnection.getInstance();
+        CoffeeMachineWithDatabase machine = new CoffeeMachineWithDatabase(400, 540, 120, 9, 550, dataConnection.getConnection());
+        machine.start();    // Start the coffee machine with database
 
-        System.out.println("Welcome to Coffee Machine 1.0");
+        System.out.println("Welcome to Coffee Machine 1.0 version by Goran");
 
         String action = "";
         while (!action.equals("exit")) {
-            System.out.println("Write action (buy, admin, exit): ");
+            System.out.println("Write action (buy, login, exit): ");
             action = scanner.next();
 
             switch (action) {
                 case "buy":
                     buyAction(machine);
                     break;
-                case "admin":
+                case "login":
                     adminMenu(machine);
                     break;
                 case "exit":
+                    machine.stop();         // Stop the coffee machine and save data to the database
                     System.out.println("Shutting down the machine. Bye!");
                     break;
                 default:
@@ -42,6 +45,7 @@ public class CoffeeMachineConsole {
     private void buyAction(CoffeeMachine machine) {
         System.out.println("Choice: ");
         List<CoffeeType> coffeeTypes = machine.getCoffeeTypes();
+        // Display available coffee types
         for (int i = 0; i < coffeeTypes.size(); i++) {
             System.out.println((i + 1) + " - " + coffeeTypes.get(i).getName());
         }
@@ -69,15 +73,14 @@ public class CoffeeMachineConsole {
 
         String adminAction = "";
         while (!adminAction.equals("exit")) {
-            System.out.println("Write action (fill, remaining, take, log, password, exit):");
+            System.out.println("Write action (fill, remaining, take, password, log, exit):");
             adminAction = scanner.next();
-
             switch (adminAction) {
                 case "fill":
                     fillMachine(machine);
                     break;
                 case "remaining":
-                    System.out.println(machine.remaining());
+                    remaining(machine);
                     break;
                 case "take":
                     System.out.println("I gave you $" + machine.takeMoney());
@@ -108,6 +111,15 @@ public class CoffeeMachineConsole {
         int cups = scanner.nextInt();
 
         machine.fill(water, milk, coffeeBeans, cups);
+    }
+
+    private void remaining(CoffeeMachine machine) {
+        System.out.println("The coffee machine has:");
+        System.out.println(machine.getWater() + " ml of water");
+        System.out.println(machine.getMilk() + " ml of milk");
+        System.out.println(machine.getCoffeeBeans() + " g of coffee beans");
+        System.out.println(machine.getCups() + " disposable cups");
+        System.out.println("$" + machine.getMoney() + " of money");
     }
 
     private void viewTransactionLogs() {
