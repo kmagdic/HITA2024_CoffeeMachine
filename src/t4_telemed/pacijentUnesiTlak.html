@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeleMed - Unos Tlakova</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .sidebar .nav-link {
+            color: #000;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" id="sidebarMenu">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <span class="fw-bold">TELEMED</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pacijentProsliZapisi.html">
+                            &#8592; Natrag na zapise
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">
+                            Odjavi se
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h4">Unos Tlakova</h1>
+            </div>
+
+            <form id="tlakForm">
+                <div class="mb-3">
+                    <label for="sistolicki" class="form-label">Sistolički tlak:</label>
+                    <input type="text" class="form-control" id="sistolicki" placeholder="Unesi sistolički tlak" required>
+                </div>
+                <div class="mb-3">
+                    <label for="dijastolicki" class="form-label">Dijastolički tlak:</label>
+                    <input type="text" class="form-control" id="dijastolicki" placeholder="Unesi dijastolički tlak" required>
+                </div>
+                <div class="mb-3">
+                    <label for="otkucaji" class="form-label">Otkucaji srca:</label>
+                    <input type="text" class="form-control" id="otkucaji" placeholder="Unesi otkucaje srca" required>
+                </div>
+                <div class="mb-3">
+                    <label for="opis" class="form-label">Opis:</label>
+                    <textarea class="form-control" id="opis" rows="3" placeholder="Unesi opis"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Spremi</button>
+            </form>
+        </main>
+    </div>
+</div>
+
+<script>
+    document.getElementById('tlakForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const tlak = {
+            date: new Date().toLocaleString(),
+            sisTlak: document.getElementById('sistolicki').value,
+            dijTlak: document.getElementById('dijastolicki').value,
+            otkucaji: document.getElementById('otkucaji').value,
+            opis: document.getElementById('opis').value
+        };
+
+        const tlakovi = JSON.parse(localStorage.getItem('tlakovi')) || [];
+        tlakovi.push(tlak);
+        localStorage.setItem('tlakovi', JSON.stringify(tlakovi));
+
+        window.location.href = 'pacijentProsliZapisi.html';
+    });
+</script>
+
+<!-- Navbar for Mobile -->
+<nav class="navbar navbar-dark fixed-top bg-dark d-md-none">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <span class="navbar-brand">TELEMED</span>
+        <a href="login.html" class="btn btn-danger btn-sm">Odjavi se</a>
+    </div>
+</nav>
+</body>
+</html>
