@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unos Podataka</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="width: 600px;">
+        <h3 class="text-center mb-4">Unos Podataka</h3>
+        <form onsubmit="handleSaveData(event)">
+            <!-- Otkucaji Srca -->
+            <div class="mb-3">
+                <label for="otkucaji" class="form-label">Otkucaji Srca</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-heartbeat"></i>
+                    </span>
+                    <input type="number" class="form-control" id="otkucaji" placeholder="Unesite otkucaje srca" required>
+                </div>
+            </div>
+            <!-- Dijastolički Tlak -->
+            <div class="mb-3">
+                <label for="dijastolicki" class="form-label">Dijastolički Tlak</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-tint"></i>
+                    </span>
+                    <input type="number" class="form-control" id="dijastolicki" placeholder="Unesite dijastolički tlak" required>
+                </div>
+            </div>
+            <!-- Sistolički Tlak -->
+            <div class="mb-3">
+                <label for="sistolicki" class="form-label">Sistolički Tlak</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-arrow-up"></i>
+                    </span>
+                    <input type="number" class="form-control" id="sistolicki" placeholder="Unesite sistolički tlak" required>
+                </div>
+            </div>
+            <!-- Datum Unosa -->
+            <div class="mb-3">
+                <label for="datum" class="form-label">Datum Unosa</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-calendar-alt"></i>
+                    </span>
+                    <input type="date" class="form-control" id="datum" required>
+                </div>
+            </div>
+            <!-- Opis -->
+            <div class="mb-3">
+                <label for="opis" class="form-label">Opis</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-align-left"></i>
+                    </span>
+                    <textarea class="form-control" id="opis" placeholder="Unesite opis" rows="3" required></textarea>
+                </div>
+            </div>
+            <!-- Submit -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Spremi</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function handleSaveData(event) {
+        event.preventDefault();
+
+        // Validacija podataka (opcionalno, za sigurnost)
+        const otkucaji = document.getElementById('otkucaji').value;
+        const dijastolicki = document.getElementById('dijastolicki').value;
+        const sistolicki = document.getElementById('sistolicki').value;
+        const datum = document.getElementById('datum').value;
+        const opis = document.getElementById('opis').value;
+
+        if (!otkucaji || !dijastolicki || !sistolicki || !datum || !opis) {
+            alert("Molimo popunite sva polja.");
+            return;
+        }
+
+        // Spremanje podataka
+        const data = { otkucaji, dijastolicki, sistolicki, datum, opis };
+        let savedData = JSON.parse(localStorage.getItem('pacijenti')) || [];
+        savedData.push(data);
+        localStorage.setItem('pacijenti', JSON.stringify(savedData));
+
+        // Preusmjeravanje na stranicu za uređivanje podataka
+        window.location.href = 'uredivanje_podataka.html';
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

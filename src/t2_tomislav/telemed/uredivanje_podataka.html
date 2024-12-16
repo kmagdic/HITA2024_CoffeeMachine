@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prikaz Podataka</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container my-5">
+  <h2 class="text-center mb-4">Uneseni Podaci</h2>
+  <div class="card shadow p-4">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped align-middle" id="data-table">
+        <thead class="table-primary">
+        <tr>
+          <th>Redni Broj</th>
+          <th>Datum Unosa</th>
+          <th>Opis</th>
+          <th>Otkucaji Srca</th>
+          <th>Dijastolički Tlak</th>
+          <th>Sistolički Tlak</th>
+          <th>Akcije</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Dinamički podaci -->
+        </tbody>
+      </table>
+    </div>
+    <!-- Gumbi ispod tablice -->
+    <div class="d-flex justify-content-between mt-3">
+      <a href="unos_podataka.html" class="btn btn-primary btn-lg">
+        <i class="fas fa-plus"></i> Novi unos
+      </a>
+      <a href="login.html" class="btn btn-danger btn-lg">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Modalni Dijalog -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Uredi Podatke</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm">
+          <div class="mb-3">
+            <label for="editOtkucaji" class="form-label">Otkucaji Srca</label>
+            <input type="number" class="form-control" id="editOtkucaji" required>
+          </div>
+          <div class="mb-3">
+            <label for="editDijastolicki" class="form-label">Dijastolički Tlak</label>
+            <input type="number" class="form-control" id="editDijastolicki" required>
+          </div>
+          <div class="mb-3">
+            <label for="editSistolicki" class="form-label">Sistolički Tlak</label>
+            <input type="number" class="form-control" id="editSistolicki" required>
+          </div>
+          <div class="mb-3">
+            <label for="editDatum" class="form-label">Datum Unosa</label>
+            <input type="date" class="form-control" id="editDatum" required>
+          </div>
+          <div class="mb-3">
+            <label for="editOpis" class="form-label">Opis</label>
+            <textarea class="form-control" id="editOpis" rows="3" required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+        <button type="button" class="btn btn-primary" id="saveChanges">Spremi Promjene</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let editIndex = null; // Za praćenje koji zapis uređujemo
+
+  function loadData() {
+      const tableBody = document.getElementById('data-table').querySelector('tbody');
+      const savedData = JSON.parse(localStorage.getItem('pacijenti')) || [];
+      tableBody.innerHTML = '';
+
+      if (savedData.length === 0) {
+          tableBody.innerHTML = `
+              <tr>
+                  <td colspan="7" class="text-center text-muted">Nema dostupnih podataka.</td>
+              </tr>
+          `;
+          return;
+      }
+
+      savedData.forEach((data, index) => {
+          tableBody.innerHTML += `
+              <tr>
+                  <td>${index + 1}</td>
+                  <td>${data.datum}</td>
+                  <td>${data.opis}</td>
+                  <td>${data.otkucaji}</td>
+                  <td>${data.dijastolicki}</td>
+                  <td>${data.sistolicki}</td>
+                  <td>
+                      <button class="btn btn-sm btn-warning me-2" onclick="editData(${index})" data-bs-toggle="modal" data-bs-target="#editModal">
+                          <i class="fas fa-edit"></i> Uredi
+                      </button>
+                      <button class="btn btn-sm btn-danger" onclick="deleteData(${index})">
+                          <i class="fas fa-trash-alt"></i> Obriši
+                      </button>
+                  </td>
+              </tr>
+          `;
+      });
+  }
+
+  function editData(index) {
+      const savedData = JSON.parse(localStorage.getItem('pacijenti')) || [];
+      const dataToEdit = savedData[index];
+
+      // Popunjavanje modalnih polja podacima
+      document.getElementById('editOtkucaji').value = dataToEdit.otkucaji;
+      document.getElementById('editDijastolicki').value = dataToEdit.dijastolicki;
+      document.getElementById('editSistolicki').value = dataToEdit.sistolicki;
+      document.getElementById('editDatum').value = dataToEdit.datum;
+      document.getElementById('editOpis').value = dataToEdit.opis;
+
+      // Pohrana trenutnog indeksa
+      editIndex = index;
+  }
+
+  document.getElementById('saveChanges').addEventListener('click', function () {
+      const savedData = JSON.parse(localStorage.getItem('pacijenti')) || [];
+
+      // Ažuriranje podataka
+      savedData[editIndex] = {
+          otkucaji: document.getElementById('editOtkucaji').value,
+          dijastolicki: document.getElementById('editDijastolicki').value,
+          sistolicki: document.getElementById('editSistolicki').value,
+          datum: document.getElementById('editDatum').value,
+          opis: document.getElementById('editOpis').value
+      };
+
+      // Spremanje ažuriranih podataka
+      localStorage.setItem('pacijenti', JSON.stringify(savedData));
+
+      // Zatvaranje modala i osvježavanje tablice
+      const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+      modal.hide();
+      loadData();
+  });
+
+  function deleteData(index) {
+      const savedData = JSON.parse(localStorage.getItem('pacijenti')) || [];
+      savedData.splice(index, 1);
+      localStorage.setItem('pacijenti', JSON.stringify(savedData));
+      loadData();
+  }
+
+  // Učitavanje podataka na stranici
+  window.onload = loadData;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

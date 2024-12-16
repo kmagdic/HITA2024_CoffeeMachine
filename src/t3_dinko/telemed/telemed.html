@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemed App</title>
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --gray-100: #F8F9FA;
+            --gray-200: #E9ECEF;
+            --gray-300: #DEE2E6;
+            --gray-600: #6C757D;
+            --gray-900: #212529;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 1rem;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .back-button {
+            border: none;
+            background: none;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: var(--primary-light);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--gray-100);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        .metric-card .icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .label {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .records-list {
+            list-style: none;
+        }
+
+        .records-list li {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .patient-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            cursor: pointer;
+        }
+
+        .patient-card img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .patient-info {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-weight: 500;
+        }
+
+        .patient-appointment {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-message h2 {
+            margin-bottom: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .button-secondary {
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        .login-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-option {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-option:hover {
+            background-color: var(--gray-100);
+        }
+
+        .login-option.active {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .health-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .health-data-table th,
+        .health-data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--gray-200);
+            text-align: left;
+        }
+
+        .health-data-table th {
+            background-color: var(--gray-100);
+            font-weight: 600;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+<!-- Login Screen -->
+<div class="container" id="loginScreen">
+    <div class="header">
+        <h1>Login</h1>
+    </div>
+    <div class="login-options">
+        <div class="login-option" onclick="setLoginType('patient')">Patient</div>
+        <div class="login-option" onclick="setLoginType('doctor')">Doctor</div>
+    </div>
+    <form onsubmit="return false;">
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Unesite email">
+        </div>
+        <div class="input-group">
+            <label for="password">Lozinka</label>
+            <input type="password" id="password" placeholder="Unesite lozinku">
+        </div>
+        <button class="button" onclick="login()">Prijava</button>
+    </form>
+</div>
+
+
+<!-- Patient Dashboard -->
+<div class="container" id="dashboardScreen" style="display: none;">
+    <div class="header">
+        <h1>Your Health</h1>
+        <button class="button button-secondary" onclick="logout()">Logout</button>
+    </div>
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="icon">❤️</div>
+            <div class="label">Heart Rate</div>
+        </div>
+        <div class="metric-card">
+            <div class="icon">🩺</div>
+            <div class="label">Blood Pressure</div>
+        </div>
+        <div class="metric-card">
+            <div class="icon">👣</div>
+            <div class="label">Steps</div>
+        </div>
+        <div class="metric-card">
+            <div class="icon">🔥</div>
+            <div class="label">Calories</div>
+        </div>
+    </div>
+    <h2>Recent Records</h2>
+    <ul class="records-list">
+        <li>Blood Test Results</li>
+        <li>X-Ray Analysis</li>
+        <li>Prescription Updates</li>
+    </ul>
+    <button class="button" onclick="showHealthMetrics()">Add Health Data</button>
+    <button class="button button-secondary" onclick="showPreviousData()">View Previous Data</button>
+</div>
+
+<!-- Doctor's Dashboard -->
+<div class="container" id="doctorScreen" style="display: none;">
+    <div class="header">
+        <h1>Patient List</h1>
+        <button class="button button-secondary" onclick="logout()">Logout</button>
+    </div>
+    <div id="patientList"></div>
+    <button class="button" onclick="showAddPatientForm()">Add New Patient</button>
+</div>
+
+<script>
+    function logout() {
+        hideAllScreens();
+        document.getElementById('loginScreen').style.display = 'block';
+    }
+
+    function displayPatientList() {
+        const patientList = document.getElementById('patientList');
+        patientList.innerHTML = '';
+        patients.forEach((patient, index) => {
+            const patientCard = document.createElement('div');
+            patientCard.className = 'patient-card';
+            patientCard.innerHTML = `
+                <img src="https://i.pravatar.cc/150?img=${patient.id}" alt="${patient.name}">
+                <div class="patient-info">
+                    <div class="patient-name">${patient.name}</div>
+                    <div class="patient-appointment">${patient.email}</div>
+                </div>
+                <button class="button button-secondary" onclick="deletePatient(${index})">Delete</button>
+            `;
+            patientCard.onclick = () => showPatientRecords(patient);
+            patientList.appendChild(patientCard);
+        });
+    }
+
+    function deletePatient(index) {
+        if (confirm('Are you sure you want to delete this patient?')) {
+            patients.splice(index, 1);
+            displayPatientList();
+        }
+    }
+</script>
+
+
+<!-- Health Metrics Input -->
+<div class="container" id="metricsScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDashboard()">←</button>
+        <h1>Input Health Metrics</h1>
+    </div>
+    <form onsubmit="return false;">
+        <div class="input-group">
+            <label for="heartRate">Heart Rate (bpm)</label>
+            <input type="number" id="heartRate">
+        </div>
+        <div class="input-group">
+            <label for="bloodPressure">Blood Pressure (mmHg)</label>
+            <input type="text" id="bloodPressure" placeholder="120/80">
+        </div>
+        <div class="input-group">
+            <label for="bloodSugar">Blood Sugar (mg/dL)</label>
+            <input type="number" id="bloodSugar">
+        </div>
+        <button class="button" onclick="saveHealthData()">Save</button>
+    </form>
+</div>
+
+<!-- Success Screen -->
+<div class="container" id="successScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDashboard()">←</button>
+        <h1>Data Submitted</h1>
+    </div>
+    <div class="success-message">
+        <h2>Thank you for updating your health data.</h2>
+        <div class="button-group">
+            <button class="button" onclick="showDashboard()">Return to Dashboard</button>
+            <button class="button button-secondary" onclick="showHealthMetrics()">Add More Data</button>
+        </div>
+    </div>
+</div>
+
+<!-- Doctor's Dashboard -->
+<div class="container" id="doctorScreen" style="display: none;">
+    <div class="header">
+        <h1>Patient List</h1>
+    </div>
+    <div id="patientList"></div>
+    <button class="button" onclick="showAddPatientForm()">Add New Patient</button>
+</div>
+
+<!-- Add New Patient Form -->
+<div class="container" id="addPatientScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDoctorDashboard()">←</button>
+        <h1>Add New Patient</h1>
+    </div>
+    <form onsubmit="return false;">
+        <div class="input-group">
+            <label for="newPatientName">Name</label>
+            <input type="text" id="newPatientName" placeholder="Enter patient name">
+        </div>
+        <div class="input-group">
+            <label for="newPatientEmail">Email</label>
+            <input type="email" id="newPatientEmail" placeholder="Enter patient email">
+        </div>
+        <button class="button" onclick="addNewPatient()">Add Patient</button>
+    </form>
+</div>
+
+<!-- Previous Health Data Screen -->
+<div class="container" id="previousDataScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDashboard()">←</button>
+        <h1>Previous Health Data</h1>
+    </div>
+    <table class="health-data-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Heart Rate</th>
+            <th>Blood Pressure</th>
+            <th>Blood Sugar</th>
+        </tr>
+        </thead>
+        <tbody id="healthDataBody">
+        <!-- Data will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Patient Health Records (for Doctor) -->
+<div class="container" id="patientRecordsScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDoctorDashboard()">←</button>
+        <h1 id="patientRecordsName"></h1>
+    </div>
+    <table class="health-data-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Heart Rate</th>
+            <th>Blood Pressure</th>
+            <th>Blood Sugar</th>
+        </tr>
+        </thead>
+        <tbody id="patientHealthDataBody">
+        <!-- Patient data will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let loginType = 'patient';
+    let healthData = {};
+    let patients = [
+        { id: 1, name: "John Doe", email: "john@example.com" },
+        { id: 2, name: "Jane Smith", email: "jane@example.com" },
+        { id: 3, name: "Michael Brown", email: "michael@example.com" }
+    ];
+
+    function setLoginType(type) {
+        loginType = type;
+        document.querySelectorAll('.login-option').forEach(option => {
+            option.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
+
+    function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        if (email && password) {
+            if (loginType === 'doctor') {
+                showDoctorDashboard();
+            } else {
+                showDashboard();
+            }
+        } else {
+            alert('Please enter both email and password');
+        }
+    }
+
+    function showDashboard() {
+        hideAllScreens();
+        document.getElementById('dashboardScreen').style.display = 'block';
+    }
+
+    function showDoctorDashboard() {
+        hideAllScreens();
+        document.getElementById('doctorScreen').style.display = 'block';
+        displayPatientList();
+    }
+
+    function showHealthMetrics() {
+        hideAllScreens();
+        document.getElementById('metricsScreen').style.display = 'block';
+    }
+
+    function showSuccess() {
+        hideAllScreens();
+        document.getElementById('successScreen').style.display = 'block';
+    }
+
+    function showPreviousData() {
+        hideAllScreens();
+        document.getElementById('previousDataScreen').style.display = 'block';
+        displayHealthData();
+    }
+
+    function showAddPatientForm() {
+        hideAllScreens();
+        document.getElementById('addPatientScreen').style.display = 'block';
+    }
+
+    function hideAllScreens() {
+        const screens = ['loginScreen', 'dashboardScreen', 'metricsScreen', 'successScreen', 'doctorScreen', 'previousDataScreen', 'addPatientScreen', 'patientRecordsScreen'];
+        screens.forEach(screen => {
+            document.getElementById(screen).style.display = 'none';
+        });
+    }
+
+    function deletePatient(index) {
+        if (confirm('Are you sure you want to delete this patient?')) {
+            patients.splice(index, 1);
+            displayPatientList();
+        }
+    }
+
+    function updatePatient(index) {
+        const patient = patients[index];
+        const name = prompt('Update patient name:', patient.name);
+        const email = prompt('Update patient email:', patient.email);
+
+        if (name && email) {
+            patients[index] = { ...patient, name, email };
+            displayPatientList();
+        }
+    }
+
+
+    function saveHealthData() {
+        const heartRate = document.getElementById('heartRate').value;
+        const bloodPressure = document.getElementById('bloodPressure').value;
+        const bloodSugar = document.getElementById('bloodSugar').value;
+        const date = new Date().toLocaleString();
+
+        if (!healthData[loginType]) {
+            healthData[loginType] = [];
+        }
+        healthData[loginType].push({ date, heartRate, bloodPressure, bloodSugar });
+        showSuccess();
+    }
+
+    function displayHealthData() {
+        const tableBody = document.getElementById('healthDataBody');
+        tableBody.innerHTML = '';
+        if (healthData[loginType]) {
+            healthData[loginType].forEach(data => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = data.date;
+                row.insertCell(1).textContent = data.heartRate;
+                row.insertCell(2).textContent = data.bloodPressure;
+                row.insertCell(3).textContent = data.bloodSugar;
+            });
+        }
+    }
+
+    function displayPatientList() {
+        const patientList = document.getElementById('patientList');
+        patientList.innerHTML = '';
+        patients.forEach((patient, index) => {
+            const patientCard = document.createElement('div');
+            patientCard.className = 'patient-card';
+            patientCard.innerHTML = `
+                <img src="https://i.pravatar.cc/150?img=${patient.id}" alt="${patient.name}">
+                <div class="patient-info">
+                    <div class="patient-name">${patient.name}</div>
+                    <div class="patient-appointment">${patient.email}</div>
+                </div>
+                <div class="dropdown">
+                    <button class="button button-secondary">...</button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="deletePatient(${index})">Delete Patient</a>
+                        <a href="#" onclick="updatePatient(${index})">Update Patient</a>
+                    </div>
+                </div>
+            `;
+            patientCard.onclick = () => showPatientRecords(patient);
+            patientList.appendChild(patientCard);
+        });
+    }
+
+    function addNewPatient() {
+        const name = document.getElementById('newPatientName').value;
+        const email = document.getElementById('newPatientEmail').value;
+        if (name && email) {
+            const newId = patients.length + 1;
+            patients.push({ id: newId, name, email });
+            showDoctorDashboard();
+        } else {
+            alert('Please enter both name and email');
+        }
+    }
+
+    function showPatientRecords(patient) {
+        hideAllScreens();
+        document.getElementById('patientRecordsScreen').style.display = 'block';
+        document.getElementById('patientRecordsName').textContent = patient.name;
+        const tableBody = document.getElementById('patientHealthDataBody');
+        tableBody.innerHTML = '';
+        if (healthData[patient.email]) {
+            healthData[patient.email].forEach(data => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = data.date;
+                row.insertCell(1).textContent = data.heartRate;
+                row.insertCell(2).textContent = data.bloodPressure;
+                row.insertCell(3).textContent = data.bloodSugar;
+            });
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="4">No health data available for this patient.</td></tr>';
+        }
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', () => {
+        hideAllScreens();
+        document.getElementById('loginScreen').style.display = 'block';
+    });
+</script>
+</body>
+</html>
