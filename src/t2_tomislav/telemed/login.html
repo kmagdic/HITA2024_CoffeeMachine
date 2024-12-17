@@ -46,23 +46,24 @@
 </div>
 
 <script>
-    // Definirane vrijednosti za email i lozinku
-    const FIXED_EMAIL = "admin@telemed.hr";
-    const FIXED_PASSWORD = "admin123";
+    // Definirane FIKSNE vrijednosti za email i lozinku
+    const USERS = [
+        { email: "peroperic@telemed.hr", password: "pero123", redirect: "uredivanje_podataka.html" },
+        { email: "doktor@telemed.hr", password: "doktor123", redirect: "lista_pacijenata.html" }
+    ];
 
     function handleLogin(event) {
-        event.preventDefault(); // Sprječava ponovno učitavanje stranice
+        event.preventDefault(); // Sprjecava ponovno ucitavanje stranice
 
-        // Dohvaćanje unesenih vrijednosti
+        // Dohvacanje unesenih vrijednosti
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        // Provjera unesenih podataka
-        if (email === FIXED_EMAIL && password === FIXED_PASSWORD) {
-            // Ako su podaci točni, preusmjeri na stranicu Unos Podataka
-            window.location.href = 'uredivanje_podataka.html';
+        // Provjera korisnika
+        const user = USERS.find(u => u.email === email && u.password === password);
+        if (user) {
+            window.location.href = user.redirect; // Preusmjeri na odgovarajucu stranicu
         } else {
-            // Ako su podaci pogrešni, prikaz poruke o grešci
             alert("Neispravan email ili lozinka. Pokušajte ponovno.");
         }
     }

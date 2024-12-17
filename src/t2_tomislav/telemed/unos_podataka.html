@@ -22,16 +22,6 @@
                     <input type="number" class="form-control" id="otkucaji" placeholder="Unesite otkucaje srca" required>
                 </div>
             </div>
-            <!-- Dijastolički Tlak -->
-            <div class="mb-3">
-                <label for="dijastolicki" class="form-label">Dijastolički Tlak</label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="fas fa-tint"></i>
-                    </span>
-                    <input type="number" class="form-control" id="dijastolicki" placeholder="Unesite dijastolički tlak" required>
-                </div>
-            </div>
             <!-- Sistolički Tlak -->
             <div class="mb-3">
                 <label for="sistolicki" class="form-label">Sistolički Tlak</label>
@@ -40,6 +30,16 @@
                         <i class="fas fa-arrow-up"></i>
                     </span>
                     <input type="number" class="form-control" id="sistolicki" placeholder="Unesite sistolički tlak" required>
+                </div>
+            </div>
+            <!-- Dijastolički Tlak -->
+            <div class="mb-3">
+                <label for="dijastolicki" class="form-label">Dijastolički Tlak</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-tint"></i>
+                    </span>
+                    <input type="number" class="form-control" id="dijastolicki" placeholder="Unesite dijastolički tlak" required>
                 </div>
             </div>
             <!-- Datum Unosa -->
@@ -66,6 +66,13 @@
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">Spremi</button>
             </div>
+
+            <!-- Gumb Nazad -->
+            <div class="d-flex justify-content-start mt-3">
+                <a href="uredivanje_podataka.html" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Nazad
+                </a>
+            </div>
         </form>
     </div>
 </div>
@@ -73,20 +80,20 @@
     function handleSaveData(event) {
         event.preventDefault();
 
-        // Validacija podataka (opcionalno, za sigurnost)
+        // Validacija podataka
         const otkucaji = document.getElementById('otkucaji').value;
-        const dijastolicki = document.getElementById('dijastolicki').value;
         const sistolicki = document.getElementById('sistolicki').value;
+        const dijastolicki = document.getElementById('dijastolicki').value;
         const datum = document.getElementById('datum').value;
         const opis = document.getElementById('opis').value;
 
-        if (!otkucaji || !dijastolicki || !sistolicki || !datum || !opis) {
+        if (!otkucaji || !sistolicki || !dijastolicki || !datum || !opis) {
             alert("Molimo popunite sva polja.");
             return;
         }
 
         // Spremanje podataka
-        const data = { otkucaji, dijastolicki, sistolicki, datum, opis };
+        const data = { otkucaji, sistolicki, dijastolicki, datum, opis };
         let savedData = JSON.parse(localStorage.getItem('pacijenti')) || [];
         savedData.push(data);
         localStorage.setItem('pacijenti', JSON.stringify(savedData));
