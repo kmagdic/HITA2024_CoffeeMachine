@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/style.css">
+
+    <title>Telemed App</title>
+</head>
+<body>
+<!-- Login Screen -->
+<div class="container" id="loginScreen">
+    <div class="header">
+        <h1>Login</h1>
+    </div>
+    <div class="login-options">
+        <div class="login-option" onclick="setLoginType('patient')">Patient</div>
+        <div class="login-option" onclick="setLoginType('doctor')">Doctor</div>
+    </div>
+    <form onsubmit="return false;">
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Unesite email">
+        </div>
+        <div class="input-group">
+            <label for="password">Lozinka</label>
+            <input type="password" id="password" placeholder="Unesite lozinku">
+        </div>
+        <button class="button" onclick="login()">Prijava</button>
+    </form>
+</div>
+
+<!-- Patient Dashboard -->
+<div class="container" id="dashboardScreen" style="display: none;">
+    <div class="header">
+        <h1>Your Health</h1>
+        <button class="button button-secondary" onclick="logout()">Logout</button>
+    </div>
+    <div class="metrics-grid">
+        <div class="metric-card" onclick="quickAddHeartRate()">
+            <div class="icon">❤️</div>
+            <div class="label">Heart Rate</div>
+        </div>
+        <div class="metric-card" onclick="quickAddBloodPressure()">
+            <div class="icon">🩺</div>
+            <div class="label">Blood Pressure</div>
+        </div>
+    </div>
+    <h2>Recent Records</h2>
+    <table class="health-data-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Heart Rate</th>
+            <th>Blood Pressure</th>
+            <th>Blood Sugar</th>
+        </tr>
+        </thead>
+        <tbody id="recentRecordsBody">
+        <!-- Recent data will be populated here -->
+        </tbody>
+    </table>
+    <button class="button" onclick="showHealthMetrics()">Add Health Data</button>
+    <button class="button button-secondary" onclick="showPreviousData()">View All Data</button>
+</div>
+
+<!-- Doctor's Dashboard -->
+<div class="container" id="doctorScreen" style="display: none;">
+    <div class="header">
+        <h1>Patient List</h1>
+        <button class="button button-secondary" onclick="logout()">Logout</button>
+    </div>
+    <div id="patientList"></div>
+    <button class="button" onclick="showAddPatientForm()">Add New Patient</button>
+</div>
+
+<!-- Health Metrics Input -->
+<div class="container" id="metricsScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDashboard()">←</button>
+        <h1>Input Health Metrics</h1>
+    </div>
+    <form onsubmit="return false;">
+        <div class="input-group">
+            <label for="heartRate">Heart Rate (bpm)</label>
+            <input type="number" id="heartRate">
+        </div>
+        <div class="input-group">
+            <label for="bloodPressure">Blood Pressure (mmHg)</label>
+            <input type="text" id="bloodPressure" placeholder="120/80">
+        </div>
+        <div class="input-group">
+            <label for="bloodSugar">Blood Sugar (mg/dL)</label>
+            <input type="number" id="bloodSugar">
+        </div>
+        <button class="button" onclick="saveHealthData()">Save</button>
+    </form>
+</div>
+
+<!-- Success Screen -->
+<div class="container" id="successScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDashboard()">←</button>
+        <h1>Data Submitted</h1>
+    </div>
+    <div class="success-message">
+        <h2>Thank you for updating your health data.</h2>
+        <div class="button-group">
+            <button class="button" onclick="showDashboard()">Return to Dashboard</button>
+            <button class="button button-secondary" onclick="showHealthMetrics()">Add More Data</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add New Patient Form -->
+<div class="container" id="addPatientScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDoctorDashboard()">←</button>
+        <h1>Add New Patient</h1>
+    </div>
+    <form onsubmit="return false;">
+        <div class="input-group">
+            <label for="newPatientName">Name</label>
+            <input type="text" id="newPatientName" placeholder="Enter patient name">
+        </div>
+        <div class="input-group">
+            <label for="newPatientEmail">Email</label>
+            <input type="email" id="newPatientEmail" placeholder="Enter patient email">
+        </div>
+        <button class="button" onclick="addNewPatient()">Add Patient</button>
+    </form>
+</div>
+
+<!-- Previous Health Data Screen -->
+<div class="container" id="previousDataScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDashboard()">←</button>
+        <h1>Previous Health Data</h1>
+    </div>
+    <table class="health-data-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Heart Rate</th>
+            <th>Blood Pressure</th>
+            <th>Blood Sugar</th>
+        </tr>
+        </thead>
+        <tbody id="healthDataBody">
+        <!-- Data will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Patient Health Records (for Doctor) -->
+<div class="container" id="patientRecordsScreen" style="display: none;">
+    <div class="header">
+        <button class="back-button" onclick="showDoctorDashboard()">←</button>
+        <h1 id="patientRecordsName"></h1>
+    </div>
+    <table class="health-data-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Heart Rate</th>
+            <th>Blood Pressure</th>
+            <th>Blood Sugar</th>
+        </tr>
+        </thead>
+        <tbody id="patientHealthDataBody">
+        <!-- Patient data will be populated here -->
+        </tbody>
+    </table>
+
+</div>
+<script src="scripts/functions.js" ></script>
+</body>
