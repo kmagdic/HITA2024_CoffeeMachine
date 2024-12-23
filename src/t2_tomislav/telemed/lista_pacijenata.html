@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista Pacijenata</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<!-- Sidebar -->
+<div class="d-flex">
+  <div class="bg-light border-end" id="sidebar-wrapper" style="width: 240px; min-height: 100vh;">
+    <div class="sidebar-heading text-primary fw-bold py-3 text-center">TELEMED</div>
+    <div class="list-group list-group-flush">
+      <a href="#" class="list-group-item list-group-item-action py-3 active">
+        <i class="fas fa-chart-line me-2"></i> Pregled
+      </a>
+      <a href="novi_pacijent.html" class="list-group-item list-group-item-action py-3">
+        <i class="fas fa-user-plus me-2"></i> Unos novog pacijenta
+      </a>
+    </div>
+  </div>
+
+  <!-- Glavni sadrzaj -->
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center my-4">
+      <h2 class="text-primary fw-bold">Lista Pacijenata</h2>
+      <a href="login.html" class="btn btn-danger">
+        <i class="fas fa-sign-out-alt"></i> Odjava
+      </a>
+    </div>
+
+    <!-- Pretraga Pacijenata -->
+    <div class="input-group mb-3">
+      <span class="input-group-text"><i class="fas fa-search"></i></span>
+      <input type="text" id="searchInput" class="form-control" placeholder="Pretraži pacijente...">
+    </div>
+
+    <!-- Tablica Pacijenata -->
+    <div class="card shadow">
+      <div class="card-body">
+        <table class="table table-hover text-center" id="patientsTable">
+          <thead class="table-primary">
+          <tr>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>Datum Unosa</th>
+            <th>Otkucaji Srca</th>
+            <th>Sistolički Tlak</th>
+            <th>Dijastolički Tlak</th>
+            <th>Opis</th>
+          </tr>
+          </thead>
+          <tbody id="patientsBody">
+          <!-- Dinamicki podaci -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Funkcija za ucitavanje najnovijeg unosa iz localStorage-a za korisnika peroperic
+  function loadLatestPatientData() {
+      const patients = JSON.parse(localStorage.getItem('pacijenti')) || [];
+      const tableBody = document.getElementById('patientsBody');
+      tableBody.innerHTML = '';
+
+      if (patients.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="7" class="text-muted">Nema unesenih podataka.</td></tr>`;
+          return;
+      }
+
+      // Dohvati samo najnoviji unos (zadnji u nizu)
+      const latestPatient = patients[patients.length - 1];
+      tableBody.innerHTML += `
+          <tr>
+              <td><a href="pacijent_unosi.html?ime=Pero&prezime=Peric" class="text-decoration-none">Pero</a></td>
+              <td><a href="pacijent_unosi.html?ime=Pero&prezime=Peric" class="text-decoration-none">Peric</a></td>
+              <td>${latestPatient.datum}</td>
+              <td>${latestPatient.otkucaji}</td>
+              <td>${latestPatient.sistolicki}</td>
+              <td>${latestPatient.dijastolicki}</td>
+              <td>${latestPatient.opis}</td>
+          </tr>
+      `;
+  }
+
+  // Pretraga nije potrebna za jedan unos, ali logika ostaje za buduce prosirenje
+  document.getElementById('searchInput').addEventListener('input', function () {
+      loadLatestPatientData();
+  });
+
+  // Ucitaj podatke pri pokretanju stranice
+  window.onload = loadLatestPatientData;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="calculator">
+    <h1>Advanced Calculator</h1>
+    <img src="calculator.png">
+    <p>Advanced calculator by Vedran</p>
+    <div class="input-group">
+        <label for="numberA">First Number</label>
+        <input type="number" id="numberA" placeholder="Enter first number">
+    </div>
+    <div class="input-group">
+        <label for="operation">Operation</label>
+        <input type="text" id="operation" placeholder="Enter operation (e.g., +, -, *, /, pow)">
+    </div>
+    <div class="input-group">
+        <label for="numberB">Second Number</label>
+        <input type="number" id="numberB" placeholder="Enter second number">
+    </div>
+    <div class="buttons">
+        <button id="calculate">Calculate</button>
+        <button id="reset">Reset</button>
+    </div>
+    <div class="result">
+        <label>Result:</label>
+        <input type="text" id="result" readonly>
+    </div>
+    <button id="addToHistory">Add to History</button>
+    <h2>History</h2>
+    <ul id="history"></ul>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
+
+

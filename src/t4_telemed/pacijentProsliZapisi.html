@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeleMed - Prošli Zapisi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .sidebar .nav-link {
+            color: #000;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" id="sidebarMenu">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <span class="fw-bold">TELEMED</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pacijentUnesiTlak.html">
+                            &#8592; Natrag na unos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">
+                            Odjavi se
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h4">Prošli Zapisi</h1>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="popisTable">
+                    <thead>
+                    <tr>
+                        <th>Datum i Vrijeme</th>
+                        <th>Sistolički</th>
+                        <th>Dijastolički</th>
+                        <th>Otkucaji</th>
+                        <th>Opis</th>
+                        <th>Opcije</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tlakovi = JSON.parse(localStorage.getItem('tlakovi')) || [];
+        const tableBody = document.querySelector('#popisTable tbody');
+
+        tlakovi.forEach((tlak, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${tlak.date}</td>
+                <td>${tlak.sisTlak}</td>
+                <td>${tlak.dijTlak}</td>
+                <td>${tlak.otkucaji}</td>
+                <td>${tlak.opis}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Izbriši</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    });
+
+    function deleteRow(index) {
+        const tlakovi = JSON.parse(localStorage.getItem('tlakovi')) || [];
+        tlakovi.splice(index, 1);
+        localStorage.setItem('tlakovi', JSON.stringify(tlakovi));
+        location.reload();
+    }
+</script>
+
+<!-- Navbar for Mobile -->
+<nav class="navbar navbar-dark fixed-top bg-dark d-md-none">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <span class="navbar-brand">TELEMED</span>
+    </div>
+</nav>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+    <title>Add employee</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="functions.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div class="row pt-3">
+        <div class="row mb-2">
+            <div class="col-6">
+                <h3> Todo App - Admin</h3>
+            </div>
+            <div class="col-6 text-end">
+                Administrator Adam
+                <img src="admin.png" width="50px" ; height="50px">
+                <button class="btn btn-link" onclick="window.location.href='login.html'">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <form>
+            <div class="col">
+                <div class="row">
+                    <div class="col-3">
+                        <label for="firstname" class="form-label">Ime:</label>
+                        <input type="text" class="form-control" id="firstname" placeholder="Unesite ime"
+                               name="firstname"><br>
+                    </div>
+                    <div class="col-3">
+                        <label for="lastname" class="form-label">Prezime:</label>
+                        <input type="text" class="form-control" id="lastname" placeholder="Unesite prezime"
+                               name="lastname"><br>
+                    </div>
+                    <div class="col-3">
+                        <label for="email" class="form-label">E-mail:</label>
+                        <input type="text" class="form-control" id="email" placeholder="E-mail" name="email"><br>
+                    </div>
+                    <div class="col-3">
+                        <label for="password" class="form-label">Password:</label>
+                        <input type="password" class="form-control" id="password" placeholder="Strong password"
+                               name="password">
+                    </div>
+                </div>
+                <!--  <button type="submit" class="btn btn-primary" onclick="window.location.href='employees_view_supervisor.html'"> Spremi</button> -->
+            </div>
+        </form>
+
+        <button class="btn btn-primary col-1 ms-3" name="button" onclick="addEmployee()">Dodaj</button>
+
+        <div class="col-12">
+            <br>
+            <table id="todoTable" class="table table-hover">
+                <thead class="table-primary">
+                <tr>
+                    <th>rb.</th>
+                    <th>Ime</th>
+                    <th>Prezime</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Uredi</th>
+                    <th>Izbriši</th>
+                    <th>Todo lista</th>
+                </tr>
+                </thead>
+                <tbody id="employeesTable">
+                <tr>
+                    <td>1</td>
+                    <td>David</td>
+                    <td>Golijat</td>
+                    <td>david@gmail.com</td>
+                    <td>123</td>
+                    <td>
+                        <button type="button" class="btn btn-link" onclick="editRowEmployee(this)">Edit</button>
+                    </td>
+                    <!-- <td> <a href="#" onclick="editRow(this)"> Edit </a> </td>-->
+
+                    <!--<td id="td"> <a id="a" href="#" onclick="deleteRow(this)"> Delete </a> </td> -->
+                    <td>
+                        <button id = "myB" type="button" class="btn btn-link" onclick="deleteRow(this)">Delete</button>
+                    </td> <!--this šalje td, a njegov parentNode je tr pa briše cijeli taj redak-->
+                    <td>
+                        <button type="button" class="btn btn-link" onclick="window.location.href='employee_todos_supervisor.html'">View</button>
+                    </td>
+                    <!-- <td> <a href="#" onclick="window.location.href='employee_todos_admin.html'"> View </a> </td> -->
+                    <!-- <td> <input id="delete" type="button" value="Delete" onclick="deleteRow(this)"></td> -->
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Danijel</td>
+                    <td>Lavić</td>
+                    <td>danijel@gmail.com</td>
+                    <td>123</td>
+                    <td>
+                        <button type="button" class="btn btn-link" onclick="editRowEmployee(this)">Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link" onclick="window.location.href='employee_todos_supervisor.html'">View</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Samson</td>
+                    <td>Kosec</td>
+                    <td>samson@gmail.com</td>
+                    <td>123</td>
+                    <td>
+                        <button type="button" class="btn btn-link" onclick="editRowEmployee(this)">Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link" onclick="window.location.href='employee_todos_supervisor.html'">View</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- <button class="btn btn-primary" name="button" onclick="addTodoToTable">Dodaj</button> -->
+
+            <!-- <button class="btn btn-primary" name="button" onclick="window.location.href='employees_view_supervisor.html'">Dodaj
+             </button> -->
+        </div>
+
+        <!--<p>The node name of the parent node of "myB" is:</p>
+        <p id="demo"></p>-->
+    </div>
+</div>
+</body>
+</html>
