@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculator</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <script src="funkcije.js"></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js></script>
+
+</head>
+<body>
+<h1>Calculator</h1>
+<p>Basic calculator</p>
+<img src="https://icons.veryicon.com/png/o/miscellaneous/alan-ui/ios-calculator-2.png">
+
+<form>
+    <label for="first_number"> First number</label><br>
+    <input type="number" placeholder="Prvi broj" id = "first_number"> <br>
+    <label for="operation"> Operation</label><br>
+    <input type="text" placeholder="* / + - " id = "operation"> <br>
+    <label for="second_number"> Second number</label><br>
+    <input type="number" placeholder="Drugi broj" id = "second_number"> <br>
+    <input type="date" id="date"><br><br>
+
+    <button name ="button" type="button" onclick="calculate()">Calculate</button>
+    <button name = "reset" type="reset">Reset</button>
+
+    <p>Result</p>
+    <input id ="result"> <br>
+</form>
+<br><br>
+<button name = "button" type="button" onclick="addRecordToList()">Add to list</button>
+<button name = "button" type="button" onclick="addRecordToTable()">Add to table</button>
+
+<p>History</p>
+<ol id="history">
+    <li>3+4=7</li>
+
+</ol>
+
+<table id="historyTable" border=1>
+    <thead>
+    <tr>
+        <th>Record</th>
+        <th>Date/time</th>
+    </tr>
+    </thead>
+    <tbody id="tableBody">
+    </tbody>
+</table>
+
+</body>
+</html>
+
+
